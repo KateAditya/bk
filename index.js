@@ -8,10 +8,10 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const session = require("express-session");
+const MySQLStore = require("express-mysql-session")(session);
 const db = require("./db");
 const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
-const sessionStore = require("./sessionStore");
 
 // Initialize Express app
 const app = express();
@@ -98,19 +98,29 @@ app.use(express.static("public"));
 app.use("/uploads", express.static("uploads"));
 
 // Session Management
+const options = {
+  host: process.env.DB_HOST || "localhost",
+  port: 3306,
+  user: process.env.DB_USER || "root",
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME || "album_store",
+};
+
+const sessionStore = new MySQLStore(options);
+
 app.use(
   session({
-    secret: "your-secret-key",
+    store: sessionStore,
+    secret: process.env.SESSION_SECRET || "your-secret-key",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // Set to true in production with HTTPS
+      secure: process.env.NODE_ENV === "production",
       httpOnly: true,
-      sameSite: "lax", // Prevents CSRF, but allows links to work
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-      path: "/",
+      sameSite: "lax",
+      maxAge: 24 * 60 * 60 * 1000,
     },
-    name: "sessionId", // Custom name for the session cookie
+    name: "sessionId",
   })
 );
 
@@ -186,23 +196,10 @@ app.use("/api/products", (req, res, next) => {
 // Authentication endpoints
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
-  const adminUser = {
-    username: "admin",
-    password: "admin123",
-  };
-
-  const activeSession = sessionStore.getActiveSession();
-  if (activeSession && activeSession !== req.sessionID) {
-    return res.status(403).json({
-      success: false,
-      message: "Another user is already logged in. Please try again later.",
-    });
-  }
 
   if (username === adminUser.username && password === adminUser.password) {
     req.session.isAuthenticated = true;
     req.session.user = { username };
-    sessionStore.setActiveSession(req.sessionID);
 
     req.session.save((err) => {
       if (err) {
