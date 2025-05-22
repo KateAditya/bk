@@ -152,8 +152,12 @@ const adminUser = {
 // ==================== ROUTE HANDLERS ====================
 
 // Public routes
+// app.get("/", (req, res) => {
+//   res.sendFile(path.join(__dirname, "public", "index.html"));
+// });
+
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
+  res.send("hello");
 });
 
 app.get("/login", (req, res) => {
