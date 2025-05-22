@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Product Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-size: 200% 200%;
+        animation: glacierShine 5s infinite alternate ease-in-out;
+        padding: 20px;
+        margin: 0;
+    }
+
+    h1,
+    h2 {
+        text-align: center;
+        margin: 1rem 0;
+        color: #4e4e8a;
+    }
+
+    /* Product Form */
+    form#addProductForm {
+        max-width: 600px;
+        margin: 1rem auto;
+        background: rgba(202, 189, 221, 0.3);
+        padding: 20px;
+        border-radius: 12px;
+        backdrop-filter: blur(10px);
+        box-shadow: 0 8px 20px rgba(44, 49, 88, 0.3);
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    form#addProductForm input[type="text"],
+    form#addProductForm input[type="number"],
+    form#addProductForm input[type="file"] {
+        padding: 10px;
+        font-size: 1rem;
+        border-radius: 6px;
+        border: 1px solid #b197bc;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    /* Form Section */
+    .form-section {
+        background: rgba(255, 255, 255, 0.2);
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .form-section h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #4e4e8a;
+        font-size: 1.1rem;
+    }
+
+    /* Buttons */
+    button {
+        cursor: pointer;
+        padding: 12px;
+        font-weight: 600;
+        border: none;
+        border-radius: 8px;
+        background: linear-gradient(135deg, #b197bc, #2c3158);
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+    }
+
+    button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    button#cancelEdit {
+        background: linear-gradient(135deg, #97a5bc, #2c3e58);
+    }
+
+    .button-group {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    /* Product List */
+    #productList {
+        max-width: 1200px;
+        margin: 20px auto;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 25px;
+    }
+
+    /* Product Item */
+    .item {
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(202, 189, 221, 0.5));
+        border-radius: 10px;
+        box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .item img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .item-content {
+        padding: 15px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .item h3 {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 5px;
+        font-weight: 600;
+    }
+
+    .discount {
+        display: inline-block;
+        font-size: 0.9rem;
+        color: #555;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .prices {
+        font-size: 1.3rem;
+        color: #fc0000;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .download-link {
+        font-size: 0.85rem;
+        color: #4e4e8a;
+        margin-bottom: 10px;
+        word-break: break-word;
+    }
+
+    .download-link strong {
+        display: block;
+        margin-bottom: 3px;
+    }
+
+    /* Product Actions */
+    .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .actions button,
+    .actions input.buy-btn {
+        padding: 8px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #ffffff;
+        background-color: #b197bc;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+
+    .actions button:hover,
+    .actions input.buy-btn:hover {
+        background-color: #9a81a6;
+    }
+
+    .actions button.view {
+        background-color: #5c5c8a;
+    }
+
+    .actions button.edit {
+        background-color: #5c8a5c;
+    }
+
+    .actions button.delete {
+        background-color: #8a5c5c;
+    }
+
+    /* Toast Notification */
+    #toast {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 25px;
+        background: #4CAF50;
+        color: white;
+        border-radius: 5px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        z-index: 1000;
+    }
+
+    #toast.show {
+        opacity: 1;
+    }
+
+    #toast.error {
+        background: #f44336;
+    }
+
+    /* Logout Button */
+    .logout-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+    }
+
+    .logout-btn {
+        background: linear-gradient(135deg, #bc9797, #582c2c) !important;
+        padding: 10px 20px !important;
+        font-size: 0.9rem !important;
+        white-space: nowrap;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        form#addProductForm {
+            max-width: 90%;
+        }
+
+        #productList {
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .logout-container {
+            position: absolute;
+        }
+    }
+
+    @media (max-width: 480px) {
+        #productList {
+            grid-template-columns: 1fr;
+        }
+
+        .actions {
+            grid-template-columns: 1fr;
+        }
+
+        .logout-container {
+            top: 10px;
+            right: 10px;
+        }
+
+        .logout-btn {
+            padding: 8px 15px !important;
+            font-size: 0.8rem !important;
+        }
+    }
+</style>
+</head>
+
+<body>
+    <div style="position: fixed; top: 20px; right: 20px;">
+        <button onclick="logout()" style="background: linear-gradient(135deg, #bc9797, #582c2c);">Logout</button>
+    </div>
+
+    <h1>Integrated Product Dashboard</h1>
+
+    <form id="addProductForm" enctype="multipart/form-data">
+        <input type="hidden" name="id" id="productId">
+
+        <div class="form-section">
+            <h3>Product Details</h3>
+            <input type="text" name="title" id="title" placeholder="Product Title" required>
+            <input type="text" name="discount" id="discount" placeholder="Discount" required>
+            <input type="number" name="price" id="price" placeholder="Price" required>
+            <input type="text" name="description" id="description" placeholder="Description" required>
+            <input type="text" name="view_link" id="viewLink" placeholder="View Link">
+            <input type="file" name="image" id="image" accept="image/*" required><br><br>
+        </div>
+
+
+
+        <div class="button-group">
+            <button type="submit" id="saveButton">Save Product</button>
+            <button type="button" id="cancelEdit" style="display:none;">Cancel Edit</button>
+        </div>
+    </form>
+
+    <a href="admin.html"><button>Add Data Link</button></a>
+
+    <h2>Product List</h2>
+    <div id="productList"></div>
+
+    <div id="toast"></div>
+    <script>
+        // API Configuration
+        const API_BASE_URL = 'http://localhost:3001';
+
+        function logout() {
+            fetch(`${API_BASE_URL}/api/logout`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        window.location.href = '/login.html';
+                    } else {
+                        alert(data.message || 'Logout failed');
+                    }
+                })
+                .catch(err => {
+                    console.error(err);
+                    alert('Logout failed: ' + err.message);
+                });
+        }
+
+        const form = document.getElementById("addProductForm");
+        const productList = document.getElementById("productList");
+        const productIdInput = document.getElementById("productId");
+        const cancelEditBtn = document.getElementById("cancelEdit");
+
+
+        form.addEventListener("submit", function (e) {
+            e.preventDefault();
+            const id = productIdInput.value;
+            const formData = new FormData(this);
+
+            const url = id ? `${API_BASE_URL}/api/products/${id}` : `${API_BASE_URL}/api/products`;
+            const method = id ? 'PUT' : 'POST';
+
+            fetch(url, {
+                method: method,
+                body: formData,
+                credentials: 'include'
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        if (res.status === 401) {
+                            window.location.href = '/login.html?redirect=/dashboard.html';
+                            throw new Error('Not authenticated');
+                        }
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    alert(id ? "✅ Product updated" : "✅ Product added");
+                    form.reset();
+                    if (id) {
+                        productIdInput.value = '';
+                        cancelEditBtn.style.display = 'none';
+                    }
+                    loadProducts();
+                })
+                .catch(err => {
+                    console.error('Error saving product:', err);
+                    if (err.message !== 'Not authenticated') {
+                        alert(`❌ Failed to ${id ? 'update' : 'add'} product: ` + err.message);
+                    }
+                });
+        });
+
+        cancelEditBtn.addEventListener("click", () => {
+            form.reset();
+            productIdInput.value = '';
+            cancelEditBtn.style.display = 'none';
+        });
+
+        function loadProducts() {
+            fetch(`${API_BASE_URL}/api/products`, {
+                credentials: 'include'
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        if (res.status === 401) {
+                            window.location.href = '/login.html?redirect=/dashboard.html';
+                            throw new Error('Not authenticated');
+                        }
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(products => {
+                    productList.innerHTML = '';
+                    products.forEach(p => {
+                        const html = `
+                    <div class="item" data-id="${p.id}">
+                        <img src="${p.image_url}" class="img-fluid" alt="${p.title}">
+                        <h3>${p.title}</h3>
+                        <span id="dis">${p.discount}</span>
+                        <p class="prices">₹${p.price}</p>
+                        <div class="actions">
+                            <form class="pay-form" style="display:inline;">
+                                <input type="hidden" name="name" value="${p.title}">
+                                <input type="hidden" name="amount" value="${p.price}">
+                                <input type="hidden" name="description" value="${p.description}">
+                                <input type="submit" class="buy-btn" value="Buy Now">
+                            </form>
+                            <button onclick="window.open('${p.view_link}')">View</button>
+                            <button onclick="editProduct(${p.id})">Edit</button>
+                            <button onclick="deleteProduct(${p.id})">Delete</button>
+                        </div>
+                    </div>`;
+                        productList.innerHTML += html;
+                    });
+                })
+                .catch(err => {
+                    console.error('Error loading products:', err);
+                    if (err.message !== 'Not authenticated') {
+                        alert('Failed to load products: ' + err.message);
+                    }
+                });
+        }
+
+        function editProduct(id) {
+            fetch(`${API_BASE_URL}/api/products/${id}`, {
+                credentials: 'include'
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        if (res.status === 401) {
+                            window.location.href = '/login.html?redirect=/dashboard.html';
+                            throw new Error('Not authenticated');
+                        }
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+
+                    return res.json();
+                })
+                .then(p => {
+                    if (!p) {
+                        alert("Product not found");
+                        return;
+                    }
+                    productIdInput.value = p.id;
+                    form.title.value = p.title;
+                    form.discount.value = p.discount;
+                    form.price.value = p.price;
+                    form.description.value = p.description;
+                    form.view_link.value = p.view_link;
+                    cancelEditBtn.style.display = 'inline';
+                    window.scrollTo(0, 0);
+                })
+                .catch(err => {
+                    console.error('Error editing product:', err);
+                    if (err.message !== 'Not authenticated') {
+                        alert('Failed to edit product: ' + err.message);
+                    }
+                });
+        }
+
+        function deleteProduct(id) {
+            if (!confirm("Are you sure you want to delete this product?")) return;
+
+            fetch(`${API_BASE_URL}/api/products/${id}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            })
+                .then(res => {
+                    if (!res.ok) {
+                        if (res.status === 401) {
+                            window.location.href = '/login.html?redirect=/dashboard.html';
+                            throw new Error('Not authenticated');
+                        }
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
+                .then(data => {
+                    alert(data.message);
+                    loadProducts();
+                })
+                .catch(err => {
+                    console.error('Error deleting product:', err);
+                    if (err.message !== 'Not authenticated') {
+                        alert('Failed to delete product: ' + err.message);
+                    }
+                });
+        }
+
+        // Initial load
+        loadProducts();
+
+    </script>
+
+</body>
+
+</html>

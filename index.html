@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product List</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- ✅ Then your Razorpay script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- SweetAlert2 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+</head>
+
+<body>
+
+
+
+    <style>
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 32px;
+            border-bottom: 1px solid #e5e5e5;
+        }
+
+        .logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 0;
+        }
+
+        .logo p {
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin: 4px 0 0 0;
+        }
+
+        .menu {
+            display: flex;
+            gap: 16px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            /* Remove underline */
+            color: black;
+            /* Set color to black */
+            font-weight: 600;
+        }
+
+        .menu a:hover {
+            color: #333;
+            /* Darker shade on hover */
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger div {
+            width: 24px;
+            height: 3px;
+            background-color: #4a4a4a;
+            margin: 4px 0;
+            transition: background-color 0.3s ease;
+            /* Smooth transition for hamburger lines */
+        }
+
+        .mobile-menu {
+            display: none;
+            /* Initially hidden */
+            flex-direction: column;
+            gap: 16px;
+            padding: 16px;
+            border-bottom: 1px solid #e5e5e5;
+            opacity: 0;
+            /* Start hidden */
+            transform: translateY(-10px);
+            /* Start slightly above */
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            /* Smooth transition for menu */
+        }
+
+        .mobile-menu.show {
+            display: flex;
+            /* Show the menu */
+            opacity: 1;
+            /* Fade in */
+            transform: translateY(0);
+            /* Move to original position */
+        }
+
+        .mobile-menu.hide {
+            opacity: 0;
+            /* Fade out */
+            transform: translateY(-10px);
+            /* Move slightly up */
+        }
+
+        .mobile-menu a {
+            text-decoration: none;
+            /* Remove underline */
+            color: black;
+            /* Set color to black */
+            font-weight: 600;
+        }
+
+        .mobile-menu a:hover {
+            color: #333;
+            /* Darker shade on hover */
+        }
+
+        @media (max-width: 768px) {
+            .menu {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+        }
+    </style>
+    </head>
+
+    <body>
+        <nav>
+            <div class="logo">
+                <h1>GFX RONIN</h1>
+                <p>MR. RAHUL GADE</p>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="menu">
+                <a href="#">Shop</a>
+                <a href="#" style="font-weight: bold;">About</a>
+                <a href="#">FAQ</a>
+                <a href="#">Contact</a>
+                <a href="http://127.0.0.1:5500/public/login.html">Login</a>
+            </div>
+
+            <!-- Hamburger Button for Mobile -->
+            <div class="hamburger" id="menu-btn" aria-label="Toggle menu">
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </nav>
+
+        <!-- Mobile Menu (hidden by default) -->
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="#">Shop</a>
+            <a href="#" style="font-weight: bold;">About</a>
+            <a href="#">FAQ</a>
+            <a href="#">Contact</a>
+            <a href="http://127.0.0.1:5500/public/login.html">Login</a>
+        </div>
+
+        <script>
+            const btn = document.getElementById('menu-btn');
+            const menu = document.getElementById('mobile-menu');
+
+            btn.addEventListener('click', () => {
+                if (menu.classList.contains('show')) {
+                    menu.classList.remove('show');
+                    menu.classList.add('hide');
+                    setTimeout(() => {
+                        menu.classList.remove('hide');
+                        menu.style.display = 'none'; // Hide the menu after the animation
+                    }, 300); // Match this duration with the CSS transition duration
+                } else {
+                    menu.style.display = 'flex'; // Show the menu
+                    setTimeout(() => {
+                        menu.classList.add('show'); // Add the show class after setting display
+                    }, 10); // Small timeout to allow display to take effect
+                }
+            });
+        </script>
+
+
+
+        <div id="product-container">
+            <!-- TEMPLATE item: DO NOT REMOVE, JUST HIDE -->
+            <div class="item" id="template-item" style="display: none;">
+                <img src="" class="img-fluid" itemId="">
+                <h3 class="title"></h3>
+                <span id="dis" class="discount"></span>
+                <p class="prices"></p>
+
+                <div class="actions">
+                    <form class="pay-form">
+                        <input type="hidden" name="name" value="">
+                        <input type="hidden" name="amount" value="">
+                        <input type="hidden" name="description" value="">
+                        <input type="submit" class="buy-btn" value="">
+                    </form>
+                    <button class="add-to-cart-btn" id="view_link" onclick="window.open('')">View</button>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+
+
+
+
+
+
+            /* Adding Ice Cracks Overlay */
+            body::after {
+                content: "";
+                position: absolute;
+                width: 100%;
+                height: 100%;
+
+                /* Ice cracks effect */
+                opacity: 0.2;
+                z-index: -1;
+                top: 0;
+                left: 0;
+            }
+
+            /* Shimmering Glacier Effect */
+            @keyframes glacierShine {
+                0% {
+                    background-position: 0% 50%;
+                }
+
+                100% {
+                    background-position: 100% 50%;
+                }
+            }
+
+            body {
+                background-size: 200% 200%;
+                animation: glacierShine 5s infinite alternate ease-in-out;
+            }
+
+
+            .product-section {
+                text-align: center;
+                padding: 30px;
+                width: 100%;
+                height: auto;
+                /* Allow flexible height */
+                max-height: fit-content;
+                position: relative;
+                background-attachment: fixed;
+                background-color: rgb(255, 255, 255);
+                /* Frosted glass effect */
+
+                backdrop-filter: blur(10px);
+
+                /* Subtle shadow */
+
+                color: #000000;
+                margin: 0 auto;
+                margin-bottom: 20px;
+                /* Center alignment */
+                transition: all 0.3s ease;
+                display: flex;
+                flex-direction: row;
+                /* Smooth hover effect */
+
+            }
+
+
+            .product-section h3 {
+                font-size: 1.2rem;
+                margin-bottom: 1rem;
+                font-family: Montserrat Bold;
+                margin-bottom: -5px;
+            }
+
+
+            .product-section .description h2 {
+                font-size: 1.8rem;
+                color: #4e4e8a;
+                margin-bottom: 0.5rem;
+            }
+
+            .product-section .description p {
+                color: hsl(0, 21%, 19%);
+                margin-bottom: 2rem;
+            }
+
+            /* Products Layout */
+            .products {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 2.5rem;
+
+            }
+
+            /* Product Item */
+            .item {
+                width: 250px;
+
+                text-align: center;
+                padding: 1rem;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(202, 189, 221, 0.5));
+                transition: transform 0.3s ease-in-out;
+                border-radius: 10px;
+                box-shadow: 0 8px 6px 6px rgba(0, 0, 0, 0.2);
+
+            }
+
+            .item:hover {
+                transform: scale(1.05);
+            }
+
+            .item img {
+                width: 100%;
+                height: 200px;
+                object-fit: cover;
+                border-radius: 8px;
+            }
+
+            /* Product Details */
+            .product-title {
+                font-size: -1.1rem;
+                color: #333;
+                font-family: Montserrat bold;
+                margin-bottom: -30px;
+                font-weight: 100px;
+            }
+
+            .prices {
+                font-size: 1.2rem;
+                color: #fc0000;
+                font-weight: bold;
+                position: relative;
+                margin-bottom: -13px;
+                margin-top: -20px;
+            }
+
+
+            .price {
+                text-decoration: line-through;
+                margin-bottom: -13px;
+                display: none;
+            }
+
+
+
+
+            .description {
+                font-size: 0.9rem;
+                color: #777;
+                margin: 0.0rem 0;
+
+            }
+
+            .total-price {
+                font-weight: bold;
+                color: #4e4e8a;
+            }
+
+            /* Product Actions */
+            .actions {
+                display: flex;
+                justify-content: space-between;
+                gap: 0.5rem;
+                margin-top: 1rem;
+            }
+
+            .buy-btn,
+            .add-to-cart-btn {
+                padding: 0.5rem 1rem;
+                font-size: 1rem;
+                font-weight: bold;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                color: #ffffff;
+                ;
+                background: linear-gradient(135deg, #b197bc, #2c3158);
+                font-family: 'Times New Roman', Times, serif;
+            }
+
+            .buy-btn {
+                background-color: #B6B09F;
+            }
+
+            .buy-btn:hover {
+                background-color: #ff0707;
+            }
+
+            .add-to-cart-btn {
+                background-color: #B6B09F
+            }
+
+            .add-to-cart-btn:hover {
+                background-color: #11ee3a;
+            }
+        </style> <!-- Product listing and payment handling moved to payment.js -->
+        <script src="payment.js"></script>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- ✅ Then your Razorpay script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="payment.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+</html>
