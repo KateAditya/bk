@@ -132,10 +132,6 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Environment Check for Razorpay keys
-if (!process.env.RAZORPAY_ID_KEY || !process.env.RAZORPAY_SECRET_KEY) {
-  console.error("❌ Missing Razorpay API keys. Set them in .env");
-  process.exit(1);
-}
 
 // File upload configuration
 const storage = multer.diskStorage({
