@@ -12,6 +12,7 @@ const MySQLStore = require("express-mysql-session")(session);
 const db = require("./db");
 const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
+const bcrypt = require("bcrypt");
 
 // Initialize Express app
 const app = express();
@@ -124,6 +125,22 @@ app.use(
   })
 );
 
+async function createAdminUser(username, plainPassword) {
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
+
+  // Save username and hashedPassword to your admin table
+  await db.query("INSERT INTO admin (username, password) VALUES (?, ?)", [
+    username,
+    hashedPassword,
+  ]);
+
+  console.log("Admin user created:", username);
+}
+
+// Example usage:
+createAdminUser("GauriS", "Mahakal@220501").catch(console.error);
+
 // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -149,54 +166,12 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 
-// Admin authentication credentials
-const adminUser = {
-  username: "GauriS",
-  password: "Mahakal@220501",
-};
-
 // ==================== ROUTE HANDLERS ====================
 
 // Public routes
 // app.get("/", (req, res) => {
 //   res.sendFile(path.join(__dirname, "public", "index.html"));
 // });
-
-document.addEventListener("DOMContentLoaded", function () {
-  const loginForm = document.getElementById("loginForm");
-  const errorMessage = document.getElementById("errorMessage");
-
-  loginForm.addEventListener("submit", function (e) {
-    e.preventDefault();
-
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    // Show error message div when needed
-    errorMessage.style.display = "block";
-
-    fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ username, password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          window.location.href = "/dashboard.html";
-        } else {
-          errorMessage.textContent =
-            data.message || "Login failed. Please check your credentials.";
-        }
-      })
-      .catch((error) => {
-        errorMessage.textContent = "An error occurred. Please try again later.";
-        console.error("Login error:", error);
-      });
-  });
-});
 
 app.get("/", (req, res) => {
   res.send("hello");
@@ -226,10 +201,30 @@ app.use("/api/products", (req, res, next) => {
 });
 
 // Authentication endpoints
-app.post("/api/login", (req, res) => {
+app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
-  if (username === adminUser.username && password === adminUser.password) {
+  try {
+    const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [
+      username,
+    ]);
+
+    if (rows.length === 0) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+
+    const adminUser = rows[0];
+
+    const isMatch = await bcrypt.compare(password, adminUser.password);
+
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ success: false, message: "Invalid credentials" });
+    }
+
     req.session.isAuthenticated = true;
     req.session.user = { username };
 
@@ -242,8 +237,9 @@ app.post("/api/login", (req, res) => {
       }
       res.json({ success: true });
     });
-  } else {
-    res.status(401).json({ success: false, message: "Invalid credentials" });
+  } catch (error) {
+    console.error("Login error:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 });
 
