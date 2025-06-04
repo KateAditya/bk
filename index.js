@@ -12,7 +12,7 @@ const MySQLStore = require("express-mysql-session")(session);
 const db = require("./db");
 const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 
 // Initialize Express app
 const app = express();
