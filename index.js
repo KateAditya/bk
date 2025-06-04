@@ -12,12 +12,7 @@ const MySQLStore = require("express-mysql-session")(session);
 const db = require("./db");
 const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
-const bcrypt = require("bcryptjs");
 
-const hashedPassword = bcrypt.hashSync("Mahakal@220501", 15);
-console.log(hashedPassword);
-
-// Initialize Express app
 const app = express();
 
 // Common Middleware
@@ -192,9 +187,10 @@ app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [
-      username,
-    ]);
+    const [rows] = await db.query(
+      "SELECT * FROM admin WHERE username = ? AND password = ?",
+      [username, password]
+    );
 
     if (rows.length === 0) {
       return res
@@ -203,13 +199,6 @@ app.post("/api/login", async (req, res) => {
     }
 
     const adminUser = rows[0];
-    const isValidPassword = await bcrypt.compare(password, adminUser.password);
-
-    if (!isValidPassword) {
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
-    }
 
     req.session.isAuthenticated = true;
     req.session.user = {
