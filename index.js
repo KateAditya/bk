@@ -125,22 +125,6 @@ app.use(
   })
 );
 
-async function createAdminUser(username, plainPassword) {
-  const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(plainPassword, saltRounds);
-
-  // Save username and hashedPassword to your admin table
-  await db.query("INSERT INTO admin (username, password) VALUES (?, ?)", [
-    username,
-    hashedPassword,
-  ]);
-
-  console.log("Admin user created:", username);
-}
-
-// Example usage:
-createAdminUser("GauriS", "Mahakal@220501").catch(console.error);
-
 // Rate Limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -205,6 +189,7 @@ app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
+    // Fetch admin record by username
     const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [
       username,
     ]);
@@ -217,14 +202,14 @@ app.post("/api/login", async (req, res) => {
 
     const adminUser = rows[0];
 
-    const isMatch = await bcrypt.compare(password, adminUser.password);
-
-    if (!isMatch) {
+    // Compare plain text passwords (NOT SECURE for production use)
+    if (password !== adminUser.password) {
       return res
         .status(401)
         .json({ success: false, message: "Invalid credentials" });
     }
 
+    // If match, start session
     req.session.isAuthenticated = true;
     req.session.user = { username };
 
