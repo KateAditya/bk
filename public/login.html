@@ -68,14 +68,13 @@
     <div class="login-container">
         <h2>Admin Login</h2>
         <form id="loginForm">
-            <input id="username" placeholder="Username" autocomplete="off" required>
-            <input id="password" type="password" placeholder="Password" required>
+            <input type="text" id="username" name="username" placeholder="Username" autocomplete="off" required>
+            <input type="password" id="password" name="password" placeholder="Password" required>
             <div id="errorMessage" class="error-message"></div>
             <button type="submit">Login</button>
         </form>
     </div>
-
+    <script src="/login.js"></script>
 </body>
-<script src="/public/login.js"></script>
 
 </html>

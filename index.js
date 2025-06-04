@@ -186,13 +186,18 @@ app.use("/api/products", (req, res, next) => {
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
+  console.log("Login attempt:", { username, password }); // Add logging
+
   try {
     const [rows] = await db.query(
       "SELECT * FROM admin WHERE username = ? AND password = ?",
       [username, password]
     );
 
+    console.log("Query result:", rows); // Add logging
+
     if (rows.length === 0) {
+      console.log("No matching credentials found"); // Add logging
       return res
         .status(401)
         .json({ success: false, message: "Invalid credentials" });
