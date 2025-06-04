@@ -14,6 +14,9 @@ const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
 const bcrypt = require("bcryptjs");
 
+const hashedPassword = bcrypt.hashSync("Mahakal@220501", 15);
+console.log(hashedPassword);
+
 // Initialize Express app
 const app = express();
 
