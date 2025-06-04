@@ -185,25 +185,39 @@ app.use("/api/products", (req, res, next) => {
 // Authentication endpoints
 app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
+  console.log("Login attempt received:", { username, password });
 
-  console.log("Login attempt:", { username, password }); // Add logging
+  if (!username || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Username and password are required",
+    });
+  }
 
   try {
+    // First, let's log the SQL query for debugging
+    console.log(
+      "Executing SQL: SELECT * FROM admin WHERE username = ? AND password = ?"
+    );
+    console.log("Values:", [username, password]);
+
     const [rows] = await db.query(
       "SELECT * FROM admin WHERE username = ? AND password = ?",
       [username, password]
     );
 
-    console.log("Query result:", rows); // Add logging
+    console.log("Database response:", rows);
 
     if (rows.length === 0) {
-      console.log("No matching credentials found"); // Add logging
-      return res
-        .status(401)
-        .json({ success: false, message: "Invalid credentials" });
+      console.log("No matching admin found");
+      return res.status(401).json({
+        success: false,
+        message: "Invalid credentials",
+      });
     }
 
     const adminUser = rows[0];
+    console.log("Admin user found:", adminUser);
 
     req.session.isAuthenticated = true;
     req.session.user = {
@@ -214,10 +228,12 @@ app.post("/api/login", async (req, res) => {
     req.session.save((err) => {
       if (err) {
         console.error("Session save error:", err);
-        return res
-          .status(500)
-          .json({ success: false, message: "Login failed" });
+        return res.status(500).json({
+          success: false,
+          message: "Login failed",
+        });
       }
+      console.log("Session saved successfully");
       res.json({
         success: true,
         user: { username: adminUser.username },
@@ -225,7 +241,10 @@ app.post("/api/login", async (req, res) => {
     });
   } catch (error) {
     console.error("Login error:", error);
-    res.status(500).json({ success: false, message: "Internal server error" });
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 });
 
