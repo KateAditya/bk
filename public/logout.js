@@ -32,4 +32,33 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Login error:", error);
       });
   });
+
+  function logout() {
+    fetch("/api/logout", {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          window.location.href = "/login";
+        } else {
+          console.error("Logout failed:", data.message);
+          alert("Logout failed: " + data.message);
+        }
+      })
+      .catch((error) => {
+        console.error("Logout error:", error);
+        alert("Logout failed: " + error.message);
+      });
+  }
+
+  // Add click handler to logout button if it exists
+  const logoutButton = document.getElementById("logoutButton");
+  if (logoutButton) {
+    logoutButton.addEventListener("click", logout);
+  }
 });

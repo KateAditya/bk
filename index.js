@@ -189,7 +189,6 @@ app.post("/api/login", async (req, res) => {
   const { username, password } = req.body;
 
   try {
-    // Fetch admin record by username
     const [rows] = await db.query("SELECT * FROM admin WHERE username = ?", [
       username,
     ]);
@@ -201,17 +200,19 @@ app.post("/api/login", async (req, res) => {
     }
 
     const adminUser = rows[0];
+    const isValidPassword = await bcrypt.compare(password, adminUser.password);
 
-    // Compare plain text passwords (NOT SECURE for production use)
-    if (password !== adminUser.password) {
+    if (!isValidPassword) {
       return res
         .status(401)
         .json({ success: false, message: "Invalid credentials" });
     }
 
-    // If match, start session
     req.session.isAuthenticated = true;
-    req.session.user = { username };
+    req.session.user = {
+      id: adminUser.id,
+      username: adminUser.username,
+    };
 
     req.session.save((err) => {
       if (err) {
@@ -220,7 +221,10 @@ app.post("/api/login", async (req, res) => {
           .status(500)
           .json({ success: false, message: "Login failed" });
       }
-      res.json({ success: true });
+      res.json({
+        success: true,
+        user: { username: adminUser.username },
+      });
     });
   } catch (error) {
     console.error("Login error:", error);
@@ -229,19 +233,14 @@ app.post("/api/login", async (req, res) => {
 });
 
 app.post("/api/logout", (req, res) => {
-  if (req.session) {
-    sessionStore.clearActiveSession();
-    req.session.destroy((err) => {
-      if (err) {
-        return res
-          .status(500)
-          .json({ success: false, message: "Logout failed" });
-      }
-      res.json({ success: true, message: "Logged out successfully" });
-    });
-  } else {
-    res.json({ success: true, message: "Already logged out" });
-  }
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+      return res.status(500).json({ success: false, message: "Logout failed" });
+    }
+    res.clearCookie("sessionId");
+    res.json({ success: true, message: "Logged out successfully" });
+  });
 });
 
 // ==================== PRODUCT ROUTES ====================
