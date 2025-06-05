@@ -104,36 +104,29 @@ const upload = multer({ storage: storage });
 // ==================== ROUTE HANDLERS ====================
 
 // Public routes
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "index.html"));
-// });
-
-app.get("/", (req, res) => {
-  res.send("hello");
-});
-
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
-// Protected routes and pages
-app.get("/admin.html", checkAuth, (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "admin.html"));
+app.get("/login", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
-app.get("/dashboard.html", checkAuth, (req, res) => {
+app.get("/login.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+
+// Protected routes
+app.get(["/dashboard", "/dashboard.html"], checkAuth, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-app.use("/admin", checkAuth, adminRoutes);
-
-// Protect product modification routes but keep GET public
-app.use("/api/products", (req, res, next) => {
-  if (req.method !== "GET") {
-    return checkAuth(req, res, next);
-  }
-  next();
+app.get(["/admin", "/admin.html"], checkAuth, (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "admin.html"));
 });
+
+app.use(express.static(path.join(__dirname, "public")));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Authentication endpoints
 app.post("/api/login", (req, res) => {

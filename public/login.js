@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById("loginForm");
   const errorMessage = document.getElementById("errorMessage");
 
-  // Get base API URL based on environment
+  // Get base URL from current location
   const baseUrl = window.location.origin;
 
   loginForm.addEventListener("submit", async function (e) {
@@ -23,10 +23,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }),
       });
 
-      const data = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Login failed");
+      }
 
-      if (response.ok && data.success) {
-        window.location.href = data.redirectUrl || "/dashboard.html";
+      const data = await response.json();
+      if (data.success) {
+        window.location.href = `${baseUrl}${data.redirectUrl}`;
       } else {
         throw new Error(data.message || "Login failed");
       }
@@ -34,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
       errorMessage.style.display = "block";
       errorMessage.textContent =
         error.message || "An error occurred during login";
+      console.error("Login error:", error);
     }
   });
 });
