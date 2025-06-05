@@ -37,17 +37,14 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch("/api/logout", {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: { "Content-Type": "application/json" },
     })
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          window.location.href = "/login";
+          window.location.href = "/public/login.html";
         } else {
-          console.error("Logout failed:", data.message);
-          alert("Logout failed: " + data.message);
+          throw new Error(data.message);
         }
       })
       .catch((error) => {
@@ -56,7 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Add click handler to logout button if it exists
   const logoutButton = document.getElementById("logoutButton");
   if (logoutButton) {
     logoutButton.addEventListener("click", logout);

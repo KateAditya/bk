@@ -2,44 +2,32 @@ document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById("loginForm");
   const errorMessage = document.getElementById("errorMessage");
 
-  loginForm.addEventListener("submit", function (e) {
+  loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
+    errorMessage.style.display = "none";
 
-    const username = document.getElementById("username").value;
-    const password = document.getElementById("password").value;
-
-    // Show error message div when needed
-    if (errorMessage) {
-      errorMessage.style.display = "none";
-    }
-
-    fetch("/api/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include", // Add this line
-      body: JSON.stringify({ username, password }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        if (data.success) {
-          window.location.href = "/dashboard.html";
-        } else {
-          if (errorMessage) {
-            errorMessage.style.display = "block";
-            errorMessage.textContent =
-              data.message || "Login failed. Please check your credentials.";
-          }
-        }
-      })
-      .catch((error) => {
-        if (errorMessage) {
-          errorMessage.style.display = "block";
-          errorMessage.textContent =
-            "An error occurred. Please try again later.";
-        }
-        console.error("Login error:", error);
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value,
+        }),
       });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        window.location.href = data.redirectUrl || "/dashboard.html";
+      } else {
+        throw new Error(data.message || "Login failed");
+      }
+    } catch (error) {
+      errorMessage.style.display = "block";
+      errorMessage.textContent =
+        error.message || "An error occurred during login";
+    }
   });
 });

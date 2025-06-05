@@ -1,9 +1,6 @@
 require("dotenv").config();
 const express = require("express");
-const rateLimit = require("express-rate-limit");
 const cors = require("cors");
-const helmet = require("helmet");
-const morgan = require("morgan");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
@@ -15,37 +12,26 @@ const adminRoutes = require("./adminRoutes");
 
 const app = express();
 
-// Common Middleware
+// Update CORS configuration
 app.use(
   cors({
-    origin: function (origin, callback) {
-      const allowedOrigins = [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://127.0.0.1:5500",
-        "http://localhost:5500",
-        "http://127.0.0.1:3000",
-        "http://127.0.0.1:3001",
-      ];
-
-      // Allow requests with no origin (like mobile apps or curl requests)
-      if (!origin) return callback(null, true);
-
-      if (
-        allowedOrigins.indexOf(origin) !== -1 ||
-        origin.startsWith("http://localhost:")
-      ) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
+    origin: [
+      "http://127.0.0.1:5500",
+      "http://localhost:5500",
+      "http://localhost:3000",
+    ],
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "Accept", "Cookie"],
-    exposedHeaders: ["set-cookie"],
+    allowedHeaders: ["Content-Type", "Authorization", "Accept"],
   })
 );
+
+// Remove the custom CORS middleware and replace with this
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header("Access-Control-Allow-Credentials", "true");
+  next();
+});
 
 // Configure static file serving
 app.use(
@@ -61,40 +47,6 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
-
-// Configure Helmet with custom CSP
-app.use(
-  helmet({
-    contentSecurityPolicy: {
-      directives: {
-        defaultSrc: ["'self'"],
-        scriptSrc: [
-          "'self'",
-          "'unsafe-inline'",
-          "'unsafe-eval'",
-          "https:",
-          "http:",
-        ],
-        styleSrc: ["'self'", "'unsafe-inline'", "https:", "http:"],
-        imgSrc: ["'self'", "data:", "https:", "http:"],
-        connectSrc: ["'self'", "https:", "http:"],
-        fontSrc: ["'self'", "https:", "data:", "http:"],
-        mediaSrc: ["'self'", "https:", "http:"],
-        objectSrc: ["'none'"],
-        frameSrc: ["'self'", "https:", "http:"],
-      },
-    },
-    crossOriginEmbedderPolicy: false,
-    crossOriginResourcePolicy: { policy: "cross-origin" },
-    crossOriginOpenerPolicy: false,
-  })
-);
-
-app.use(morgan("combined"));
-
-// Static file serving
-app.use(express.static("public"));
-app.use("/uploads", express.static("uploads"));
 
 // Session Management
 const options = {
@@ -122,13 +74,6 @@ app.use(
     name: "sessionId",
   })
 );
-
-// Rate Limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100,
-});
-app.use(limiter);
 
 // Environment Check for Razorpay keys
 
@@ -159,7 +104,7 @@ app.get("/", (req, res) => {
   res.send("hello");
 });
 
-app.get("/login", (req, res) => {
+app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "login.html"));
 });
 
@@ -183,47 +128,16 @@ app.use("/api/products", (req, res, next) => {
 });
 
 // Authentication endpoints
-app.post("/api/login", async (req, res) => {
+app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
-  console.log("Login attempt received:", { username, password });
+  console.log("Login attempt:", { username });
 
-  if (!username || !password) {
-    return res.status(400).json({
-      success: false,
-      message: "Username and password are required",
-    });
-  }
-
-  try {
-    // First, let's log the SQL query for debugging
-    console.log(
-      "Executing SQL: SELECT * FROM admin WHERE username = ? AND password = ?"
-    );
-    console.log("Values:", [username, password]);
-
-    const [rows] = await db.query(
-      "SELECT * FROM admin WHERE username = ? AND password = ?",
-      [username, password]
-    );
-
-    console.log("Database response:", rows);
-
-    if (rows.length === 0) {
-      console.log("No matching admin found");
-      return res.status(401).json({
-        success: false,
-        message: "Invalid credentials",
-      });
-    }
-
-    const adminUser = rows[0];
-    console.log("Admin user found:", adminUser);
-
+  if (
+    username === process.env.ADMIN_USERNAME &&
+    password === process.env.ADMIN_PASSWORD
+  ) {
     req.session.isAuthenticated = true;
-    req.session.user = {
-      id: adminUser.id,
-      username: adminUser.username,
-    };
+    req.session.user = { username };
 
     req.session.save((err) => {
       if (err) {
@@ -233,30 +147,36 @@ app.post("/api/login", async (req, res) => {
           message: "Login failed",
         });
       }
-      console.log("Session saved successfully");
       res.json({
         success: true,
-        user: { username: adminUser.username },
+        message: "Login successful",
+        redirectUrl: "/dashboard.html",
       });
     });
-  } catch (error) {
-    console.error("Login error:", error);
-    res.status(500).json({
+  } else {
+    res.status(401).json({
       success: false,
-      message: "Internal server error",
+      message: "Invalid credentials",
     });
   }
 });
 
 app.post("/api/logout", (req, res) => {
   req.session.destroy((err) => {
-    if (err) {
-      console.error("Logout error:", err);
+    if (err)
       return res.status(500).json({ success: false, message: "Logout failed" });
-    }
-    res.clearCookie("sessionId");
+    res.clearCookie("connect.sid");
     res.json({ success: true, message: "Logged out successfully" });
   });
+});
+
+// Protected Route (Optional)
+app.get("/api/profile", (req, res) => {
+  if (req.session.isAuthenticated) {
+    res.json({ user: req.session.username });
+  } else {
+    res.status(401).json({ message: "Unauthorized" });
+  }
 });
 
 // ==================== PRODUCT ROUTES ====================
