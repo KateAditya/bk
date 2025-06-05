@@ -5,7 +5,10 @@
       "use": "@vercel/node" }
   ],
   "routes": [
-    { "src": "/api/.*", "dest": "/index.js" },
-    { "src": "/(.*)", "dest": "/public/" }
-  ]
+    { "src": "/api/(.*)", "dest": "/index.js" },
+    { "src": "/(.*)", "dest": "/index.js" }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
