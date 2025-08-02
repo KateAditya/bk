@@ -12,6 +12,32 @@
             "name": "asd",
             "database": "album_store",
             "username": "root"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "database": "sql12783299",
+            "username": "sql12783299",
+            "name": "newdb"
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "dream",
+            "database": "defaultdb",
+            "username": "avnadmin"
         }
     ]
 }

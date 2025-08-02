@@ -4,15 +4,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Product List</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <title>Dream Stories</title>
+    <!-- Favicon -->
+    <link rel="icon" href="images/MY-LOGO-DREAM-STORIES.jpg">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
 
-    <!-- ✅ Then your Razorpay script -->
+    <!-- Remove these problematic CSS files -->
+
+    <link rel="stylesheet" href="loader.css">
+
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/css/OverlayScrollbars.min.css">
+    <link href="https://unpkg.com/tailwindcss@^2.1/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-
-    <!-- SweetAlert2 CDN -->
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/js/jquery.overlayScrollbars.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZBTRFE7EH"></script>
+
+
+
+
 
 </head>
 
@@ -27,12 +50,24 @@
             align-items: center;
             padding: 16px 32px;
             border-bottom: 1px solid #e5e5e5;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            background-color: white;
+            /* Add background color to prevent content showing through */
+            z-index: 1000;
+            /* Ensure navbar stays on top of other elements */
+            box-sizing: border-box;
+            /* Include padding in width calculation */
         }
 
         .logo {
             display: flex;
             flex-direction: column;
             align-items: flex-start;
+            margin-left: 30px;
         }
 
         .logo h1 {
@@ -50,6 +85,7 @@
         .menu {
             display: flex;
             gap: 16px;
+            margin-right: 20px;
         }
 
         .menu a {
@@ -93,6 +129,7 @@
             /* Start slightly above */
             transition: opacity 0.3s ease, transform 0.3s ease;
             /* Smooth transition for menu */
+            margin-top: 100px;
         }
 
         .mobile-menu.show {
@@ -139,17 +176,17 @@
     <body>
         <nav>
             <div class="logo">
-                <h1>GFX RONIN</h1>
-                <p>MR. RAHUL GADE</p>
+                <h1>DREAM STORIES</h1>
+                <p>GRAPHICS DESIGN</p>
             </div>
 
             <!-- Desktop Menu -->
             <div class="menu">
-                <a href="#">Shop</a>
-                <a href="#" style="font-weight: bold;">About</a>
-                <a href="#">FAQ</a>
-                <a href="#">Contact</a>
-                <a href="/public/login.html">Login</a>
+                <a href="/about.html">About</a>
+                <a href="/index.html" style="font-weight: bold;">Shop</a>
+                <a href="/razorpay.html">FAQ</a>
+                <a href="/contact.html">Contact</a>
+                <a href="/login.html">Admin</a>
             </div>
 
             <!-- Hamburger Button for Mobile -->
@@ -162,11 +199,11 @@
 
         <!-- Mobile Menu (hidden by default) -->
         <div class="mobile-menu" id="mobile-menu">
-            <a href="#">Shop</a>
-            <a href="#" style="font-weight: bold;">About</a>
-            <a href="#">FAQ</a>
-            <a href="#">Contact</a>
-            <a href="http://127.0.0.1:5500/public/login.html">Login</a>
+            <a href="/about.html">About</a>
+            <a href="/index.html" style="font-weight: bold;">Shop</a>
+            <a href="/razorpay.html">FAQ</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/login.html">Admin</a>
         </div>
 
         <script>
@@ -191,231 +228,217 @@
         </script>
 
 
+        <section class="product-section">
+            <div id="product-container" class="products">
 
-        <div id="product-container">
-            <!-- TEMPLATE item: DO NOT REMOVE, JUST HIDE -->
-            <div class="item" id="template-item" style="display: none;">
-                <img src="" class="img-fluid" itemId="">
-                <h3 class="title"></h3>
-                <span id="dis" class="discount"></span>
-                <p class="prices"></p>
-
-                <div class="actions">
-                    <form class="pay-form">
-                        <input type="hidden" name="name" value="">
-                        <input type="hidden" name="amount" value="">
-                        <input type="hidden" name="description" value="">
-                        <input type="submit" class="buy-btn" value="">
-                    </form>
-                    <button class="add-to-cart-btn" id="view_link" onclick="window.open('')">View</button>
-                </div>
             </div>
-        </div>
-
-        <style>
-            @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
+        </section>
 
 
+        <footer>
+            <h2>Dream Stories</h2>
+            <p>PHONE: <a href="tel:+919404256771">+91 9404256771</a> | EMAIL: <a
+                    href="mailto:dreamstories77@gmail.com">dreamstories77@gmail.com</a></p>
+            <div class="social-media">
+                <a href="https://www.instagram.com/dream_stories_graphics/?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D#"
+                    class="social-icon" id="instagram" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.facebook.com/rahul.gade.1271?mibextid=LQQJ4d" class="social-icon" id="facebook"
+                    aria-label="Facebook">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="https://www.youtube.com/@dreamstoriesgraphics" class="social-icon" id="youtube"
+                    aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+                <a href="https://wa.me/+919404256771" class="social-icon" id="whatsapp" aria-label="WhatsApp">
+                    <i class="fab fa-whatsapp"></i>
+                </a>
+            </div>
+            <p style="position: relative ; top: 30px;"> © Copyright 2025 Designed By-DreamStrories</p>
+        </footer>
 
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const productContainer = document.getElementById('product-container');
 
+                function loadProducts() {
+                    productContainer.innerHTML = '<div>Loading products...</div>';
 
+                    fetch('/api/public/products')
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(products => {
+                            if (products.length === 0) {
+                                productContainer.innerHTML = '<p>No products available.</p>';
+                                return;
+                            }
 
-            /* Adding Ice Cracks Overlay */
-            body::after {
-                content: "";
-                position: absolute;
-                width: 100%;
-                height: 100%;
-
-                /* Ice cracks effect */
-                opacity: 0.2;
-                z-index: -1;
-                top: 0;
-                left: 0;
-            }
-
-            /* Shimmering Glacier Effect */
-            @keyframes glacierShine {
-                0% {
-                    background-position: 0% 50%;
+                            productContainer.innerHTML = products.map(product => `
+                                <div class="item">
+                                    <img src="${product.image_url}" class="img-fluid" alt="${product.title}">
+                                    <h3>${product.title}</h3>
+                                    <span class="discount">${product.discount}</span>
+                                    <p class="prices">₹${product.price}</p>
+                                    <div class="actions">
+                                        <button class="buy-btn" 
+                                            data-price="${product.price}"
+                                            data-title="${product.title}"
+                                            data-link="${product.view_link}"
+                                            onclick="handlePayment(this)">Pay Now</button>
+                                        <button class="add-to-cart-btn" onclick="window.open('${product.view_link}')">View</button>
+                                    </div>
+                                </div>
+                            `).join('');
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            productContainer.innerHTML = `
+                                <div style="text-align: center; padding: 20px;">
+                                    <p>Failed to load products.</p>
+                                    <button onclick="loadProducts()" style="margin-top: 10px;">Try Again</button>
+                                </div>`;
+                        });
                 }
 
-                100% {
-                    background-position: 100% 50%;
+                loadProducts();
+            });
+        </script>
+
+        <!-- Product listing and payment handling moved to payment.js -->
+
+
+        <script>
+
+            function handlePayment(button) {
+                // Function to detect mobile devices
+                function isMobileDevice() {
+                    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                        window.innerWidth <= 768;
                 }
+
+                // Block payment on mobile devices
+                if (isMobileDevice()) {
+                    Swal.fire({
+                        title: 'Mobile Device Detected / मोबाईल डिव्हाइस आढळले- PC/Laptop वापरा',
+                        html: `
+                 <div style="text-align: left; font-size: 14px; color: red;">
+                    <p><strong>सूचना:</strong><br>
+                    (1).PRODUCT डाउनलोड करण्यासाठी PC/Laptop वापरा </br>
+                    (2).पेमेंट (QR) स्कॅन करण्यासाठी मोबाईल वापरा</p>
+                    <p><strong>NOTICE:</strong><br>
+                    (1).Use PC/Laptop to download the product  </br>
+                    (2).Use mobile to scan payment QR code</p>
+                </div>
+            `,
+                        icon: 'info',
+                        confirmButtonText: 'OK',
+                        confirmButtonColor: '#2300a3'
+                    });
+                    return; // Exit the function
+                }
+
+                const price = button.dataset.price;
+                const title = button.dataset.title;
+                const link = button.dataset.link;
+
+                const options = {
+                    amount: price,
+                    name: title,
+                    description: `Purchase ${title}`,
+                    link: link
+                };
+
+                // Show loading indicator
+                Swal.fire({
+                    title: 'Processing...',
+                    text: 'Initiating payment',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+
+                // Create payment order
+                fetch('/createOrder', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(options)
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        Swal.close();
+                        if (data.success) {
+                            const razorpayOptions = {
+                                key: data.key_id,
+                                amount: data.amount,
+                                currency: "INR",
+                                name: "Dream Stories",
+                                description: data.description,
+                                order_id: data.order_id,
+                                handler: function (response) {
+                                    Swal.fire({
+                                        title: 'Success!',
+                                        text: 'Payment completed successfully',
+                                        icon: 'success',
+                                        confirmButtonText: 'View Product'
+                                    }).then(() => {
+                                        window.open(data.product_link, '_blank');
+                                    });
+                                },
+                                prefill: {
+                                    name: data.name,
+                                    email: data.email,
+                                    contact: data.contact
+                                },
+                                theme: {
+                                    color: "#2300a3"
+                                }
+                            };
+                            const razorpay = new Razorpay(razorpayOptions);
+                            razorpay.open();
+                        } else {
+                            Swal.fire('Error', data.msg, 'error');
+                        }
+                    })
+                    .catch(error => {
+                        Swal.fire('Error', 'Failed to initiate payment', 'error');
+                        console.error('Payment error:', error);
+                    });
             }
-
-            body {
-                background-size: 200% 200%;
-                animation: glacierShine 5s infinite alternate ease-in-out;
-            }
+        </script>
 
 
-            .product-section {
-                text-align: center;
-                padding: 30px;
-                width: 100%;
-                height: auto;
-                /* Allow flexible height */
-                max-height: fit-content;
-                position: relative;
-                background-attachment: fixed;
-                background-color: rgb(255, 255, 255);
-                /* Frosted glass effect */
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
 
-                backdrop-filter: blur(10px);
+            gtag('config', 'G-KZBTRFE7EH');
+        </script>
 
-                /* Subtle shadow */
-
-                color: #000000;
-                margin: 0 auto;
-                margin-bottom: 20px;
-                /* Center alignment */
-                transition: all 0.3s ease;
-                display: flex;
-                flex-direction: row;
-                /* Smooth hover effect */
-
-            }
-
-
-            .product-section h3 {
-                font-size: 1.2rem;
-                margin-bottom: 1rem;
-                font-family: Montserrat Bold;
-                margin-bottom: -5px;
-            }
-
-
-            .product-section .description h2 {
-                font-size: 1.8rem;
-                color: #4e4e8a;
-                margin-bottom: 0.5rem;
-            }
-
-            .product-section .description p {
-                color: hsl(0, 21%, 19%);
-                margin-bottom: 2rem;
-            }
-
-            /* Products Layout */
-            .products {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                gap: 2.5rem;
-
-            }
-
-            /* Product Item */
-            .item {
-                width: 250px;
-
-                text-align: center;
-                padding: 1rem;
-                background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(202, 189, 221, 0.5));
-                transition: transform 0.3s ease-in-out;
-                border-radius: 10px;
-                box-shadow: 0 8px 6px 6px rgba(0, 0, 0, 0.2);
-
-            }
-
-            .item:hover {
-                transform: scale(1.05);
-            }
-
-            .item img {
-                width: 100%;
-                height: 200px;
-                object-fit: cover;
-                border-radius: 8px;
-            }
-
-            /* Product Details */
-            .product-title {
-                font-size: -1.1rem;
-                color: #333;
-                font-family: Montserrat bold;
-                margin-bottom: -30px;
-                font-weight: 100px;
-            }
-
-            .prices {
-                font-size: 1.2rem;
-                color: #fc0000;
-                font-weight: bold;
-                position: relative;
-                margin-bottom: -13px;
-                margin-top: -20px;
-            }
-
-
-            .price {
-                text-decoration: line-through;
-                margin-bottom: -13px;
-                display: none;
-            }
-
-
-
-
-            .description {
-                font-size: 0.9rem;
-                color: #777;
-                margin: 0.0rem 0;
-
-            }
-
-            .total-price {
-                font-weight: bold;
-                color: #4e4e8a;
-            }
-
-            /* Product Actions */
-            .actions {
-                display: flex;
-                justify-content: space-between;
-                gap: 0.5rem;
-                margin-top: 1rem;
-            }
-
-            .buy-btn,
-            .add-to-cart-btn {
-                padding: 0.5rem 1rem;
-                font-size: 1rem;
-                font-weight: bold;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-                color: #ffffff;
-                ;
-                background: linear-gradient(135deg, #b197bc, #2c3158);
-                font-family: 'Times New Roman', Times, serif;
-            }
-
-            .buy-btn {
-                background-color: #B6B09F;
-            }
-
-            .buy-btn:hover {
-                background-color: #ff0707;
-            }
-
-            .add-to-cart-btn {
-                background-color: #B6B09F
-            }
-
-            .add-to-cart-btn:hover {
-                background-color: #11ee3a;
-            }
-        </style> <!-- Product listing and payment handling moved to payment.js -->
-        <script src="payment.js"></script>
     </body>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- ✅ Then your Razorpay script -->
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="payment.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="./details.js"></script>
+    <script src="loading.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript"> emailjs.init('cpZ1TQaAFUFX5sE0Y') </script>
+    <script src="emailHandler.js"></script>
+    <script src="loader.js"></script>
+    <script src="submitbtn.js"></script>
+    <script src="script.js"></script>
+
 
 </html>

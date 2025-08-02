@@ -3,7 +3,7 @@
 
 <head>
     <title>Product Links Management</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
@@ -243,8 +243,9 @@
     <div id="toast" class="toast"></div>
     <script>
         function logout() {
-            fetch('/api/logout', {
+            fetch(`/api/logout`, {
                 method: 'POST',
+                credentials: 'include',
                 headers: { 'Content-Type': 'application/json' }
             })
                 .then(res => res.json())
@@ -252,13 +253,16 @@
                     if (data.success) {
                         window.location.href = '/login.html';
                     } else {
-                        showToast(data.message || 'Logout failed', true);
+                        alert(data.message || 'Logout failed');
                     }
                 })
                 .catch(err => {
-                    showToast('Logout failed: ' + err.message, true);
+                    console.error(err);
+                    alert('Logout failed: ' + err.message);
                 });
         }
+
+
 
         // DOM Elements
         const form = document.getElementById('addLinkForm');
@@ -289,25 +293,83 @@
 
         // Load product titles
         function loadProductTitles() {
-            fetch('http://localhost:3000/admin/product-titles')
-                .then(res => res.json())
-                .then(products => {
-                    productSelect.innerHTML = '<option value="">-- Select Existing Product --</option>';
-                    products.forEach(product => {
-                        const option = document.createElement('option');
-                        option.value = product.title;
-                        option.textContent = product.title;
-                        productSelect.appendChild(option);
-                    });
-                })
-                .catch(err => {
-                    showToast('Failed to load product titles: ' + err.message, true);
-                });
-        }        // Load product links
-        function loadProductLinks() {
-            fetch('http://localhost:3000/admin/product-links')
+            fetch('/admin/product-titles', {
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
                 .then(res => {
                     if (!res.ok) {
+                        throw new Error('Failed to fetch titles');
+                    }
+                    return res.json();
+                })
+                .then(products => {
+                    productSelect.innerHTML = '<option value="">-- Select Existing Product --</option>';
+                    if (Array.isArray(products)) {
+                        products.forEach(product => {
+                            if (product.title) {
+                                const option = document.createElement('option');
+                                option.value = product.title;
+                                option.textContent = product.title;
+                                productSelect.appendChild(option);
+                            }
+                        });
+                    }
+                })
+                .catch(err => {
+                    console.error('Error loading product titles:', err);
+                    showToast('Failed to load product titles: ' + err.message, true);
+                });
+        }
+
+
+        // Update the auth check function
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/check-auth', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'Cache-Control': 'no-cache'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok || !data.authenticated) {
+                    console.error('Auth check failed:', data.message);
+                    window.location.href = '/login.html';
+                    return false;
+                }
+
+                return true;
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = '/login.html';
+                return false;
+            }
+        }
+
+        // Update loadProductLinks function
+        function loadProductLinks() {
+            fetch('/admin/product-links', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                .then(async res => {
+                    if (!res.ok) {
+                        if (res.status === 401) {
+                            await checkAuth();
+                            return;
+                        }
                         throw new Error('Failed to fetch links');
                     }
                     return res.json();
@@ -329,25 +391,42 @@
                     linksArray.forEach((link, index) => {
                         const row = document.createElement('tr');
                         row.innerHTML = `
-                            <td>${link.id}</td>
-                            <td>${link.title}</td>
-                            <td>
-                                <a href="${link.download_link}" target="_blank">
-                                    ${link.download_link.substring(0, 50)}${link.download_link.length > 50 ? '...' : ''}
-                                </a>
-                            </td>
-                            <td class="actions">
-                                <button onclick="editLink(${index})" class="edit">Edit</button>
-                                <button onclick="deleteLink(${link.id})" class="danger">Delete</button>
-                            </td>
-                        `;
+                    <td>${link.id}</td>
+                    <td>${link.title}</td>
+                    <td>
+                        <a href="${link.download_link}" target="_blank">
+                            ${link.download_link.substring(0, 50)}${link.download_link.length > 50 ? '...' : ''}
+                        </a>
+                    </td>
+                    <td class="actions">
+                        <button onclick="editLink(${index})" class="edit">Edit</button>
+                        <button onclick="deleteLink(${link.id})" class="danger">Delete</button>
+                    </td>
+                `;
                         linksTableBody.appendChild(row);
                     });
                 })
                 .catch(err => {
+                    console.error('Error loading product links:', err);
                     showToast('Failed to load product links: ' + err.message, true);
                 });
         }
+
+        // Update DOMContentLoaded handler
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const isAuthenticated = await checkAuth();
+                if (isAuthenticated) {
+                    await Promise.all([
+                        loadProductLinks(),
+                        loadProductTitles()
+                    ]);
+                }
+            } catch (error) {
+                console.error('Initialization failed:', error);
+                showToast('Failed to initialize application', true);
+            }
+        });
 
         // Edit link
         function editLink(index) {
@@ -369,8 +448,15 @@
 
         // Delete link
         function deleteLink(id) {
-            if (!confirm('Are you sure you want to delete this link?')) return; fetch(`http://localhost:3000/admin/product-links/${id}`, {
-                method: 'DELETE'
+            if (!confirm('Are you sure you want to delete this link?')) return;
+
+            fetch(`/admin/product-links/${id}`, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
             })
                 .then(res => res.json())
                 .then(result => {
@@ -402,13 +488,17 @@
                 showToast('Please fill in all fields', true);
                 return;
             } const payload = { title, download_link: downloadLink };
-            const url = id ? `http://localhost:3000/admin/product-links/${id}` : 'http://localhost:3000/admin/product-links';
+            const url = id ? `/admin/product-links/${id}` : '/admin/product-links';
             const method = id ? 'PUT' : 'POST';
 
             try {
                 const response = await fetch(url, {
                     method,
-                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(payload)
                 });
 
@@ -447,9 +537,13 @@
                     throw new Error('Input must be a JSON object with title-link pairs');
                 }
 
-                fetch('http://localhost:3000/admin/product-links/bulk', {
+                fetch('/admin/product-links/bulk', {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
                     body: JSON.stringify(parsedData)
                 })
                     .then(res => res.json())
@@ -478,8 +572,75 @@
         });
 
     </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const loginForm = document.getElementById("loginForm");
+            const errorMessage = document.getElementById("errorMessage");
+
+            loginForm.addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+                // Show error message div when needed
+                errorMessage.style.display = "block";
+
+                fetch("/api/login", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ username, password }),
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            window.location.href = "/dashboard.html";
+                        } else {
+                            errorMessage.textContent =
+                                data.message || "Login failed. Please check your credentials.";
+                        }
+                    })
+                    .catch((error) => {
+                        errorMessage.textContent = "An error occurred. Please try again later.";
+                        console.error("Login error:", error);
+                    });
+            });
+
+            function logout() {
+                fetch("/api/logout", {
+                    method: "POST",
+                    credentials: "include",
+                    headers: { "Content-Type": "application/json" },
+                })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        if (data.success) {
+                            window.location.href = "/public/login.html";
+                        } else {
+                            throw new Error(data.message || "Logout failed");
+                        }
+                    })
+                    .catch((error) => {
+                        console.error("Logout error:", error);
+                        alert("Logout failed: " + error.message);
+                    });
+            }
+
+            // Optional: add event listener if logout button exists
+            const logoutButton = document.getElementById("logoutButton");
+            if (logoutButton) {
+                logoutButton.removeAttribute("onclick");
+                logoutButton.addEventListener("click", logout);
+            }
+        });
+
+    </script>
+
 </body>
 <!-- Update the script imports -->
-<script src="/public/logout.js"></script>
+
 
 </html>

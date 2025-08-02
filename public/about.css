@@ -1,0 +1,245 @@
+
+/* Mission Section */
+.mission-section {
+  text-align: center;
+  background-color: #fff8f0;
+  padding: 60px 20px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.mission-section:hover {
+  transform: scale(1.02);
+}
+
+.mission-section h2 {
+  font-size: 2.5rem;
+  color: #ff6b6b;
+  margin-bottom: 20px;
+}
+
+.mission-section p {
+  font-size: 1.1rem;
+  color: #333;
+  line-height: 1.6;
+}
+
+/* Process Section */
+.process-section {
+  background-color: #e8f5ff;
+  padding: 60px 20px;
+  border-radius: 12px;
+  margin-top: 40px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.process-section h2 {
+  font-size: 2.5rem;
+  color: #0073e6;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.process-section ul {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.process-section li {
+  font-size: 1.1rem;
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  background-color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.process-section li:hover {
+  background-color: #f0f8ff;
+}
+
+.process-section strong {
+  font-size: 1.2rem;
+  color: #0073e6;
+}
+
+/* About Section */
+.about-section {
+  display: flex;
+  align-items: center;
+  background-color: #fff;
+  padding: 60px 20px;
+  position: relative;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  top: 30px;
+}
+
+.about-section img {
+  width: 250px;
+  height: auto;
+  border-radius: 12px;
+  margin-right: 30px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease;
+  position: relative;
+  left: 270px;
+}
+
+.about-section img:hover {
+  transform: scale(1.05);
+}
+
+.about-content h2 {
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 20px;
+  align-items: center;
+  position: relative;
+  left: 370px;
+}
+
+.about-content p {
+  font-size: 1.1rem;
+  color: #555;
+  line-height: 1.6;
+  width: 29%;
+  position: relative;
+  left: 370px;
+}
+
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .about-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .about-section img {
+    margin: 0 auto 20px;
+  }
+
+  .process-section ul {
+    gap: 15px;
+  }
+}
+
+
+
+
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+
+  /* Center the button and adjust width for smaller screens */
+  button {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  /* Adjust container padding */
+  .container {
+    padding: 30px 15px;
+  }
+
+  /* Reduce text size in sections */
+  .mission-section h2,
+  .process-section h2,
+  .about-content h2 {
+    font-size: 2rem;
+  }
+
+  .mission-section p,
+  .process-section li,
+  .about-content p {
+    font-size: 1rem;
+  }
+
+  /* Stack about section items */
+  .about-section {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .about-section img {
+    margin: 0 auto 20px;
+    position: relative;
+    left: 0;
+  }
+
+  .about-content h2,
+  .about-content p {
+    position: relative;
+    left: 0;
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+
+  /* Reduce padding and margin for smaller screens */
+  .mission-section,
+  .process-section,
+  .about-section {
+    padding: 40px 15px;
+    margin-top: 30px;
+  }
+
+  /* Reduce the size of headings and text */
+  .mission-section h2,
+  .process-section h2,
+  .about-content h2 {
+    font-size: 1.8rem;
+  }
+
+  .mission-section p,
+  .process-section li,
+  .about-content p {
+    font-size: 0.9rem;
+  }
+
+  .process-section ul {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  /* Further reduce padding and text size for very small screens */
+  .container {
+    padding: 20px 10px;
+  }
+
+  .mission-section h2,
+  .process-section h2,
+  .about-content h2 {
+    font-size: 1.5rem;
+  }
+
+  .mission-section p,
+  .process-section li,
+  .about-content p {
+    font-size: 0.85rem;
+  }
+
+  button {
+    font-size: 14px;
+    padding: 8px 16px;
+  }
+
+  /* Stack items closer together */
+  .process-section ul {
+    gap: 8px;
+  }
+
+  .about-section img {
+    width: 200px;
+  }
+}

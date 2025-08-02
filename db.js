@@ -1,28 +1,32 @@
 const mysql = require("mysql2");
 
-const pool = mysql.createPool({
-  host: process.env.DB_HOST || "localhost",
-  user: process.env.DB_USER || "root",
+const config = {
+  host: process.env.DB_HOST,
+  port: parseInt(process.env.DB_PORT),
+  user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME || "album_store",
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-});
+  ssl: {
+    rejectUnauthorized: false,
+  },
+};
 
-// Convert pool to use promises
-const promisePool = pool.promise();
+// Create the connection pool
+const pool = mysql.createPool(config);
 
-// Test the connection
+// Test connection and log details
 pool.getConnection((err, connection) => {
   if (err) {
     console.error("❌ Database connection failed:", err.message);
     return;
   }
-  console.log("✅ Connected to MySQL Database");
+  console.log("✅ Connected to MySQL Database at:", process.env.DB_HOST);
   connection.release();
 });
 
 // Export both regular pool and promise pool
 module.exports = pool;
-module.exports.promise = promisePool;
+module.exports.promise = pool.promise();

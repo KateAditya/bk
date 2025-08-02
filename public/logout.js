@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if (data.success) {
           window.location.href = "/public/login.html";
         } else {
-          throw new Error(data.message);
+          throw new Error(data.message || "Logout failed");
         }
       })
       .catch((error) => {
@@ -53,8 +53,10 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Optional: add event listener if logout button exists
   const logoutButton = document.getElementById("logoutButton");
   if (logoutButton) {
+    logoutButton.removeAttribute("onclick");
     logoutButton.addEventListener("click", logout);
   }
 });

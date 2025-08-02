@@ -2,19 +2,22 @@ document.addEventListener("DOMContentLoaded", function () {
   const loginForm = document.getElementById("loginForm");
   const errorMessage = document.getElementById("errorMessage");
 
-  // Get base URL from current location
+  // Get API URL based on environment
   const baseUrl = window.location.origin;
 
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
     errorMessage.style.display = "none";
+    const submitButton = this.querySelector('button[type="submit"]');
+    submitButton.disabled = true;
 
     try {
+      console.log("Attempting login request to:", `${baseUrl}/api/login`);
+
       const response = await fetch(`${baseUrl}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Accept: "application/json",
         },
         credentials: "include",
         body: JSON.stringify({
@@ -23,22 +26,61 @@ document.addEventListener("DOMContentLoaded", function () {
         }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || "Login failed");
+      const responseText = await response.text();
+      console.log("Server response:", responseText);
+
+      let data;
+      try {
+        data = JSON.parse(responseText);
+      } catch (e) {
+        console.error(
+          "Response parsing error:",
+          e,
+          "Raw response:",
+          responseText
+        );
+        throw new Error("Invalid server response");
       }
 
-      const data = await response.json();
+      if (!response.ok) {
+        let errorMsg;
+        switch (response.status) {
+          case 500:
+            errorMsg = "Internal server error. Please try again later.";
+            console.error("Server Error Details:", responseText);
+            break;
+          case 401:
+            errorMsg = "Invalid username or password";
+            break;
+          case 429:
+            errorMsg = "Too many attempts. Please try again later";
+            break;
+          default:
+            errorMsg = data.message || `Server error (${response.status})`;
+        }
+        throw new Error(errorMsg);
+      }
+
       if (data.success) {
-        window.location.href = `${baseUrl}${data.redirectUrl}`;
+        window.location.href = "/dashboard.html";
       } else {
         throw new Error(data.message || "Login failed");
       }
     } catch (error) {
+      if (error.name === "AbortError") {
+        errorMessage.textContent = "Request timeout. Please try again.";
+      } else {
+        errorMessage.textContent =
+          error.message || "Login failed. Please try again.";
+      }
       errorMessage.style.display = "block";
-      errorMessage.textContent =
-        error.message || "An error occurred during login";
-      console.error("Login error:", error);
+      console.error("Login error details:", {
+        error: error,
+        url: `${baseUrl}/api/login`,
+        timestamp: new Date().toISOString(),
+      });
+    } finally {
+      submitButton.disabled = false;
     }
   });
 });

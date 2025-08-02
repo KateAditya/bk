@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Me</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="about.css">
+  <link rel="stylesheet" href="loader.css">
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="~/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+  <link href="https://unpkg.com/tailwindcss@^2.1/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+    crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="~/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+
+</head>
+
+<body>
+
+
+  <div id="page-loader">
+    <img src="DREAM STORIES PNG LOGO_2.png" alt="Loading..." class="loader-image">
+  </div>
+
+
+
+  </head>
+
+  <body>
+    <nav>
+      <div class="logo">
+        <h1>DREAM STORIES</h1>
+        <p>GRAPHICS DESIGN</p>
+      </div>
+
+      <!-- Desktop Menu -->
+      <div class="menu">
+        <a href="/about.html">About</a>
+        <a href="/index.html" style="font-weight: bold;">Shop</a>
+        <a href="/razorpay.html">FAQ</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/login.html">Admin</a>
+      </div>
+
+      <!-- Hamburger Button for Mobile -->
+      <div class="hamburger" id="menu-btn" aria-label="Toggle menu">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu (hidden by default) -->
+    <div class="mobile-menu" id="mobile-menu">
+      <a href="/about.html">About</a>
+      <a href="/index.html" style="font-weight: bold;">Shop</a>
+      <a href="/razorpay.html">FAQ</a>
+      <a href="/contact.html">Contact</a>
+      <a href="/login.html">Admin</a>
+    </div>
+
+    <script>
+      const btn = document.getElementById('menu-btn');
+      const menu = document.getElementById('mobile-menu');
+
+      btn.addEventListener('click', () => {
+        if (menu.classList.contains('show')) {
+          menu.classList.remove('show');
+          menu.classList.add('hide');
+          setTimeout(() => {
+            menu.classList.remove('hide');
+            menu.style.display = 'none'; // Hide the menu after the animation
+          }, 300); // Match this duration with the CSS transition duration
+        } else {
+          menu.style.display = 'flex'; // Show the menu
+          setTimeout(() => {
+            menu.classList.add('show'); // Add the show class after setting display
+          }, 10); // Small timeout to allow display to take effect
+        }
+      });
+    </script>
+
+
+
+    <section class="about-section">
+      <img src="ABOUT & CONTACT IMAGES/13.jpg" alt="About Us Image">
+      <div class="about-content">
+        <h2>About Us</h2>
+        <p>At Dream Stories, we pride ourselves on crafting visual stories that stand the test of time. Our passion for
+          design and commitment to quality make every album a timeless keepsake.</p>
+      </div>
+    </section>
+
+    <section class="mission-section">
+      <div class="container">
+        <h2>Our Mission</h2>
+        <p>At Dream Stories, our mission is simple: to transform your memories into stunning visual stories. We’re
+          dedicated to providing a seamless design experience, ensuring that each album reflects the unique narrative of
+          your life.</p>
+      </div>
+    </section>
+
+    <section class="process-section">
+      <div class="container">
+        <h2>The Process</h2>
+        <ul>
+          <li>
+            <strong>Understanding You:</strong>
+            <p>Every album starts with a conversation. We take the time to understand your vision, style, and the
+              emotions
+              you want to convey.</p>
+          </li>
+          <li>
+            <strong>Creative Collaboration:</strong>
+            <p>Our team of talented designers collaborates with you to curate a personalized experience.</p>
+          </li>
+          <li>
+            <strong>Designing Your Album:</strong>
+            <p>Using high-quality materials and innovative design techniques, we create albums that are not only
+              visually
+              appealing but also durable and timeless.</p>
+          </li>
+          <li>
+            <strong>The Reveal:</strong>
+            <p>When your album arrives, it’s not just a product; it’s an experience, ready to be shared with loved ones
+              for generations to come.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+
+
+
+
+    <script src="loader.js"></script>
+
+  </body>
+
+</html>
