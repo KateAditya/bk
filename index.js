@@ -109,27 +109,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Session Management - More reliable configuration
-const sessionConfig = {
-  secret: process.env.SESSION_SECRET || "your-secret-key",
-  resave: true, // Changed back to true for better reliability
-  saveUninitialized: true, // Changed back to true for better reliability
-  store: new session.MemoryStore(), // Use memory store for all environments
-  cookie: {
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    httpOnly: true,
-    maxAge: 60 * 60 * 1000, // 1 hour (60 minutes * 60 seconds * 1000 milliseconds)
-    domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined,
-  },
-  name: 'sessionId', // Custom session name
-};
+// In-memory session storage (no persistent storage)
+const sessions = new Map();
 
-if (process.env.NODE_ENV === "production") {
-  app.set("trust proxy", 1);
-}
-
-app.use(session(sessionConfig));
+// Simple session middleware
+app.use((req, res, next) => {
+  const sessionId = req.headers['x-session-id'] || req.cookies?.sessionId;
+  
+  if (sessionId && sessions.has(sessionId)) {
+    req.session = sessions.get(sessionId);
+  } else {
+    req.session = null;
+  }
+  
+  next();
+});
 
 // File upload configuration - Use memory storage for Vercel
 const upload = multer({
@@ -148,41 +142,6 @@ const upload = multer({
 });
 
 // ==================== ROUTE HANDLERS ====================
-
-// Health check endpoint
-app.get("/api/health", async (req, res) => {
-  const imagekitStatus = {
-    publicKey: !!process.env.IMAGEKIT_PUBLIC_KEY,
-    privateKey: !!process.env.IMAGEKIT_PRIVATE_KEY,
-    urlEndpoint: !!process.env.IMAGEKIT_URL_ENDPOINT,
-    configured: !!(process.env.IMAGEKIT_PUBLIC_KEY && process.env.IMAGEKIT_PRIVATE_KEY && process.env.IMAGEKIT_URL_ENDPOINT),
-    connectionTest: false
-  };
-
-  // Test ImageKit connection if configured
-  if (imagekitStatus.configured && imagekit) {
-    try {
-      await imagekit.listFiles({ limit: 1, skip: 0 });
-      imagekitStatus.connectionTest = true;
-    } catch (error) {
-      imagekitStatus.connectionTest = false;
-      imagekitStatus.connectionError = error.message;
-    }
-  }
-
-  res.json({
-    status: "ok",
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || "development",
-    imagekit: imagekitStatus,
-    message: imagekitStatus.configured && imagekitStatus.connectionTest ? 
-      "ImageKit is configured and working" : 
-      imagekitStatus.configured ? 
-        "ImageKit is configured but connection test failed" :
-        "ImageKit is not properly configured. Check IMAGEKIT_SETUP.md for instructions.",
-    setupGuide: !imagekitStatus.configured ? "See IMAGEKIT_SETUP.md for setup instructions" : undefined
-  });
-});
 
 // Add Image Upload Endpoint
 app.post("/api/upload", upload.single("image"), async (req, res) => {
