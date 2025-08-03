@@ -42,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .then((response) => response.json())
       .then((data) => {
         if (data.success) {
-          window.location.href = "/public/login.html";
+          window.location.href = "/login.html";
         } else {
           throw new Error(data.message || "Logout failed");
         }

@@ -9,28 +9,30 @@ const MySQLStore = require("express-mysql-session")(session);
 const db = require("./db");
 const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
-// Remove Cloudinary import and config
-// const cloudinary = require("cloudinary").v2;
 const ImageKit = require("imagekit");
+const paymentController = require("./controllers/paymentController");
 
-const imagekit = new ImageKit({
+// Validate ImageKit configuration
+const imagekitConfig = {
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
   urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT,
-});
-const paymentController = require("./controllers/paymentController"); // Adjust the path as necessary
+};
+
+console.log("🔧 ImageKit Configuration Check:");
+console.log("Public Key:", imagekitConfig.publicKey ? "✅ Set" : "❌ Missing");
+console.log("Private Key:", imagekitConfig.privateKey ? "✅ Set" : "❌ Missing");
+console.log("URL Endpoint:", imagekitConfig.urlEndpoint ? "✅ Set" : "❌ Missing");
+
+if (!imagekitConfig.publicKey || !imagekitConfig.privateKey || !imagekitConfig.urlEndpoint) {
+  console.warn("⚠️ ImageKit configuration incomplete. Image uploads may fail.");
+}
+
+const imagekit = new ImageKit(imagekitConfig);
 
 const app = express();
 
-// Cloudinary Configuration
-// Remove Cloudinary import and config
-// cloudinary.config({
-//   cloud_name: "dwntxmprj",
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-// });
-
-// Update CORS configuration
+// Update CORS configuration for production
 app.use(
   cors({
     origin: function (origin, callback) {
@@ -39,8 +41,16 @@ app.use(
         "http://localhost:5500",
         "https://bk-mu-five.vercel.app",
         "https://bk-theta.vercel.app",
+        "https://www.dreamstoriesgraphics.com",
+        "https://dreamstoriesgraphics.com"
       ];
-      callback(null, true); // Allow all origins temporarily for debugging
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
@@ -48,7 +58,7 @@ app.use(
   })
 );
 
-// Remove existing CORS middleware and replace with these headers
+// Additional CORS headers
 app.use((req, res, next) => {
   const origin = req.headers.origin;
   if (origin) {
@@ -66,40 +76,27 @@ app.use((req, res, next) => {
   next();
 });
 
-// Configure static file serving
-
-app.use(
-  "/uploads",
-  express.static(path.join(__dirname, "uploads"), {
-    setHeaders: (res, path, stat) => {
-      res.set("Access-Control-Allow-Origin", "*");
-      res.set("Cross-Origin-Resource-Policy", "cross-origin");
-      res.set("Cache-Control", "public, max-age=31557600"); // Cache for 1 year
-    },
-  })
-);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Session Management
-const sessionOptions = {
-  host: process.env.DB_HOST,
-  port: parseInt(process.env.DB_PORT),
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  ssl: {
-    rejectUnauthorized: true,
-  },
-};
-
-// Update session configuration
+// Session Management - Use memory store for Vercel
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
   resave: false,
   saveUninitialized: false,
-  store: new MySQLStore(sessionOptions),
+  store: process.env.NODE_ENV === "production" ? 
+    new session.MemoryStore() : 
+    new MySQLStore({
+      host: process.env.DB_HOST,
+      port: parseInt(process.env.DB_PORT),
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      ssl: {
+        rejectUnauthorized: true,
+      },
+    }),
   cookie: {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
@@ -114,49 +111,63 @@ if (process.env.NODE_ENV === "production") {
 
 app.use(session(sessionConfig));
 
-// Environment Check for Razorpay keys
-
-// File upload configuration
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    // Ensure uploads directory exists
-    if (!fs.existsSync("uploads")) {
-      fs.mkdirSync("uploads");
+// File upload configuration - Use memory storage for Vercel
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images only
+    if (file.mimetype.startsWith('image/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Only image files are allowed!'), false);
     }
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    const unique = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    cb(null, unique + path.extname(file.originalname));
-  },
+  }
 });
-const upload = multer({ storage: storage });
 
 // ==================== ROUTE HANDLERS ====================
 
-// Add Image Upload Endpoint (replace any old /api/upload logic)
+// Health check endpoint
+app.get("/api/health", (req, res) => {
+  res.json({
+    status: "ok",
+    timestamp: new Date().toISOString(),
+    environment: process.env.NODE_ENV || "development",
+    imagekit: {
+      publicKey: !!process.env.IMAGEKIT_PUBLIC_KEY,
+      privateKey: !!process.env.IMAGEKIT_PRIVATE_KEY,
+      urlEndpoint: !!process.env.IMAGEKIT_URL_ENDPOINT,
+    }
+  });
+});
+
+// Add Image Upload Endpoint
 app.post("/api/upload", upload.single("image"), async (req, res) => {
   try {
     const file = req.file;
     if (!file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    // Read file as base64
-    const fileData = fs.readFileSync(file.path, { encoding: "base64" });
+    
+    // Convert buffer to base64
+    const fileData = file.buffer.toString('base64');
+    
     // Upload to ImageKit
     const response = await imagekit.upload({
       file: fileData,
-      fileName: file.filename,
-      folder: "/products", // optional
+      fileName: file.originalname,
+      folder: "/products",
     });
-    // Remove local file after upload
-    fs.unlinkSync(file.path);
+    
     res.json({
       success: true,
       url: response.url,
       fileId: response.fileId,
     });
   } catch (error) {
+    console.error("Upload error:", error);
     res.status(500).json({ error: "Image upload failed", details: error.message });
   }
 });
@@ -181,10 +192,9 @@ function checkAuthPage(req, res, next) {
   next();
 }
 
-// Update auth check middleware
 function checkAuthAPI(req, res, next) {
   if (!req.session || !req.session.isAuthenticated) {
-    console.log("Session state:", req.session); // Debug log
+    console.log("Session state:", req.session);
     return res.status(401).json({
       success: false,
       message: "Please login first",
@@ -193,7 +203,7 @@ function checkAuthAPI(req, res, next) {
   next();
 }
 
-// Fixed page routes - use checkAuthPage for HTML pages
+// Fixed page routes
 app.get(["/dashboard", "/dashboard.html"], checkAuthPage, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
@@ -225,9 +235,6 @@ app.get("/admin/product-titles", checkAuthAPI, (req, res) => {
     res.json(results);
   });
 });
-
-app.use(express.static(path.join(__dirname, "public")));
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // Authentication endpoint
 app.post("/api/login", (req, res) => {
@@ -371,23 +378,24 @@ app.post("/api/products", checkAuthAPI, upload.single("image"), async (req, res)
     const { title, discount, price, description, view_link } = req.body;
     let image_url = req.body.image_url;
 
-    // If file is present, try to upload to ImageKit
+    // If file is present, upload to ImageKit
     if (req.file) {
       try {
-        const fileData = fs.readFileSync(req.file.path, { encoding: "base64" });
+        const fileData = req.file.buffer.toString('base64');
         const response = await imagekit.upload({
           file: fileData,
-          fileName: req.file.filename,
+          fileName: req.file.originalname,
           folder: "/products",
         });
         image_url = response.url;
-        fs.unlinkSync(req.file.path);
         console.log("✅ Image uploaded to ImageKit successfully");
       } catch (imagekitError) {
         console.error("❌ ImageKit upload failed:", imagekitError.message);
-        // If ImageKit fails, use a placeholder or local path
-        image_url = `/uploads/${req.file.filename}`;
-        console.log("⚠️ Using local file path as fallback:", image_url);
+        return res.status(500).json({
+          error: "Image upload failed",
+          success: false,
+          details: imagekitError.message
+        });
       }
     }
 
@@ -461,23 +469,24 @@ app.put("/api/products/:id", checkAuthAPI, upload.single("image"), async (req, r
   }
 
   try {
-    // If a new file is uploaded, try to upload to ImageKit
+    // If a new file is uploaded, upload to ImageKit
     if (req.file) {
       try {
-        const fileData = fs.readFileSync(req.file.path, { encoding: "base64" });
+        const fileData = req.file.buffer.toString('base64');
         const response = await imagekit.upload({
           file: fileData,
-          fileName: req.file.filename,
+          fileName: req.file.originalname,
           folder: "/products",
         });
         image_url = response.url;
-        fs.unlinkSync(req.file.path);
         console.log("✅ Image uploaded to ImageKit successfully");
       } catch (imagekitError) {
         console.error("❌ ImageKit upload failed:", imagekitError.message);
-        // If ImageKit fails, use a placeholder or local path
-        image_url = `/uploads/${req.file.filename}`;
-        console.log("⚠️ Using local file path as fallback:", image_url);
+        return res.status(500).json({
+          error: "Image upload failed",
+          success: false,
+          details: imagekitError.message
+        });
       }
     } else {
       // If no new file, get existing image_url from database
@@ -603,6 +612,7 @@ app.delete("/api/products/:id", checkAuthAPI, (req, res) => {
     }
   );
 });
+
 // Create/Add new product link
 app.post("/admin/product-links", checkAuthAPI, (req, res) => {
   const { title, download_link } = req.body;
@@ -752,9 +762,12 @@ app.use((err, req, res, next) => {
 // ==================== SERVER STARTUP ====================
 
 // Determine port with fallback
-const PORT = process.env.PORT1 || 3000;
+const PORT = process.env.PORT || 3000;
 
 // Start Server
 app.listen(PORT, () => {
   console.log(`✅ Server is running on port ${PORT}`);
 });
+
+// Export for Vercel
+module.exports = app;
