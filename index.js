@@ -5,7 +5,6 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const session = require("express-session");
-const MySQLStore = require("express-mysql-session")(session);
 const db = require("./db");
 const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
@@ -110,28 +109,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Session Management - Use memory store for Vercel
+// Session Management - Simplified with 1-hour timeout
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
-  resave: true, // Changed to true for better session persistence
-  saveUninitialized: true, // Changed to true for better session persistence
-  store: process.env.NODE_ENV === "production" ? 
-    new session.MemoryStore() : 
-    new MySQLStore({
-      host: process.env.DB_HOST,
-      port: parseInt(process.env.DB_PORT),
-      user: process.env.DB_USER,
-      password: process.env.DB_PASSWORD,
-      database: process.env.DB_NAME,
-      ssl: {
-        rejectUnauthorized: true,
-      },
-    }),
+  resave: false, // Changed to false for better performance
+  saveUninitialized: false, // Changed to false for better performance
+  store: new session.MemoryStore(), // Use memory store for all environments
   cookie: {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    maxAge: 60 * 60 * 1000, // 1 hour (60 minutes * 60 seconds * 1000 milliseconds)
     domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined,
   },
   name: 'sessionId', // Custom session name
@@ -352,34 +340,13 @@ app.post("/api/login", (req, res) => {
         user: req.session.user
       });
 
-      // Save session explicitly
-      req.session.save((err) => {
-        if (err) {
-          console.error("❌ Session save error:", err);
-          return res.status(500).json({
-            success: false,
-            message: "Login failed - session error",
-            error: process.env.NODE_ENV === "development" ? err.message : undefined,
-          });
-        }
-        
-        console.log("✅ Session saved successfully. Session ID:", req.sessionID);
-        
-        // Set cookie explicitly for better compatibility
-        res.cookie('sessionId', req.sessionID, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 24 * 60 * 60 * 1000,
-          domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
-        });
-
-        res.json({
-          success: true,
-          message: "Login successful",
-          redirectUrl: "/dashboard.html",
-          sessionId: req.sessionID
-        });
+      // Simple response without complex session saving
+      res.json({
+        success: true,
+        message: "Login successful",
+        redirectUrl: "/dashboard.html",
+        sessionId: req.sessionID,
+        expiresIn: "1 hour"
       });
     } else {
       console.log("❌ Invalid credentials for user:", username);
@@ -410,21 +377,9 @@ app.post("/api/logout", (req, res) => {
     
     console.log("✅ Session destroyed successfully");
     
-    // Clear the session cookie
-    res.clearCookie("sessionId", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
-    });
-    
-    // Also clear the default connect.sid cookie
-    res.clearCookie("connect.sid", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-      domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
-    });
+    // Clear cookies
+    res.clearCookie("sessionId");
+    res.clearCookie("connect.sid");
     
     res.json({ success: true, message: "Logged out successfully" });
   });
@@ -474,6 +429,25 @@ app.get("/api/session-debug", (req, res) => {
     host: req.headers.host,
     origin: req.headers.origin,
     referer: req.headers.referer
+  });
+});
+
+// Session status endpoint
+app.get("/api/session-status", (req, res) => {
+  const now = new Date();
+  const sessionExpiry = req.session.cookie ? new Date(req.session.cookie._expires) : null;
+  const timeLeft = sessionExpiry ? Math.max(0, sessionExpiry.getTime() - now.getTime()) : 0;
+  
+  res.json({
+    sessionId: req.sessionID,
+    isAuthenticated: req.session?.isAuthenticated || false,
+    user: req.session?.user || null,
+    loginTime: req.session?.loginTime || null,
+    sessionExpiry: sessionExpiry?.toISOString() || null,
+    timeLeftMinutes: Math.round(timeLeft / (1000 * 60)),
+    timeLeftSeconds: Math.round(timeLeft / 1000),
+    cookieMaxAge: req.session.cookie?.maxAge || 0,
+    environment: process.env.NODE_ENV || "development"
   });
 });
 
