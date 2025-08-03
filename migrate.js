@@ -38,9 +38,35 @@ function executeSqlFile(filePath) {
   });
 }
 
+// Function to add imagekit_file_id column to products table
+function addImageKitFileIdColumn() {
+  return new Promise((resolve, reject) => {
+    console.log("Adding imagekit_file_id column to products table...");
+    
+    const sql = `
+      ALTER TABLE products 
+      ADD COLUMN IF NOT EXISTS imagekit_file_id VARCHAR(255) 
+      AFTER image_url
+    `;
+    
+    db.query(sql, (err, results) => {
+      if (err) {
+        console.error("Error adding imagekit_file_id column:", err);
+        return reject(err);
+      }
+      
+      console.log("✅ Successfully added imagekit_file_id column to products table");
+      resolve();
+    });
+  });
+}
+
 async function applyMigrations() {
   try {
     console.log("Applying database migrations...");
+
+    // Add imagekit_file_id column to products table
+    await addImageKitFileIdColumn();
 
     // Create product_links table
     await executeSqlFile(
