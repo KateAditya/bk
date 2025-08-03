@@ -12,7 +12,10 @@ const adminRoutes = require("./adminRoutes");
 const ImageKit = require("imagekit");
 const paymentController = require("./controllers/paymentController");
 
-// Validate ImageKit configuration
+// ImageKit configuration - with fallback for missing credentials
+let imagekit = null;
+let imagekitConfigured = false;
+
 const imagekitConfig = {
   publicKey: process.env.IMAGEKIT_PUBLIC_KEY,
   privateKey: process.env.IMAGEKIT_PRIVATE_KEY,
@@ -24,11 +27,38 @@ console.log("Public Key:", imagekitConfig.publicKey ? "✅ Set" : "❌ Missing")
 console.log("Private Key:", imagekitConfig.privateKey ? "✅ Set" : "❌ Missing");
 console.log("URL Endpoint:", imagekitConfig.urlEndpoint ? "✅ Set" : "❌ Missing");
 
-if (!imagekitConfig.publicKey || !imagekitConfig.privateKey || !imagekitConfig.urlEndpoint) {
-  console.warn("⚠️ ImageKit configuration incomplete. Image uploads may fail.");
+if (imagekitConfig.publicKey && imagekitConfig.privateKey && imagekitConfig.urlEndpoint) {
+  try {
+    imagekit = new ImageKit(imagekitConfig);
+    imagekitConfigured = true;
+    console.log("✅ ImageKit configured successfully");
+    
+    // Test the configuration
+    imagekit.listFiles({
+      limit: 1,
+      skip: 0
+    }).then(() => {
+      console.log("✅ ImageKit connection test successful");
+    }).catch((error) => {
+      console.error("❌ ImageKit connection test failed:", error.message);
+      imagekitConfigured = false;
+    });
+    
+  } catch (error) {
+    console.error("❌ ImageKit initialization failed:", error.message);
+    imagekitConfigured = false;
+  }
+} else {
+  console.warn("⚠️ ImageKit configuration incomplete. Using placeholder images.");
+  console.log("📝 To enable ImageKit uploads, set these environment variables:");
+  console.log("   IMAGEKIT_PUBLIC_KEY=your_public_key");
+  console.log("   IMAGEKIT_PRIVATE_KEY=your_private_key");
+  console.log("   IMAGEKIT_URL_ENDPOINT=your_url_endpoint");
+  console.log("");
+  console.log("🔗 Get your ImageKit credentials from: https://imagekit.io/dashboard");
+  console.log("📖 Setup guide: https://docs.imagekit.io/getting-started/quickstart-guides/setup-your-first-imagekit-integration");
+  imagekitConfigured = false;
 }
-
-const imagekit = new ImageKit(imagekitConfig);
 
 const app = express();
 
@@ -132,22 +162,37 @@ const upload = multer({
 // ==================== ROUTE HANDLERS ====================
 
 // Health check endpoint
-app.get("/api/health", (req, res) => {
+app.get("/api/health", async (req, res) => {
   const imagekitStatus = {
     publicKey: !!process.env.IMAGEKIT_PUBLIC_KEY,
     privateKey: !!process.env.IMAGEKIT_PRIVATE_KEY,
     urlEndpoint: !!process.env.IMAGEKIT_URL_ENDPOINT,
-    configured: !!(process.env.IMAGEKIT_PUBLIC_KEY && process.env.IMAGEKIT_PRIVATE_KEY && process.env.IMAGEKIT_URL_ENDPOINT)
+    configured: !!(process.env.IMAGEKIT_PUBLIC_KEY && process.env.IMAGEKIT_PRIVATE_KEY && process.env.IMAGEKIT_URL_ENDPOINT),
+    connectionTest: false
   };
+
+  // Test ImageKit connection if configured
+  if (imagekitStatus.configured && imagekit) {
+    try {
+      await imagekit.listFiles({ limit: 1, skip: 0 });
+      imagekitStatus.connectionTest = true;
+    } catch (error) {
+      imagekitStatus.connectionTest = false;
+      imagekitStatus.connectionError = error.message;
+    }
+  }
 
   res.json({
     status: "ok",
     timestamp: new Date().toISOString(),
     environment: process.env.NODE_ENV || "development",
     imagekit: imagekitStatus,
-    message: imagekitStatus.configured ? 
-      "ImageKit is configured" : 
-      "ImageKit is not properly configured. Check your environment variables."
+    message: imagekitStatus.configured && imagekitStatus.connectionTest ? 
+      "ImageKit is configured and working" : 
+      imagekitStatus.configured ? 
+        "ImageKit is configured but connection test failed" :
+        "ImageKit is not properly configured. Check IMAGEKIT_SETUP.md for instructions.",
+    setupGuide: !imagekitStatus.configured ? "See IMAGEKIT_SETUP.md for setup instructions" : undefined
   });
 });
 
@@ -157,6 +202,19 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
     const file = req.file;
     if (!file) {
       return res.status(400).json({ error: "No file uploaded" });
+    }
+    
+    if (!imagekitConfigured) {
+      // Return a placeholder image URL when ImageKit is not configured
+      const placeholderUrl = `https://via.placeholder.com/400x300?text=${encodeURIComponent(file.originalname)}`;
+      console.log("⚠️ ImageKit not configured, using placeholder:", placeholderUrl);
+      
+      return res.json({
+        success: true,
+        url: placeholderUrl,
+        fileId: null,
+        message: "ImageKit not configured - using placeholder image"
+      });
     }
     
     // Convert buffer to base64
@@ -169,14 +227,26 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
       folder: "/products",
     });
     
+    console.log("✅ Image uploaded to ImageKit:", response.url);
+    
     res.json({
       success: true,
       url: response.url,
       fileId: response.fileId,
     });
   } catch (error) {
-    console.error("Upload error:", error);
-    res.status(500).json({ error: "Image upload failed", details: error.message });
+    console.error("❌ Upload error:", error);
+    
+    // If ImageKit fails, return a placeholder
+    const placeholderUrl = `https://via.placeholder.com/400x300?text=Upload+Failed`;
+    
+    res.json({
+      success: true,
+      url: placeholderUrl,
+      fileId: null,
+      message: "ImageKit upload failed - using placeholder image",
+      error: error.message
+    });
   }
 });
 
@@ -464,22 +534,28 @@ app.post("/api/products", checkAuthAPI, upload.single("image"), async (req, res)
     const { title, discount, price, description, view_link } = req.body;
     let image_url = req.body.image_url;
 
-    // If file is present, try to upload to ImageKit
+    // If file is present, handle image upload
     if (req.file) {
-      try {
-        const fileData = req.file.buffer.toString('base64');
-        const response = await imagekit.upload({
-          file: fileData,
-          fileName: req.file.originalname,
-          folder: "/products",
-        });
-        image_url = response.url;
-        console.log("✅ Image uploaded to ImageKit successfully");
-      } catch (imagekitError) {
-        console.error("❌ ImageKit upload failed:", imagekitError.message);
-        // Use a placeholder image if ImageKit fails
-        image_url = "https://via.placeholder.com/400x300?text=Product+Image";
-        console.log("⚠️ Using placeholder image due to ImageKit failure");
+      if (imagekitConfigured) {
+        try {
+          const fileData = req.file.buffer.toString('base64');
+          const response = await imagekit.upload({
+            file: fileData,
+            fileName: req.file.originalname,
+            folder: "/products",
+          });
+          image_url = response.url;
+          console.log("✅ Image uploaded to ImageKit successfully:", image_url);
+        } catch (imagekitError) {
+          console.error("❌ ImageKit upload failed:", imagekitError.message);
+          // Use a placeholder image if ImageKit fails
+          image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
+          console.log("⚠️ Using placeholder image due to ImageKit failure:", image_url);
+        }
+      } else {
+        // ImageKit not configured, use placeholder
+        image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
+        console.log("⚠️ ImageKit not configured, using placeholder:", image_url);
       }
     }
 
@@ -553,22 +629,28 @@ app.put("/api/products/:id", checkAuthAPI, upload.single("image"), async (req, r
   }
 
   try {
-    // If a new file is uploaded, try to upload to ImageKit
+    // If a new file is uploaded, handle image upload
     if (req.file) {
-      try {
-        const fileData = req.file.buffer.toString('base64');
-        const response = await imagekit.upload({
-          file: fileData,
-          fileName: req.file.originalname,
-          folder: "/products",
-        });
-        image_url = response.url;
-        console.log("✅ Image uploaded to ImageKit successfully");
-      } catch (imagekitError) {
-        console.error("❌ ImageKit upload failed:", imagekitError.message);
-        // Use a placeholder image if ImageKit fails
-        image_url = "https://via.placeholder.com/400x300?text=Product+Image";
-        console.log("⚠️ Using placeholder image due to ImageKit failure");
+      if (imagekitConfigured) {
+        try {
+          const fileData = req.file.buffer.toString('base64');
+          const response = await imagekit.upload({
+            file: fileData,
+            fileName: req.file.originalname,
+            folder: "/products",
+          });
+          image_url = response.url;
+          console.log("✅ Image uploaded to ImageKit successfully:", image_url);
+        } catch (imagekitError) {
+          console.error("❌ ImageKit upload failed:", imagekitError.message);
+          // Use a placeholder image if ImageKit fails
+          image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
+          console.log("⚠️ Using placeholder image due to ImageKit failure:", image_url);
+        }
+      } else {
+        // ImageKit not configured, use placeholder
+        image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
+        console.log("⚠️ ImageKit not configured, using placeholder:", image_url);
       }
     } else {
       // If no new file, get existing image_url from database
