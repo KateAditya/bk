@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "test-imagekit": "node test-imagekit.js",
+
     "start": "node index.js",
     "dev": "nodemon index.js"
   },
@@ -18,7 +18,7 @@
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "express-rate-limit": "^7.5.0",
-    "express-session": "^1.18.1",
+
     "font-awesome": "^4.7.0",
     "fs": "^0.0.1-security",
     "imagekit": "^6.0.0",
