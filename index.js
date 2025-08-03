@@ -211,59 +211,19 @@ app.get("/login.html", (req, res) => {
 });
 
 function checkAuthPage(req, res, next) {
-  console.log("🔍 Page Auth Check - Session ID:", req.sessionID);
-  console.log("🔍 Page Auth Check - Session:", {
-    isAuthenticated: req.session?.isAuthenticated,
-    user: req.session?.user
-  });
-  
-  if (!req.session) {
-    console.log("❌ No session for page access, redirecting to login");
+  if (!req.session || !req.session.isAuthenticated) {
     return res.redirect("/login.html");
   }
-  
-  if (!req.session.isAuthenticated) {
-    console.log("❌ Session not authenticated for page access, redirecting to login");
-    return res.redirect("/login.html");
-  }
-  
-  console.log("✅ Page authentication successful for user:", req.session.user);
   next();
 }
 
 function checkAuthAPI(req, res, next) {
-  console.log("🔍 Auth Check - Session ID:", req.sessionID);
-  console.log("🔍 Auth Check - Session:", {
-    isAuthenticated: req.session?.isAuthenticated,
-    user: req.session?.user,
-    cookie: req.session?.cookie
-  });
-  
-  // More lenient authentication check
-  if (!req.session) {
-    console.log("❌ No session found");
+  if (!req.session || !req.session.isAuthenticated) {
     return res.status(401).json({
       success: false,
-      message: "No session found - please login first",
-      sessionId: req.sessionID,
-      hasSession: false,
-      isAuthenticated: false
+      message: "Authentication required - please login first"
     });
   }
-  
-  if (!req.session.isAuthenticated) {
-    console.log("❌ Session not authenticated");
-    return res.status(401).json({
-      success: false,
-      message: "Session not authenticated - please login first",
-      sessionId: req.sessionID,
-      hasSession: true,
-      isAuthenticated: false,
-      sessionData: req.session
-    });
-  }
-  
-  console.log("✅ Authentication successful for user:", req.session.user);
   next();
 }
 
@@ -358,23 +318,14 @@ app.post("/api/login", (req, res) => {
 });
 
 app.post("/api/logout", (req, res) => {
-  console.log("🔍 Logout - Session ID:", req.sessionID);
-  console.log("🔍 Logout - Session before destroy:", req.session);
-  
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("❌ Logout error:", err);
-      return res.status(500).json({ success: false, message: "Logout failed" });
-    }
-    
-    console.log("✅ Session destroyed successfully");
-    
-    // Clear cookies
-    res.clearCookie("sessionId");
-    res.clearCookie("connect.sid");
-    
-    res.json({ success: true, message: "Logged out successfully" });
-  });
+  // Get sessionId from cookie or header
+  const sessionId = req.headers['x-session-id'] || req.cookies?.sessionId;
+  if (sessionId && sessions.has(sessionId)) {
+    sessions.delete(sessionId);
+  }
+  res.clearCookie("sessionId");
+  res.clearCookie("connect.sid");
+  res.json({ success: true, message: "Logged out successfully" });
 });
 
 // Protected Route (Optional)
