@@ -339,25 +339,18 @@ app.get("/api/profile", (req, res) => {
 
 // Check authentication status
 app.get("/api/check-auth", (req, res) => {
-  console.log("🔍 Check Auth - Session ID:", req.sessionID);
-  console.log("🔍 Check Auth - Session:", req.session);
-  
   if (req.session && req.session.isAuthenticated) {
     res.json({
       success: true,
       authenticated: true,
       user: req.session.user,
-      sessionId: req.sessionID,
       loginTime: req.session.loginTime
     });
   } else {
     res.status(401).json({
       success: false,
       authenticated: false,
-      message: "Not authenticated",
-      sessionId: req.sessionID,
-      hasSession: !!req.session,
-      sessionData: req.session
+      message: "Not authenticated"
     });
   }
 });
