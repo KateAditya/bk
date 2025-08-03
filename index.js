@@ -109,11 +109,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "public")));
 
-// Session Management - Simplified with 1-hour timeout
+// Session Management - More reliable configuration
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
-  resave: false, // Changed to false for better performance
-  saveUninitialized: false, // Changed to false for better performance
+  resave: true, // Changed back to true for better reliability
+  saveUninitialized: true, // Changed back to true for better reliability
   store: new session.MemoryStore(), // Use memory store for all environments
   cookie: {
     secure: process.env.NODE_ENV === "production",
@@ -252,9 +252,23 @@ app.get("/login.html", (req, res) => {
 });
 
 function checkAuthPage(req, res, next) {
-  if (!req.session || !req.session.isAuthenticated) {
+  console.log("🔍 Page Auth Check - Session ID:", req.sessionID);
+  console.log("🔍 Page Auth Check - Session:", {
+    isAuthenticated: req.session?.isAuthenticated,
+    user: req.session?.user
+  });
+  
+  if (!req.session) {
+    console.log("❌ No session for page access, redirecting to login");
     return res.redirect("/login.html");
   }
+  
+  if (!req.session.isAuthenticated) {
+    console.log("❌ Session not authenticated for page access, redirecting to login");
+    return res.redirect("/login.html");
+  }
+  
+  console.log("✅ Page authentication successful for user:", req.session.user);
   next();
 }
 
@@ -266,14 +280,27 @@ function checkAuthAPI(req, res, next) {
     cookie: req.session?.cookie
   });
   
-  if (!req.session || !req.session.isAuthenticated) {
-    console.log("❌ Authentication failed - Session state:", req.session);
+  // More lenient authentication check
+  if (!req.session) {
+    console.log("❌ No session found");
     return res.status(401).json({
       success: false,
-      message: "Please login first",
+      message: "No session found - please login first",
       sessionId: req.sessionID,
-      hasSession: !!req.session,
-      isAuthenticated: req.session?.isAuthenticated || false
+      hasSession: false,
+      isAuthenticated: false
+    });
+  }
+  
+  if (!req.session.isAuthenticated) {
+    console.log("❌ Session not authenticated");
+    return res.status(401).json({
+      success: false,
+      message: "Session not authenticated - please login first",
+      sessionId: req.sessionID,
+      hasSession: true,
+      isAuthenticated: false,
+      sessionData: req.session
     });
   }
   
@@ -340,13 +367,34 @@ app.post("/api/login", (req, res) => {
         user: req.session.user
       });
 
-      // Simple response without complex session saving
-      res.json({
-        success: true,
-        message: "Login successful",
-        redirectUrl: "/dashboard.html",
-        sessionId: req.sessionID,
-        expiresIn: "1 hour"
+      // Explicitly save the session
+      req.session.save((err) => {
+        if (err) {
+          console.error("❌ Session save error:", err);
+          return res.status(500).json({
+            success: false,
+            message: "Failed to save session"
+          });
+        }
+
+        console.log("✅ Session saved successfully");
+
+        // Set a custom cookie for additional persistence
+        res.cookie('sessionId', req.sessionID, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 60 * 60 * 1000, // 1 hour
+          domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
+        });
+
+        res.json({
+          success: true,
+          message: "Login successful",
+          redirectUrl: "/dashboard.html",
+          sessionId: req.sessionID,
+          expiresIn: "1 hour"
+        });
       });
     } else {
       console.log("❌ Invalid credentials for user:", username);
@@ -880,6 +928,35 @@ app.post("/createOrder", async (req, res) => {
     res.status(500).json({
       success: false,
       msg: "Internal server error",
+    });
+  }
+});
+
+// Simple authentication test endpoint
+app.get("/api/auth-test", (req, res) => {
+  const authStatus = {
+    hasSession: !!req.session,
+    isAuthenticated: req.session?.isAuthenticated || false,
+    sessionId: req.sessionID,
+    user: req.session?.user || null,
+    loginTime: req.session?.loginTime || null,
+    environment: process.env.NODE_ENV || "development",
+    timestamp: new Date().toISOString()
+  };
+  
+  console.log("🔍 Auth Test Result:", authStatus);
+  
+  if (authStatus.isAuthenticated) {
+    res.json({
+      success: true,
+      message: "Authentication successful",
+      ...authStatus
+    });
+  } else {
+    res.status(401).json({
+      success: false,
+      message: "Authentication failed",
+      ...authStatus
     });
   }
 });

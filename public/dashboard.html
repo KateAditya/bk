@@ -384,7 +384,27 @@
     }
 
     /* ----------  DOM READY  ---------- */
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
+        // Check authentication first
+        try {
+            const authResponse = await fetch('/api/auth-test', { 
+                credentials: 'include' 
+            });
+            const authData = await authResponse.json();
+            
+            if (!authData.success) {
+                console.log('❌ Authentication failed, redirecting to login');
+                window.location.href = '/login.html';
+                return;
+            }
+            
+            console.log('✅ Authentication successful:', authData);
+        } catch (error) {
+            console.error('❌ Authentication check failed:', error);
+            window.location.href = '/login.html';
+            return;
+        }
+
         const form = document.getElementById('addProductForm');
         const productList = document.getElementById('productList');
         const productIdInput = document.getElementById('productId');
