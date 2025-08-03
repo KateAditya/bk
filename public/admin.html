@@ -574,7 +574,7 @@
                 });
                 const authData = await authResponse.json();
                 
-                if (!authData.success) {
+                if (!authData.authenticated) {
                     console.log('❌ Authentication failed, redirecting to login');
                     window.location.href = '/login.html';
                     return;
