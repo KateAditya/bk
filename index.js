@@ -83,8 +83,8 @@ app.use(express.static(path.join(__dirname, "public")));
 // Session Management - Use memory store for Vercel
 const sessionConfig = {
   secret: process.env.SESSION_SECRET || "your-secret-key",
-  resave: false,
-  saveUninitialized: false,
+  resave: true, // Changed to true for better session persistence
+  saveUninitialized: true, // Changed to true for better session persistence
   store: process.env.NODE_ENV === "production" ? 
     new session.MemoryStore() : 
     new MySQLStore({
@@ -101,8 +101,10 @@ const sessionConfig = {
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined,
   },
+  name: 'sessionId', // Custom session name
 };
 
 if (process.env.NODE_ENV === "production") {
@@ -199,13 +201,25 @@ function checkAuthPage(req, res, next) {
 }
 
 function checkAuthAPI(req, res, next) {
+  console.log("🔍 Auth Check - Session ID:", req.sessionID);
+  console.log("🔍 Auth Check - Session:", {
+    isAuthenticated: req.session?.isAuthenticated,
+    user: req.session?.user,
+    cookie: req.session?.cookie
+  });
+  
   if (!req.session || !req.session.isAuthenticated) {
-    console.log("Session state:", req.session);
+    console.log("❌ Authentication failed - Session state:", req.session);
     return res.status(401).json({
       success: false,
       message: "Please login first",
+      sessionId: req.sessionID,
+      hasSession: !!req.session,
+      isAuthenticated: req.session?.isAuthenticated || false
     });
   }
+  
+  console.log("✅ Authentication successful for user:", req.session.user);
   next();
 }
 
@@ -257,33 +271,55 @@ app.post("/api/login", (req, res) => {
       username === process.env.ADMIN_USERNAME &&
       password === process.env.ADMIN_PASSWORD
     ) {
+      // Set session data
       req.session.isAuthenticated = true;
       req.session.user = { username };
+      req.session.loginTime = new Date().toISOString();
 
+      console.log("🔐 Setting session data:", {
+        sessionId: req.sessionID,
+        isAuthenticated: req.session.isAuthenticated,
+        user: req.session.user
+      });
+
+      // Save session explicitly
       req.session.save((err) => {
         if (err) {
-          console.error("Session save error:", err);
+          console.error("❌ Session save error:", err);
           return res.status(500).json({
             success: false,
-            message: "Login failed",
-            error:
-              process.env.NODE_ENV === "development" ? err.message : undefined,
+            message: "Login failed - session error",
+            error: process.env.NODE_ENV === "development" ? err.message : undefined,
           });
         }
+        
+        console.log("✅ Session saved successfully. Session ID:", req.sessionID);
+        
+        // Set cookie explicitly for better compatibility
+        res.cookie('sessionId', req.sessionID, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+          maxAge: 24 * 60 * 60 * 1000,
+          domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
+        });
+
         res.json({
           success: true,
           message: "Login successful",
           redirectUrl: "/dashboard.html",
+          sessionId: req.sessionID
         });
       });
     } else {
+      console.log("❌ Invalid credentials for user:", username);
       res.status(401).json({
         success: false,
         message: "Invalid credentials",
       });
     }
   } catch (error) {
-    console.error("Login error:", error);
+    console.error("❌ Login error:", error);
     res.status(500).json({
       success: false,
       message: "Server error",
@@ -293,10 +329,33 @@ app.post("/api/login", (req, res) => {
 });
 
 app.post("/api/logout", (req, res) => {
+  console.log("🔍 Logout - Session ID:", req.sessionID);
+  console.log("🔍 Logout - Session before destroy:", req.session);
+  
   req.session.destroy((err) => {
-    if (err)
+    if (err) {
+      console.error("❌ Logout error:", err);
       return res.status(500).json({ success: false, message: "Logout failed" });
-    res.clearCookie("connect.sid");
+    }
+    
+    console.log("✅ Session destroyed successfully");
+    
+    // Clear the session cookie
+    res.clearCookie("sessionId", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
+    });
+    
+    // Also clear the default connect.sid cookie
+    res.clearCookie("connect.sid", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
+    });
+    
     res.json({ success: true, message: "Logged out successfully" });
   });
 });
@@ -312,19 +371,40 @@ app.get("/api/profile", (req, res) => {
 
 // Check authentication status
 app.get("/api/check-auth", (req, res) => {
+  console.log("🔍 Check Auth - Session ID:", req.sessionID);
+  console.log("🔍 Check Auth - Session:", req.session);
+  
   if (req.session && req.session.isAuthenticated) {
     res.json({
       success: true,
       authenticated: true,
       user: req.session.user,
+      sessionId: req.sessionID,
+      loginTime: req.session.loginTime
     });
   } else {
     res.status(401).json({
       success: false,
       authenticated: false,
       message: "Not authenticated",
+      sessionId: req.sessionID,
+      hasSession: !!req.session,
+      sessionData: req.session
     });
   }
+});
+
+// Session debugging endpoint
+app.get("/api/session-debug", (req, res) => {
+  res.json({
+    sessionId: req.sessionID,
+    session: req.session,
+    cookies: req.headers.cookie,
+    userAgent: req.headers['user-agent'],
+    host: req.headers.host,
+    origin: req.headers.origin,
+    referer: req.headers.referer
+  });
 });
 
 /// ==================== PRODUCT ROUTES ====================
