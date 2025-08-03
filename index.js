@@ -304,56 +304,41 @@ app.get("/admin/product-titles", checkAuthAPI, (req, res) => {
 app.post("/api/login", (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log(
-      "Login attempt for:",
-      username,
-      "Environment:",
-      process.env.NODE_ENV
-    );
+    console.log("Login attempt for:", username);
 
     if (
       username === process.env.ADMIN_USERNAME &&
       password === process.env.ADMIN_PASSWORD
     ) {
-      // Set session data
-      req.session.isAuthenticated = true;
-      req.session.user = { username };
-      req.session.loginTime = new Date().toISOString();
+      // Generate session ID
+      const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-      console.log("🔐 Setting session data:", {
-        sessionId: req.sessionID,
-        isAuthenticated: req.session.isAuthenticated,
-        user: req.session.user
+      // Create session data
+      const sessionData = {
+        isAuthenticated: true,
+        user: { username },
+        loginTime: new Date().toISOString()
+      };
+
+      // Store session in memory
+      sessions.set(sessionId, sessionData);
+
+      // Set session ID in response header and cookie
+      res.setHeader('X-Session-ID', sessionId);
+      res.cookie('sessionId', sessionId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        maxAge: 60 * 60 * 1000, // 1 hour
+        domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
       });
 
-      // Explicitly save the session
-      req.session.save((err) => {
-        if (err) {
-          console.error("❌ Session save error:", err);
-          return res.status(500).json({
-            success: false,
-            message: "Failed to save session"
-          });
-        }
-
-        console.log("✅ Session saved successfully");
-
-        // Set a custom cookie for additional persistence
-        res.cookie('sessionId', req.sessionID, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 60 * 60 * 1000, // 1 hour
-          domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
-        });
-
-        res.json({
-          success: true,
-          message: "Login successful",
-          redirectUrl: "/dashboard.html",
-          sessionId: req.sessionID,
-          expiresIn: "1 hour"
-        });
+      res.json({
+        success: true,
+        message: "Login successful",
+        redirectUrl: "/dashboard.html",
+        sessionId: sessionId,
+        expiresIn: "1 hour"
       });
     } else {
       console.log("❌ Invalid credentials for user:", username);
