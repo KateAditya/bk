@@ -566,27 +566,7 @@
         });
 
         // Load initial data
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Check authentication first
-            try {
-                const authResponse = await fetch('/api/check-auth', { 
-                    credentials: 'include' 
-                });
-                const authData = await authResponse.json();
-                
-                if (!authData.authenticated) {
-                    console.log('❌ Authentication failed, redirecting to login');
-                    window.location.href = '/login.html';
-                    return;
-                }
-                
-                console.log('✅ Authentication successful:', authData);
-            } catch (error) {
-                console.error('❌ Authentication check failed:', error);
-                window.location.href = '/login.html';
-                return;
-            }
-
+        document.addEventListener('DOMContentLoaded', () => {
             loadProductLinks();
             loadProductTitles();
         });
@@ -594,70 +574,161 @@
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const loginForm = document.getElementById("loginForm");
-            const errorMessage = document.getElementById("errorMessage");
-
-            loginForm.addEventListener("submit", function (e) {
-                e.preventDefault();
-
-                const username = document.getElementById("username").value;
-                const password = document.getElementById("password").value;
-
-                // Show error message div when needed
-                errorMessage.style.display = "block";
-
-                fetch("/api/login", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({ username, password }),
+        /* ----------  GLOBAL HELPERS  ---------- */
+        function logout() {
+            fetch(`/api/logout`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: { 'Content-Type': 'application/json' }
+            })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) window.location.href = '/login.html';
+                    else alert(data.message || 'Logout failed');
                 })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            window.location.href = "/dashboard.html";
-                        } else {
-                            errorMessage.textContent =
-                                data.message || "Login failed. Please check your credentials.";
-                        }
-                    })
-                    .catch((error) => {
-                        errorMessage.textContent = "An error occurred. Please try again later.";
-                        console.error("Login error:", error);
-                    });
+                .catch(err => {
+                    console.error(err);
+                    alert('Logout failed: ' + err.message);
+                });
+        }
+
+        /* ----------  ON DOM READY  ---------- */
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('addProductForm');
+            const productList = document.getElementById('productList');
+            const productIdInput = document.getElementById('productId');
+            const cancelEditBtn = document.getElementById('cancelEdit');
+
+            /* ----------  ADD / UPDATE PRODUCT  ---------- */
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const saveButton = document.getElementById('saveButton');
+                const originalText = saveButton.textContent;
+                saveButton.textContent = 'Saving...';
+                saveButton.disabled = true;
+
+                try {
+                    const id = productIdInput.value;
+                    const formData = new FormData(form);          // <-- keeps the file input
+
+                    const url = id ? `/api/products/${id}` : '/api/products';
+                    const opts = {
+                        method: id ? 'PUT' : 'POST',
+                        credentials: 'include',
+                        body: formData                            // <-- let multer handle it
+                    };
+
+                    const res = await fetch(url, opts);
+                    const data = await res.json();
+                    if (!res.ok) throw new Error(data.error || res.statusText);
+
+                    alert(id ? '✅ Product updated' : '✅ Product added');
+                    form.reset();
+                    productIdInput.value = '';
+                    cancelEditBtn.style.display = 'none';
+                    loadProducts();
+                } catch (err) {
+                    console.error(err);
+                    alert(`❌ ${err.message}`);
+                } finally {
+                    saveButton.textContent = originalText;
+                    saveButton.disabled = false;
+                }
             });
 
-            function logout() {
-                fetch("/api/logout", {
-                    method: "POST",
-                    credentials: "include",
-                    headers: { "Content-Type": "application/json" },
-                })
-                    .then((response) => response.json())
-                    .then((data) => {
-                        if (data.success) {
-                            window.location.href = "/login.html";
-                        } else {
-                            throw new Error(data.message || "Logout failed");
+            /* ----------  CANCEL EDIT  ---------- */
+            cancelEditBtn.addEventListener('click', () => {
+                form.reset();
+                productIdInput.value = '';
+                cancelEditBtn.style.display = 'none';
+            });
+
+            /* ----------  LOAD PRODUCTS  ---------- */
+            function loadProducts() {
+                productList.innerHTML = '<div>Loading products...</div>';
+                fetch('/api/products', { credentials: 'include' })
+                    .then(r => r.json())
+                    .then(products => {
+                        if (!Array.isArray(products) || !products.length) {
+                            productList.innerHTML = '<div>No products found</div>';
+                            return;
                         }
+                        productList.innerHTML = '';
+                        products.forEach(p => {
+                            productList.insertAdjacentHTML('beforeend', `
+            <div class="item" data-id="${p.id}">
+              <img src="${p.image_url}" class="img-fluid" alt="${p.title}">
+              <h3>${p.title}</h3>
+              <span id="dis">${p.discount}</span>
+              <p class="prices">₹${p.price}</p>
+              <div class="actions">
+                <form class="pay-form" style="display:inline;">
+                  <input type="hidden" name="name" value="${p.title}">
+                  <input type="hidden" name="amount" value="${p.price}">
+                  <input type="hidden" name="description" value="${p.description}">
+                  <input type="submit" class="buy-btn" value="Buy Now">
+                </form>
+                <button onclick="viewProduct('${p.view_link}')">View</button>
+                <button onclick="editProduct(${p.id})">Edit</button>
+                <button onclick="deleteProduct(${p.id})">Delete</button>
+              </div>
+            </div>`);
+                        });
                     })
-                    .catch((error) => {
-                        console.error("Logout error:", error);
-                        alert("Logout failed: " + error.message);
+                    .catch(err => {
+                        console.error(err);
+                        productList.innerHTML = `<div class="error-message">
+          Failed to load products. ${err.message}
+          <button onclick="loadProducts()">Try Again</button>
+        </div>`;
                     });
             }
 
-            // Optional: add event listener if logout button exists
-            const logoutButton = document.getElementById("logoutButton");
-            if (logoutButton) {
-                logoutButton.removeAttribute("onclick");
-                logoutButton.addEventListener("click", logout);
+            /* ----------  EDIT / DELETE  ---------- */
+            function editProduct(id) {
+                fetch(`/api/products/${id}`, { credentials: 'include' })
+                    .then(r => r.json())
+                    .then(p => {
+                        productIdInput.value = p.id;
+                        form.title.value = p.title;
+                        form.discount.value = p.discount;
+                        form.price.value = p.price;
+                        form.description.value = p.description;
+                        form.view_link.value = p.view_link;
+                        cancelEditBtn.style.display = 'inline';
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Failed to edit: ' + err.message);
+                    });
             }
-        });
 
+            function deleteProduct(id) {
+                if (!confirm('Delete this product?')) return;
+                fetch(`/api/products/${id}`, { method: 'DELETE', credentials: 'include' })
+                    .then(r => r.json())
+                    .then(() => {
+                        alert('✅ Product deleted');
+                        loadProducts();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        alert('Failed to delete: ' + err.message);
+                    });
+            }
+
+            function viewProduct(link) { window.open(link, '_blank'); }
+
+            /* ----------  INITIAL LOAD  ---------- */
+            loadProducts();
+
+            /* expose for inline handlers */
+            window.editProduct = editProduct;
+            window.deleteProduct = deleteProduct;
+        });
     </script>
+    
 
 </body>
 <!-- Update the script imports -->
