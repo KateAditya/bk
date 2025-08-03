@@ -6,14 +6,16 @@ document.addEventListener("DOMContentLoaded", function () {
   const baseUrl = window.location.origin;
 
   // ==================== LOGIN PAGE SCRIPT ====================
-  // Add this to your login.html:
+// Add this to your login.html:
 
-  // Include the AuthManager class here or load it from external file
-  // ... (AuthManager code from previous artifact) ...
 
-  document.addEventListener("DOMContentLoaded", async () => {
-    await initializeLoginPage();
-  });
+    // Include the AuthManager class here or load it from external file
+    // ... (AuthManager code from previous artifact) ...
+
+    document.addEventListener('DOMContentLoaded', async () => {
+        await initializeLoginPage();
+    });
+
 
   loginForm.addEventListener("submit", async function (e) {
     e.preventDefault();
