@@ -23,39 +23,59 @@ const imagekitConfig = {
 
 console.log("🔧 ImageKit Configuration Check:");
 console.log("Public Key:", imagekitConfig.publicKey ? "✅ Set" : "❌ Missing");
-console.log("Private Key:", imagekitConfig.privateKey ? "✅ Set" : "❌ Missing");
-console.log("URL Endpoint:", imagekitConfig.urlEndpoint ? "✅ Set" : "❌ Missing");
+console.log(
+  "Private Key:",
+  imagekitConfig.privateKey ? "✅ Set" : "❌ Missing"
+);
+console.log(
+  "URL Endpoint:",
+  imagekitConfig.urlEndpoint ? "✅ Set" : "❌ Missing"
+);
 
-if (imagekitConfig.publicKey && imagekitConfig.privateKey && imagekitConfig.urlEndpoint) {
+if (
+  imagekitConfig.publicKey &&
+  imagekitConfig.privateKey &&
+  imagekitConfig.urlEndpoint
+) {
   try {
     imagekit = new ImageKit(imagekitConfig);
     imagekitConfigured = true;
     console.log("✅ ImageKit configured successfully");
-    
+
     // Test the configuration
-    imagekit.listFiles({
-      limit: 1,
-      skip: 0
-    }).then(() => {
-      console.log("✅ ImageKit connection test successful");
-    }).catch((error) => {
-      console.error("❌ ImageKit connection test failed:", error.message);
-      imagekitConfigured = false;
-    });
-    
+    imagekit
+      .listFiles({
+        limit: 1,
+        skip: 0,
+      })
+      .then(() => {
+        console.log("✅ ImageKit connection test successful");
+      })
+      .catch((error) => {
+        console.error("❌ ImageKit connection test failed:", error.message);
+        imagekitConfigured = false;
+      });
   } catch (error) {
     console.error("❌ ImageKit initialization failed:", error.message);
     imagekitConfigured = false;
   }
 } else {
-  console.warn("⚠️ ImageKit configuration incomplete. Using placeholder images.");
-  console.log("📝 To enable ImageKit uploads, set these environment variables:");
+  console.warn(
+    "⚠️ ImageKit configuration incomplete. Using placeholder images."
+  );
+  console.log(
+    "📝 To enable ImageKit uploads, set these environment variables:"
+  );
   console.log("   IMAGEKIT_PUBLIC_KEY=your_public_key");
   console.log("   IMAGEKIT_PRIVATE_KEY=your_private_key");
   console.log("   IMAGEKIT_URL_ENDPOINT=your_url_endpoint");
   console.log("");
-  console.log("🔗 Get your ImageKit credentials from: https://imagekit.io/dashboard");
-  console.log("📖 Setup guide: https://docs.imagekit.io/getting-started/quickstart-guides/setup-your-first-imagekit-integration");
+  console.log(
+    "🔗 Get your ImageKit credentials from: https://imagekit.io/dashboard"
+  );
+  console.log(
+    "📖 Setup guide: https://docs.imagekit.io/getting-started/quickstart-guides/setup-your-first-imagekit-integration"
+  );
   imagekitConfigured = false;
 }
 
@@ -71,14 +91,14 @@ app.use(
         "https://bk-mu-five.vercel.app",
         "https://bk-theta.vercel.app",
         "https://www.dreamstoriesgraphics.com",
-        "https://dreamstoriesgraphics.com"
+        "https://dreamstoriesgraphics.com",
       ];
       // Allow requests with no origin (like mobile apps or curl requests)
       if (!origin) return callback(null, true);
       if (allowedOrigins.indexOf(origin) !== -1) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'));
+        callback(new Error("Not allowed by CORS"));
       }
     },
     credentials: true,
@@ -86,6 +106,36 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "Origin"],
   })
 );
+
+function checkAuthPage(req, res, next) {
+  console.log("🔍 Page auth check - Session:", req.session?.isAuthenticated);
+  console.log("🔍 Page auth check - URL:", req.url);
+
+  if (!req.session || !req.session.isAuthenticated) {
+    console.log("❌ Not authenticated, redirecting to login");
+    return res.redirect("/login.html");
+  }
+
+  console.log("✅ Authenticated, allowing access");
+  next();
+}
+
+
+function checkAuthAPI(req, res, next) {
+  console.log("🔍 API auth check - Session:", req.session?.isAuthenticated);
+  
+  if (!req.session || !req.session.isAuthenticated) {
+    console.log("❌ API not authenticated");
+    return res.status(401).json({
+      success: false,
+      authenticated: false,
+      message: "Authentication required - please login first"
+    });
+  }
+  
+  console.log("✅ API authenticated");
+  next();
+}
 
 // Additional CORS headers
 app.use((req, res, next) => {
@@ -114,14 +164,32 @@ const sessions = new Map();
 
 // Simple session middleware
 app.use((req, res, next) => {
-  const sessionId = req.headers['x-session-id'] || req.cookies?.sessionId;
-  
+  const sessionId =
+    req.headers["x-session-id"] ||
+    req.cookies?.sessionId ||
+    req.get("Authorization")?.replace("Bearer ", "");
+
+  console.log("🔍 Session check - ID:", sessionId);
+
   if (sessionId && sessions.has(sessionId)) {
-    req.session = sessions.get(sessionId);
+    const sessionData = sessions.get(sessionId);
+
+    // Check if session is expired (1 hour = 3600000ms)
+    const sessionAge = Date.now() - new Date(sessionData.loginTime).getTime();
+    if (sessionAge > 3600000) {
+      // 1 hour
+      console.log("⏰ Session expired, removing");
+      sessions.delete(sessionId);
+      req.session = null;
+    } else {
+      console.log("✅ Valid session found");
+      req.session = sessionData;
+    }
   } else {
+    console.log("❌ No valid session found");
     req.session = null;
   }
-  
+
   next();
 });
 
@@ -133,12 +201,12 @@ const upload = multer({
   },
   fileFilter: (req, file, cb) => {
     // Accept images only
-    if (file.mimetype.startsWith('image/')) {
+    if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
-      cb(new Error('Only image files are allowed!'), false);
+      cb(new Error("Only image files are allowed!"), false);
     }
-  }
+  },
 });
 
 // ==================== ROUTE HANDLERS ====================
@@ -150,32 +218,37 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
     if (!file) {
       return res.status(400).json({ error: "No file uploaded" });
     }
-    
+
     if (!imagekitConfigured) {
       // Return a placeholder image URL when ImageKit is not configured
-      const placeholderUrl = `https://via.placeholder.com/400x300?text=${encodeURIComponent(file.originalname)}`;
-      console.log("⚠️ ImageKit not configured, using placeholder:", placeholderUrl);
-      
+      const placeholderUrl = `https://via.placeholder.com/400x300?text=${encodeURIComponent(
+        file.originalname
+      )}`;
+      console.log(
+        "⚠️ ImageKit not configured, using placeholder:",
+        placeholderUrl
+      );
+
       return res.json({
         success: true,
         url: placeholderUrl,
         fileId: null,
-        message: "ImageKit not configured - using placeholder image"
+        message: "ImageKit not configured - using placeholder image",
       });
     }
-    
+
     // Convert buffer to base64
-    const fileData = file.buffer.toString('base64');
-    
+    const fileData = file.buffer.toString("base64");
+
     // Upload to ImageKit
     const response = await imagekit.upload({
       file: fileData,
       fileName: file.originalname,
       folder: "/products",
     });
-    
+
     console.log("✅ Image uploaded to ImageKit:", response.url);
-    
+
     res.json({
       success: true,
       url: response.url,
@@ -183,16 +256,16 @@ app.post("/api/upload", upload.single("image"), async (req, res) => {
     });
   } catch (error) {
     console.error("❌ Upload error:", error);
-    
+
     // If ImageKit fails, return a placeholder
     const placeholderUrl = `https://via.placeholder.com/400x300?text=Upload+Failed`;
-    
+
     res.json({
       success: true,
       url: placeholderUrl,
       fileId: null,
       message: "ImageKit upload failed - using placeholder image",
-      error: error.message
+      error: error.message,
     });
   }
 });
@@ -211,9 +284,14 @@ app.get("/login.html", (req, res) => {
 });
 
 function checkAuthPage(req, res, next) {
+  console.log("🔍 Page auth check - Session:", req.session?.isAuthenticated);
+
   if (!req.session || !req.session.isAuthenticated) {
+    console.log("❌ Not authenticated, redirecting to login");
     return res.redirect("/login.html");
   }
+
+  console.log("✅ Authenticated, allowing access");
   next();
 }
 
@@ -221,7 +299,7 @@ function checkAuthAPI(req, res, next) {
   if (!req.session || !req.session.isAuthenticated) {
     return res.status(401).json({
       success: false,
-      message: "Authentication required - please login first"
+      message: "Authentication required - please login first",
     });
   }
   next();
@@ -261,44 +339,79 @@ app.get("/admin/product-titles", checkAuthAPI, (req, res) => {
 });
 
 // Authentication endpoint
+// ==================== SERVER-SIDE FIXES ====================
+
+// 1. Fix the session middleware - replace your existing session middleware with this:
+app.use((req, res, next) => {
+  const sessionId = req.headers["x-session-id"] || req.cookies?.sessionId;
+
+  if (sessionId && sessions.has(sessionId)) {
+    const sessionData = sessions.get(sessionId);
+
+    // Check if session is expired (1 hour = 3600000ms)
+    const sessionAge = Date.now() - new Date(sessionData.loginTime).getTime();
+    if (sessionAge > 3600000) {
+      // 1 hour
+      sessions.delete(sessionId);
+      req.session = null;
+    } else {
+      req.session = sessionData;
+    }
+  } else {
+    req.session = null;
+  }
+
+  next();
+});
+
+// 2. Fix the login endpoint - replace your existing login endpoint:
 app.post("/api/login", (req, res) => {
   try {
     const { username, password } = req.body;
-    console.log("Login attempt for:", username);
+    console.log("🔐 Login attempt for:", username);
 
     if (
       username === process.env.ADMIN_USERNAME &&
       password === process.env.ADMIN_PASSWORD
     ) {
       // Generate session ID
-      const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+      const sessionId =
+        Math.random().toString(36).substring(2, 15) +
+        Math.random().toString(36).substring(2, 15);
 
       // Create session data
       const sessionData = {
         isAuthenticated: true,
         user: { username },
-        loginTime: new Date().toISOString()
+        loginTime: new Date().toISOString(),
+        sessionId: sessionId,
       };
 
       // Store session in memory
       sessions.set(sessionId, sessionData);
+      console.log("✅ Session created:", sessionId);
 
-      // Set session ID in response header and cookie
-      res.setHeader('X-Session-ID', sessionId);
-      res.cookie('sessionId', sessionId, {
-        httpOnly: true,
+      // Set multiple cookie options for compatibility
+      const cookieOptions = {
+        httpOnly: false, // Allow JS access
         secure: process.env.NODE_ENV === "production",
         sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
         maxAge: 60 * 60 * 1000, // 1 hour
-        domain: process.env.NODE_ENV === "production" ? ".dreamstoriesgraphics.com" : undefined
-      });
+        path: "/",
+      };
+
+      res.cookie("sessionId", sessionId, cookieOptions);
+
+      // Also set in header for immediate use
+      res.setHeader("X-Session-ID", sessionId);
 
       res.json({
         success: true,
         message: "Login successful",
         redirectUrl: "/dashboard.html",
         sessionId: sessionId,
-        expiresIn: "1 hour"
+        expiresIn: "1 hour",
+        user: { username },
       });
     } else {
       console.log("❌ Invalid credentials for user:", username);
@@ -319,7 +432,7 @@ app.post("/api/login", (req, res) => {
 
 app.post("/api/logout", (req, res) => {
   // Get sessionId from cookie or header
-  const sessionId = req.headers['x-session-id'] || req.cookies?.sessionId;
+  const sessionId = req.headers["x-session-id"] || req.cookies?.sessionId;
   if (sessionId && sessions.has(sessionId)) {
     sessions.delete(sessionId);
   }
@@ -339,18 +452,25 @@ app.get("/api/profile", (req, res) => {
 
 // Check authentication status
 app.get("/api/check-auth", (req, res) => {
+  console.log("🔍 Auth check - Session exists:", !!req.session);
+  console.log(
+    "🔍 Auth check - Is authenticated:",
+    req.session?.isAuthenticated
+  );
+
   if (req.session && req.session.isAuthenticated) {
     res.json({
       success: true,
       authenticated: true,
       user: req.session.user,
-      loginTime: req.session.loginTime
+      loginTime: req.session.loginTime,
+      sessionId: req.session.sessionId,
     });
   } else {
     res.status(401).json({
       success: false,
       authenticated: false,
-      message: "Not authenticated"
+      message: "Not authenticated",
     });
   }
 });
@@ -361,19 +481,23 @@ app.get("/api/session-debug", (req, res) => {
     sessionId: req.sessionID,
     session: req.session,
     cookies: req.headers.cookie,
-    userAgent: req.headers['user-agent'],
+    userAgent: req.headers["user-agent"],
     host: req.headers.host,
     origin: req.headers.origin,
-    referer: req.headers.referer
+    referer: req.headers.referer,
   });
 });
 
 // Session status endpoint
 app.get("/api/session-status", (req, res) => {
   const now = new Date();
-  const sessionExpiry = req.session.cookie ? new Date(req.session.cookie._expires) : null;
-  const timeLeft = sessionExpiry ? Math.max(0, sessionExpiry.getTime() - now.getTime()) : 0;
-  
+  const sessionExpiry = req.session.cookie
+    ? new Date(req.session.cookie._expires)
+    : null;
+  const timeLeft = sessionExpiry
+    ? Math.max(0, sessionExpiry.getTime() - now.getTime())
+    : 0;
+
   res.json({
     sessionId: req.sessionID,
     isAuthenticated: req.session?.isAuthenticated || false,
@@ -383,7 +507,7 @@ app.get("/api/session-status", (req, res) => {
     timeLeftMinutes: Math.round(timeLeft / (1000 * 60)),
     timeLeftSeconds: Math.round(timeLeft / 1000),
     cookieMaxAge: req.session.cookie?.maxAge || 0,
-    environment: process.env.NODE_ENV || "development"
+    environment: process.env.NODE_ENV || "development",
   });
 });
 
@@ -438,210 +562,281 @@ app.get("/api/products/:id", (req, res) => {
 });
 
 // Add product
-app.post("/api/products", checkAuthAPI, upload.single("image"), async (req, res) => {
-  console.log("🔄 Received request to add product");
-  try {
-    const { title, discount, price, description, view_link } = req.body;
-    let image_url = req.body.image_url;
+app.post(
+  "/api/products",
+  checkAuthAPI,
+  upload.single("image"),
+  async (req, res) => {
+    console.log("🔄 Received request to add product");
+    try {
+      const { title, discount, price, description, view_link } = req.body;
+      let image_url = req.body.image_url;
 
-    // If file is present, handle image upload
-    if (req.file) {
-      if (imagekitConfigured) {
-        try {
-          const fileData = req.file.buffer.toString('base64');
-          const response = await imagekit.upload({
-            file: fileData,
-            fileName: req.file.originalname,
-            folder: "/products",
-          });
-          image_url = response.url;
-          console.log("✅ Image uploaded to ImageKit successfully:", image_url);
-        } catch (imagekitError) {
-          console.error("❌ ImageKit upload failed:", imagekitError.message);
-          // Use a placeholder image if ImageKit fails
-          image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
-          console.log("⚠️ Using placeholder image due to ImageKit failure:", image_url);
+      // If file is present, handle image upload
+      if (req.file) {
+        if (imagekitConfigured) {
+          try {
+            const fileData = req.file.buffer.toString("base64");
+            const response = await imagekit.upload({
+              file: fileData,
+              fileName: req.file.originalname,
+              folder: "/products",
+            });
+            image_url = response.url;
+            console.log(
+              "✅ Image uploaded to ImageKit successfully:",
+              image_url
+            );
+          } catch (imagekitError) {
+            console.error("❌ ImageKit upload failed:", imagekitError.message);
+            // Use a placeholder image if ImageKit fails
+            image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(
+              req.file.originalname
+            )}`;
+            console.log(
+              "⚠️ Using placeholder image due to ImageKit failure:",
+              image_url
+            );
+          }
+        } else {
+          // ImageKit not configured, use placeholder
+          image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(
+            req.file.originalname
+          )}`;
+          console.log(
+            "⚠️ ImageKit not configured, using placeholder:",
+            image_url
+          );
         }
-      } else {
-        // ImageKit not configured, use placeholder
-        image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
-        console.log("⚠️ ImageKit not configured, using placeholder:", image_url);
       }
-    }
 
-    // Validate required fields
-    if (!title || !discount || !price || !description || !view_link || !image_url) {
-      console.log("❌ Missing required fields");
-      return res.status(400).json({
-        error: "All fields are required",
-        success: false,
-        received: { title, discount, price, description, view_link, image_url },
-      });
-    }
-
-    // Validate and convert price
-    const numericPrice = parseFloat(price);
-    if (isNaN(numericPrice) || numericPrice <= 0) {
-      console.log("❌ Invalid price value:", price);
-      return res.status(400).json({
-        error: "Price must be a valid positive number",
-        success: false,
-      });
-    }
-
-    const sql = `INSERT INTO products (title, image_url, discount, price, description, view_link) 
-                 VALUES (?, ?, ?, ?, ?, ?)`;
-
-    db.query(
-      sql,
-      [title, image_url, discount, numericPrice, description, view_link],
-      (err, result) => {
-        if (err) {
-          console.error("❌ Database Error:", err);
-          return res.status(500).json({
-            error: "Failed to save product to database",
-            success: false,
-            details: process.env.NODE_ENV === "development" ? err.message : undefined,
-          });
-        }
-
-        console.log("✅ Product added successfully with ID:", result.insertId);
-        res.status(201).json({
-          success: true,
-          message: "✅ Product added successfully!",
-          productId: result.insertId,
-          product: {
-            id: result.insertId,
+      // Validate required fields
+      if (
+        !title ||
+        !discount ||
+        !price ||
+        !description ||
+        !view_link ||
+        !image_url
+      ) {
+        console.log("❌ Missing required fields");
+        return res.status(400).json({
+          error: "All fields are required",
+          success: false,
+          received: {
             title,
-            image_url,
             discount,
-            price: numericPrice,
+            price,
             description,
             view_link,
+            image_url,
           },
         });
       }
-    );
-  } catch (err) {
-    console.error("❌ Error in product creation:", err);
-    res.status(500).json({ error: "Internal server error", details: err.message });
+
+      // Validate and convert price
+      const numericPrice = parseFloat(price);
+      if (isNaN(numericPrice) || numericPrice <= 0) {
+        console.log("❌ Invalid price value:", price);
+        return res.status(400).json({
+          error: "Price must be a valid positive number",
+          success: false,
+        });
+      }
+
+      const sql = `INSERT INTO products (title, image_url, discount, price, description, view_link) 
+                 VALUES (?, ?, ?, ?, ?, ?)`;
+
+      db.query(
+        sql,
+        [title, image_url, discount, numericPrice, description, view_link],
+        (err, result) => {
+          if (err) {
+            console.error("❌ Database Error:", err);
+            return res.status(500).json({
+              error: "Failed to save product to database",
+              success: false,
+              details:
+                process.env.NODE_ENV === "development"
+                  ? err.message
+                  : undefined,
+            });
+          }
+
+          console.log(
+            "✅ Product added successfully with ID:",
+            result.insertId
+          );
+          res.status(201).json({
+            success: true,
+            message: "✅ Product added successfully!",
+            productId: result.insertId,
+            product: {
+              id: result.insertId,
+              title,
+              image_url,
+              discount,
+              price: numericPrice,
+              description,
+              view_link,
+            },
+          });
+        }
+      );
+    } catch (err) {
+      console.error("❌ Error in product creation:", err);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: err.message });
+    }
   }
-});
+);
 
 // Update product
-app.put("/api/products/:id", checkAuthAPI, upload.single("image"), async (req, res) => {
-  const productId = parseInt(req.params.id);
-  const { title, discount, price, description, view_link } = req.body;
-  let image_url = req.body.image_url;
+app.put(
+  "/api/products/:id",
+  checkAuthAPI,
+  upload.single("image"),
+  async (req, res) => {
+    const productId = parseInt(req.params.id);
+    const { title, discount, price, description, view_link } = req.body;
+    let image_url = req.body.image_url;
 
-  if (isNaN(productId)) {
-    return res.status(400).json({ error: "Invalid product ID" });
-  }
+    if (isNaN(productId)) {
+      return res.status(400).json({ error: "Invalid product ID" });
+    }
 
-  try {
-    // If a new file is uploaded, handle image upload
-    if (req.file) {
-      if (imagekitConfigured) {
-        try {
-          const fileData = req.file.buffer.toString('base64');
-          const response = await imagekit.upload({
-            file: fileData,
-            fileName: req.file.originalname,
-            folder: "/products",
-          });
-          image_url = response.url;
-          console.log("✅ Image uploaded to ImageKit successfully:", image_url);
-        } catch (imagekitError) {
-          console.error("❌ ImageKit upload failed:", imagekitError.message);
-          // Use a placeholder image if ImageKit fails
-          image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
-          console.log("⚠️ Using placeholder image due to ImageKit failure:", image_url);
+    try {
+      // If a new file is uploaded, handle image upload
+      if (req.file) {
+        if (imagekitConfigured) {
+          try {
+            const fileData = req.file.buffer.toString("base64");
+            const response = await imagekit.upload({
+              file: fileData,
+              fileName: req.file.originalname,
+              folder: "/products",
+            });
+            image_url = response.url;
+            console.log(
+              "✅ Image uploaded to ImageKit successfully:",
+              image_url
+            );
+          } catch (imagekitError) {
+            console.error("❌ ImageKit upload failed:", imagekitError.message);
+            // Use a placeholder image if ImageKit fails
+            image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(
+              req.file.originalname
+            )}`;
+            console.log(
+              "⚠️ Using placeholder image due to ImageKit failure:",
+              image_url
+            );
+          }
+        } else {
+          // ImageKit not configured, use placeholder
+          image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(
+            req.file.originalname
+          )}`;
+          console.log(
+            "⚠️ ImageKit not configured, using placeholder:",
+            image_url
+          );
         }
       } else {
-        // ImageKit not configured, use placeholder
-        image_url = `https://via.placeholder.com/400x300?text=${encodeURIComponent(req.file.originalname)}`;
-        console.log("⚠️ ImageKit not configured, using placeholder:", image_url);
-      }
-    } else {
-      // If no new file, get existing image_url from database
-      const existingProduct = await new Promise((resolve, reject) => {
-        db.query("SELECT image_url FROM products WHERE id = ?", [productId], (err, results) => {
-          if (err) reject(err);
-          else resolve(results[0]);
+        // If no new file, get existing image_url from database
+        const existingProduct = await new Promise((resolve, reject) => {
+          db.query(
+            "SELECT image_url FROM products WHERE id = ?",
+            [productId],
+            (err, results) => {
+              if (err) reject(err);
+              else resolve(results[0]);
+            }
+          );
         });
-      });
-      image_url = existingProduct.image_url;
-    }
+        image_url = existingProduct.image_url;
+      }
 
-    // Validate required fields
-    if (!title || !discount || !price || !description || !view_link || !image_url) {
-      return res.status(400).json({
-        error: "All fields are required",
-        success: false,
-      });
-    }
+      // Validate required fields
+      if (
+        !title ||
+        !discount ||
+        !price ||
+        !description ||
+        !view_link ||
+        !image_url
+      ) {
+        return res.status(400).json({
+          error: "All fields are required",
+          success: false,
+        });
+      }
 
-    // Validate price
-    const numericPrice = parseFloat(price);
-    if (isNaN(numericPrice) || numericPrice <= 0) {
-      return res.status(400).json({
-        error: "Price must be a valid positive number",
-        success: false,
-      });
-    }
+      // Validate price
+      const numericPrice = parseFloat(price);
+      if (isNaN(numericPrice) || numericPrice <= 0) {
+        return res.status(400).json({
+          error: "Price must be a valid positive number",
+          success: false,
+        });
+      }
 
-    console.log(`🔄 Updating product ID: ${productId}`);
+      console.log(`🔄 Updating product ID: ${productId}`);
 
-    const sql = `
+      const sql = `
       UPDATE products 
       SET title = ?, image_url = ?, discount = ?, price = ?, description = ?, view_link = ? 
       WHERE id = ?`;
 
-    db.query(
-      sql,
-      [
-        title,
-        image_url,
-        discount,
-        numericPrice,
-        description,
-        view_link,
-        productId,
-      ],
-      (updateErr, updateResult) => {
-        if (updateErr) {
-          console.error("❌ Error updating product:", updateErr);
-          return res.status(500).json({
-            error: "Failed to update product",
-            success: false,
+      db.query(
+        sql,
+        [
+          title,
+          image_url,
+          discount,
+          numericPrice,
+          description,
+          view_link,
+          productId,
+        ],
+        (updateErr, updateResult) => {
+          if (updateErr) {
+            console.error("❌ Error updating product:", updateErr);
+            return res.status(500).json({
+              error: "Failed to update product",
+              success: false,
+            });
+          }
+
+          if (updateResult.affectedRows === 0) {
+            return res.status(404).json({ error: "Product not found" });
+          }
+
+          console.log("✅ Product updated successfully");
+          res.json({
+            success: true,
+            message: "✅ Product updated successfully!",
+            product: {
+              id: productId,
+              title,
+              image_url,
+              discount,
+              price: numericPrice,
+              description,
+              view_link,
+            },
           });
         }
-
-        if (updateResult.affectedRows === 0) {
-          return res.status(404).json({ error: "Product not found" });
-        }
-
-        console.log("✅ Product updated successfully");
-        res.json({
-          success: true,
-          message: "✅ Product updated successfully!",
-          product: {
-            id: productId,
-            title,
-            image_url,
-            discount,
-            price: numericPrice,
-            description,
-            view_link,
-          },
-        });
-      }
-    );
-  } catch (err) {
-    console.error("❌ Error in product update:", err);
-    res.status(500).json({ error: "Internal server error", details: err.message });
+      );
+    } catch (err) {
+      console.error("❌ Error in product update:", err);
+      res
+        .status(500)
+        .json({ error: "Internal server error", details: err.message });
+    }
   }
-});
+);
 
 // Delete product
 app.delete("/api/products/:id", checkAuthAPI, (req, res) => {
@@ -829,22 +1024,22 @@ app.get("/api/auth-test", (req, res) => {
     user: req.session?.user || null,
     loginTime: req.session?.loginTime || null,
     environment: process.env.NODE_ENV || "development",
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   };
-  
+
   console.log("🔍 Auth Test Result:", authStatus);
-  
+
   if (authStatus.isAuthenticated) {
     res.json({
       success: true,
       message: "Authentication successful",
-      ...authStatus
+      ...authStatus,
     });
   } else {
     res.status(401).json({
       success: false,
       message: "Authentication failed",
-      ...authStatus
+      ...authStatus,
     });
   }
 });
