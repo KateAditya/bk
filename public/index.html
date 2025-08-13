@@ -197,6 +197,8 @@
             </div>
         </nav>
 
+
+
         <!-- Mobile Menu (hidden by default) -->
         <div class="mobile-menu" id="mobile-menu">
             <a href="/about.html">About</a>
@@ -228,12 +230,234 @@
         </script>
 
 
+
+        <!-- Add margin-top to account for fixed navbar -->
+        <div style="margin-top: 120px;"></div>
+
+        <div class="copyright-notice-container">
+            <!-- Important Notice Banner -->
+           
+            <!-- Continuous Scrolling Notice -->
+            <div class="scrolling-notice">
+                <div class="scrolling-text">
+                    <span class="red-text">ENGLISH: Copyright © dreamstoriesgraphics.com | All designs protected under
+                        Section 512 DPCA | Strictly prohibited: Resale, Distribution, Modification | Single user license
+                        only | Legal action including fines (₹50,000+) and imprisonment possible for violations •
+                    </span>
+                    <span class="red-text">हिंदी: कॉपीराइट © dreamstoriesgraphics.com | सभी डिज़ाइन धारा 512 DPCA के तहत
+                        सुरक्षित | सख्त वर्जित: पुनर्विक्रय, वितरण, संशोधन | केवल एक उपयोगकर्ता लाइसेंस | उल्लंघन पर
+                        ₹50,000+ जुर्माना और कारावास की कार्रवाई संभव • </span>
+                    <span class="red-text">मराठी: कॉपीराइट © dreamstoriesgraphics.com | सर्व डिझाइन कलम 512 DPCA अंतर्गत
+                        संरक्षित | कठोरपणे प्रतिबंधित: पुनर्विक्री, वितरण, बदल | फक्त एकाच वापरकर्त्यासाठी परवाना |
+                        उल्लंघनासाठी ₹50,000+ दंड आणि तुरुंगवासाची कारवाई शक्य • </span>
+                </div>
+            </div>
+
+            <!-- Detailed Notice (Expandable) -->
+            <button class="toggle-btn" onclick="toggleNotice()">⚠️ VIEW FULL LEGAL NOTICE (Click Here)</button>
+
+            <div id="detailed-notice" class="detailed-content" style="display:none">
+                <!-- English Section -->
+                <div class="language-section">
+                    <h3>LEGAL NOTICE (ENGLISH) - SECTION 512 DPCA</h3>
+                    <ul>
+                        <li>All digital content including PSDs, templates, and designs are exclusive property of
+                            <span>dreamstoriesgraphics.com</span>
+                        </li>
+                        <li>STRICTLY PROHIBITED: Resale, redistribution, sharing, or any commercial use without
+                            authorization</li>
+                        <li>Modification of any design does NOT transfer ownership rights</li>
+                        <li>Single user license only - cannot be transferred or sublicensed</li>
+                        <li>Violators will face legal action under Section 512 with minimum ₹50,000 penalty + possible
+                            imprisonment</li>
+                        <li>Using our designs for NFT creation is expressly forbidden</li>
+                        <li>All copyright infringement cases will be filed in Neemuch District Court, MP</li>
+                    </ul>
+                </div>
+
+                <!-- Hindi Section -->
+                <div class="language-section">
+                    <h3>कानूनी सूचना (हिंदी) - धारा 512 DPCA</h3>
+                    <ul>
+                        <li>PSDs, टेम्प्लेट्स और डिज़ाइन सहित सभी डिजिटल सामग्री <span>dreamstoriesgraphics.com</span>
+                            की विशेष संपत्ति हैं</li>
+                        <li>सख्त वर्जित: बिना अधिकार के पुनर्विक्रय, पुनर्वितरण, साझाकरण या कोई वाणिज्यिक उपयोग</li>
+                        <li>किसी भी डिज़ाइन में संशोधन करने से स्वामित्व अधिकार हस्तांतरित नहीं होते</li>
+                        <li>केवल एक उपयोगकर्ता लाइसेंस - हस्तांतरणीय या उप-लाइसेंस योग्य नहीं</li>
+                        <li>उल्लंघनकर्ताओं के खिलाफ धारा 512 के तहत कम से कम ₹50,000 जुर्माना + संभावित कारावास की
+                            कार्रवाई</li>
+                        <li>NFT निर्माण के लिए हमारे डिज़ाइन का उपयोग स्पष्ट रूप से वर्जित है</li>
+                        <li>सभी कॉपीराइट उल्लंघन के मामले नीमच जिला न्यायालय, MP में दर्ज किए जाएंगे</li>
+                    </ul>
+                </div>
+
+                <!-- Marathi Section -->
+                <div class="language-section">
+                    <h3>कायदेशीर सूचना (मराठी) - कलम 512 DPCA</h3>
+                    <ul>
+                        <li>PSDs, टेम्प्लेट्स आणि डिझाइन्स सह सर्व डिजिटल सामग्री <span>dreamstoriesgraphics.com</span>
+                            ची विशेष मालमत्ता आहे</li>
+                        <li>कठोरपणे प्रतिबंधित: परवानगीशिवाय पुनर्विक्री, पुनर्वितरण, शेअरिंग किंवा कोणताही वाणिज्यिक
+                            वापर</li>
+                        <li>कोणत्याही डिझाइनमध्ये बदल केल्याने मालकी हक्क हस्तांतरित होत नाहीत</li>
+                        <li>फक्त एकाच वापरकर्त्यासाठी परवाना - हस्तांतरणीय किंवा उप-परवाना योग्य नाही</li>
+                        <li>उल्लंघनकर्त्यांवर कलम 512 अंतर्गत किमान ₹50,000 दंड + संभाव्य तुरुंगवासाची कारवाई</li>
+                        <li>NFT तयार करण्यासाठी आमच्या डिझाइनचा वापर स्पष्टपणे प्रतिबंधित आहे</li>
+                        <li>सर्व कॉपीराइट भंगाचे खटले नीमच जिल्हा न्यायालय, MP मध्ये दाखल केले जातील</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <style>
+            .copyright-notice-container {
+                max-width: 97%;
+                margin: 10px auto;
+                font-family: Arial, sans-serif;
+                border: 2px solid #d9534f;
+                border-radius: 6px;
+                overflow: hidden;
+                margin-bottom: -80px;
+                
+            }
+
+            /* Important Banner */
+            .important-banner {
+                background-color: #8c0c07;
+                color: white;
+                padding: 10px;
+                text-align: center;
+                font-weight: bold;
+                font-size: 1rem;
+            }
+
+            /* Scrolling Notice */
+            .scrolling-notice {
+                background-color: #ffebee;
+                padding: 12px 0;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+            .scrolling-text {
+                display: inline-block;
+                animation: scroll 40s linear infinite;
+                padding-left: 10%;
+            }
+
+            .red-text {
+                color: #980b06;
+                font-weight: bold;
+                font-size: 0.95rem;
+                margin-right: 40px;
+            }
+
+            /* Toggle Button */
+            .toggle-btn {
+                width: 100%;
+                padding: 12px;
+                background-color: #870d09;
+                color: white;
+                border: none;
+                font-weight: bold;
+                cursor: pointer;
+                font-size: 1rem;
+                transition: background 0.3s;
+            }
+
+            .toggle-btn:hover {
+                background-color: #9a5a05;
+            }
+
+            /* Detailed Content */
+            .detailed-content {
+                padding: 15px;
+                background-color: #fff;
+            }
+
+            .language-section {
+                margin-bottom: 25px;
+                border-bottom: 1px solid #eee;
+                padding-bottom: 15px;
+            }
+
+            .language-section:last-child {
+                border-bottom: none;
+            }
+
+            .language-section h3 {
+                color: #d9534f;
+                font-size: 1.1rem;
+                margin-bottom: 12px;
+            }
+
+            .language-section ul {
+                padding-left: 20px;
+            }
+
+            .language-section li {
+                margin-bottom: 10px;
+                line-height: 1.5;
+                font-size: 0.9rem;
+            }
+
+            .language-section span {
+                color: #d9534f;
+                font-weight: bold;
+            }
+
+            /* Animation */
+            @keyframes scroll {
+                0% {
+                    transform: translateX(0);
+                }
+
+                100% {
+                    transform: translateX(-100%);
+                }
+            }
+
+            /* Responsive */
+            @media (max-width: 768px) {
+                .important-banner {
+                    font-size: 0.9rem;
+                    padding: 8px;
+                }
+
+                .red-text {
+                    font-size: 0.85rem;
+                }
+
+                .language-section h3 {
+                    font-size: 1rem;
+                }
+
+                .language-section li {
+                    font-size: 0.85rem;
+                }
+            }
+        </style>
+
+        <script>
+            function toggleNotice() {
+                const notice = document.getElementById('detailed-notice');
+                const btn = document.querySelector('.toggle-btn');
+
+                if (notice.style.display === 'block') {
+                    notice.style.display = 'none';
+                    btn.textContent = '⚠️ VIEW FULL LEGAL NOTICE (Click Here)';
+                } else {
+                    notice.style.display = 'block';
+                    btn.textContent = '▲ HIDE LEGAL NOTICE';
+                }
+            }
+        </script>
+
         <section class="product-section">
             <div id="product-container" class="products">
 
             </div>
         </section>
-
 
         <footer>
             <h2>Dream Stories</h2>
