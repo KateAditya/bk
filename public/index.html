@@ -122,7 +122,6 @@
             flex-direction: column;
             gap: 16px;
             padding: 16px;
-            border-bottom: 1px solid #e5e5e5;
             opacity: 0;
             transform: translateY(-10px);
             transition: opacity 0.3s ease, transform 0.3s ease;
@@ -132,8 +131,17 @@
             top: 0;
             left: 0;
             width: 100%;
-            background: white;
             z-index: 1000;
+
+            background: #ebeaea;
+            border: 1px solid #000000;
+
+            /* For dark mode */
+            @media (prefers-color-scheme: dark) {
+                background: linear-gradient(to right, #b3aeae, #635593);
+                border-bottom: 1px solid #000000;
+            }
+
         }
 
         .mobile-menu.show {
