@@ -118,34 +118,33 @@
 
         .mobile-menu {
             display: none;
-            /* Initially hidden */
+            /* Completely hidden by default */
             flex-direction: column;
             gap: 16px;
             padding: 16px;
             border-bottom: 1px solid #e5e5e5;
             opacity: 0;
-            /* Start hidden */
             transform: translateY(-10px);
-            /* Start slightly above */
             transition: opacity 0.3s ease, transform 0.3s ease;
-            /* Smooth transition for menu */
-            margin-top: 100px;
+            margin-top: 130px;
+            position: fixed;
+            /* or 'absolute' depending on your layout */
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: white;
+            z-index: 1000;
         }
 
         .mobile-menu.show {
-            display: flex;
-            /* Show the menu */
             opacity: 1;
-            /* Fade in */
             transform: translateY(0);
-            /* Move to original position */
         }
 
         .mobile-menu.hide {
             opacity: 0;
-            /* Fade out */
             transform: translateY(-10px);
-            /* Move slightly up */
+            /* Don't set display:none here - let JavaScript handle it after animation */
         }
 
         .mobile-menu a {
@@ -214,17 +213,25 @@
 
             btn.addEventListener('click', () => {
                 if (menu.classList.contains('show')) {
+                    // Closing the menu
                     menu.classList.remove('show');
                     menu.classList.add('hide');
+
+                    // Hide after animation completes
                     setTimeout(() => {
                         menu.classList.remove('hide');
-                        menu.style.display = 'none'; // Hide the menu after the animation
-                    }, 300); // Match this duration with the CSS transition duration
+                        menu.style.display = 'none';
+                    }, 300); // Match this with CSS transition duration
                 } else {
-                    menu.style.display = 'flex'; // Show the menu
-                    setTimeout(() => {
-                        menu.classList.add('show'); // Add the show class after setting display
-                    }, 10); // Small timeout to allow display to take effect
+                    // Opening the menu
+                    menu.style.display = 'flex';
+
+                    // Force reflow to ensure display change is processed
+                    void menu.offsetHeight;
+
+                    // Start show animation
+                    menu.classList.add('show');
+                    menu.classList.remove('hide');
                 }
             });
         </script>
@@ -236,7 +243,7 @@
 
         <div class="copyright-notice-container">
             <!-- Important Notice Banner -->
-           
+
             <!-- Continuous Scrolling Notice -->
             <div class="scrolling-notice">
                 <div class="scrolling-text">
@@ -318,7 +325,7 @@
                 border-radius: 6px;
                 overflow: hidden;
                 margin-bottom: -80px;
-                
+
             }
 
             /* Important Banner */
@@ -419,6 +426,11 @@
 
             /* Responsive */
             @media (max-width: 768px) {
+                .copyright-notice-container {
+                    margin-bottom: -58px;
+                    margin-top: 141px;
+                }
+
                 .important-banner {
                     font-size: 0.9rem;
                     padding: 8px;
