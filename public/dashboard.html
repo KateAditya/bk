@@ -481,22 +481,27 @@
     <div id="toast"></div>
     <script>
         function logout() {
-            fetch(`/api/logout`, {
+            fetch('/api/logout', {
                 method: 'POST',
                 credentials: 'include',
                 headers: { 'Content-Type': 'application/json' }
             })
-                .then(res => res.json())
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error(`HTTP error! status: ${res.status}`);
+                    }
+                    return res.json();
+                })
                 .then(data => {
                     if (data.success) {
                         window.location.href = '/login.html';
                     } else {
-                        alert(data.message || 'Logout failed');
+                        throw new Error(data.message || 'Logout failed');
                     }
                 })
                 .catch(err => {
-                    console.error(err);
-                    alert('Logout failed: ' + err.message);
+                    // Redirect to login even if logout fails (session might be expired)
+                    window.location.href = '/login.html';
                 });
         }
 
