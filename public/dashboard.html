@@ -404,6 +404,18 @@
     .file-input {
         display: none;
     }
+
+    .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+    }
 </style>
 
 <body>
@@ -437,7 +449,8 @@
                 </div>
             </div>
 
-            <input type="file" id="imageUpload" class="file-input" accept="image/*" required>
+            <label for="imageUpload" class="sr-only">Upload Product Image</label>
+            <input type="file" id="imageUpload" class="file-input" accept="image/*" aria-label="Upload product image file">
 
             <div class="upload-progress" id="uploadProgress">
                 <div class="upload-progress-bar" id="uploadProgressBar"></div>
@@ -502,6 +515,18 @@
             const uploadProgressBar = document.getElementById("uploadProgressBar");
 
             let currentImageUrl = '';
+
+            // Function to toggle image requirement based on edit mode
+            function setImageRequirement(isEditing) {
+                if (isEditing) {
+                    imageUpload.removeAttribute('required');
+                } else {
+                    imageUpload.setAttribute('required', '');
+                }
+            }
+
+            // Initialize image as required for new products by default
+            setImageRequirement(false);
 
             // File drop zone functionality
             fileDropZone.addEventListener('click', () => {
@@ -668,12 +693,12 @@
                     saveButton.textContent = 'Saving...';
                     saveButton.disabled = true;
 
-                    // Validate image upload
-                    if (!currentImageUrl) {
+                    const id = productIdInput.value;
+                    
+                    // Validate image upload only for new products
+                    if (!id && !currentImageUrl) {
                         throw new Error('Please upload an image first');
                     }
-
-                    const id = productIdInput.value;
                     const formData = new FormData(this);
 
                     // Get the working image URL
@@ -706,6 +731,8 @@
                     if (id) {
                         productIdInput.value = '';
                         cancelEditBtn.style.display = 'none';
+                        // Set image as required for new products
+                        setImageRequirement(false);
                     }
 
                     loadProducts();
@@ -723,6 +750,8 @@
                 productIdInput.value = '';
                 cancelEditBtn.style.display = 'none';
                 resetPreview();
+                // Set image as required for new products
+                imageUpload.setAttribute('required', '');
             });
 
             // Function to create image element with better error handling
@@ -873,6 +902,8 @@
                         }
 
                         cancelEditBtn.style.display = 'inline';
+                        // Remove image requirement when editing
+                        setImageRequirement(true);
                         window.scrollTo(0, 0);
                     })
                     .catch(err => {
@@ -920,6 +951,6 @@
     </script>
 
 </body>
-<script src="public/logout.js"></script>
+<script src="logout.js"></script>
 
 </html>
