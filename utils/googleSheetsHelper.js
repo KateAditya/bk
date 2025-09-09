@@ -1,77 +1,55 @@
+// utils/googleSheetsHelper.js
 const { google } = require("googleapis");
-const fs = require("fs");
 
 function getAuthClientFromEnv() {
-  const jsonFile = process.env.GOOGLE_SERVICE_ACCOUNT_FILE;
-  if (jsonFile && fs.existsSync(jsonFile)) {
-    const raw = fs.readFileSync(jsonFile, "utf8");
-    const creds = JSON.parse(raw);
-    const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
-    return new google.auth.JWT(
-      creds.client_email,
-      null,
-      creds.private_key,
-      scopes
-    );
-  }
-
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
   let privateKey = process.env.GOOGLE_PRIVATE_KEY;
-  if (clientEmail && privateKey) {
-    privateKey = privateKey.replace(/\\n/g, "\n");
-    const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
-    return new google.auth.JWT(clientEmail, null, privateKey, scopes);
+
+  if (!clientEmail || !privateKey) {
+    console.error("Missing GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY in .env");
+    return null;
   }
 
-  const rawJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
-  if (rawJson) {
-    const creds = JSON.parse(rawJson);
-    if (creds.private_key && creds.private_key.includes("\\n")) {
-      creds.private_key = creds.private_key.replace(/\\n/g, "\n");
-    }
-    const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
-    return new google.auth.JWT(
-      creds.client_email,
-      null,
-      creds.private_key,
-      scopes
-    );
-  }
+  // Normalize escaped newlines
+  privateKey = privateKey.replace(/\\n/g, "\n");
 
-  console.error("No valid service account credentials found.");
-  return null;
+  const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
+  return new google.auth.JWT(clientEmail, null, privateKey, scopes);
 }
 
 function formatDateTimeIST(date = new Date()) {
-  const options = { timeZone: "Asia/Kolkata", hour12: true };
   const d = new Intl.DateTimeFormat("en-IN", {
     timeZone: "Asia/Kolkata",
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
   }).format(date);
+
   const t = new Intl.DateTimeFormat("en-IN", {
     timeZone: "Asia/Kolkata",
     hour: "2-digit",
     minute: "2-digit",
     second: "2-digit",
+    hour12: true,
   }).format(date);
+
   return { date: d, time: t };
 }
 
 async function getNextSerialNumber(sheets, spreadsheetId, tabName) {
   try {
-    const range = `${tabName}!A1:A`;
+    const range = `'${tabName}'!A1:A`;
     const res = await sheets.spreadsheets.values.get({ spreadsheetId, range });
     const rows = res.data.values || [];
 
     const firstCell = rows[0]?.[0]?.toString().trim().toLowerCase();
     const hasHeader = firstCell === "no" || isNaN(Number(firstCell));
-    const dataCount = hasHeader ? Math.max(0, rows.length - 1) : rows.length;
+    const dataCount = hasHeader ? rows.length - 1 : rows.length;
 
     const nextSerial = dataCount + 1;
     return nextSerial;
   } catch (error) {
+    console.error("Error fetching next serial number:", error.message);
     return 1;
   }
 }
@@ -92,13 +70,13 @@ async function appendPaymentRow({
   const tabName = process.env.GOOGLE_SHEETS_TAB_NAME || "Sheet1";
 
   if (!spreadsheetId) {
-    console.error("GOOGLE_SHEETS_ID is missing.");
+    console.error("Missing GOOGLE_SHEETS_ID in .env");
     return false;
   }
 
   const auth = getAuthClientFromEnv();
   if (!auth) {
-    console.error("Google Sheets auth client is not available.");
+    console.error("Google Sheets auth client unavailable.");
     return false;
   }
 
@@ -126,15 +104,19 @@ async function appendPaymentRow({
       ],
     ];
 
+    console.log("Appending row:", values);
+
     const result = await sheets.spreadsheets.values.append({
       spreadsheetId,
-      range: `${tabName}!A:K`,
+      range: `'${tabName}'!A:K`,
       valueInputOption: "USER_ENTERED",
       requestBody: { values },
     });
 
+    console.log("Append result:", result.statusText);
     return true;
   } catch (error) {
+    console.error("Error appending row to Google Sheets:", error.message);
     return false;
   }
 }
