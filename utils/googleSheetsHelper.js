@@ -2,11 +2,8 @@ const { google } = require("googleapis");
 const fs = require("fs");
 
 function getAuthClientFromEnv() {
-  console.log("Getting Google Sheets auth client...");
-
   const jsonFile = process.env.GOOGLE_SERVICE_ACCOUNT_FILE;
   if (jsonFile && fs.existsSync(jsonFile)) {
-    console.log("Using service account file from:", jsonFile);
     const raw = fs.readFileSync(jsonFile, "utf8");
     const creds = JSON.parse(raw);
     const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
@@ -21,9 +18,6 @@ function getAuthClientFromEnv() {
   const clientEmail = process.env.GOOGLE_CLIENT_EMAIL;
   let privateKey = process.env.GOOGLE_PRIVATE_KEY;
   if (clientEmail && privateKey) {
-    console.log(
-      "Using client email and private key from environment variables."
-    );
     privateKey = privateKey.replace(/\\n/g, "\n");
     const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
     return new google.auth.JWT(clientEmail, null, privateKey, scopes);
@@ -31,7 +25,6 @@ function getAuthClientFromEnv() {
 
   const rawJson = process.env.GOOGLE_SERVICE_ACCOUNT_JSON;
   if (rawJson) {
-    console.log("Using full JSON from environment variable.");
     const creds = JSON.parse(rawJson);
     if (creds.private_key && creds.private_key.includes("\\n")) {
       creds.private_key = creds.private_key.replace(/\\n/g, "\n");
@@ -77,10 +70,8 @@ async function getNextSerialNumber(sheets, spreadsheetId, tabName) {
     const dataCount = hasHeader ? Math.max(0, rows.length - 1) : rows.length;
 
     const nextSerial = dataCount + 1;
-    console.log("Next serial number:", nextSerial);
     return nextSerial;
   } catch (error) {
-    console.error("Error fetching next serial number:", error);
     return 1;
   }
 }
@@ -135,8 +126,6 @@ async function appendPaymentRow({
       ],
     ];
 
-    console.log("Appending row:", values);
-
     const result = await sheets.spreadsheets.values.append({
       spreadsheetId,
       range: `${tabName}!A:K`,
@@ -144,10 +133,8 @@ async function appendPaymentRow({
       requestBody: { values },
     });
 
-    console.log("Append result:", result.statusText || "Success");
     return true;
   } catch (error) {
-    console.error("Error appending row to Google Sheets:", error);
     return false;
   }
 }
