@@ -56,7 +56,6 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
           icon: "error",
           confirmButtonText: "Done",
         });
-        console.error("Error:", error);
       }
     })
     .finally(() => {
@@ -68,12 +67,11 @@ document.getElementById("contactForm").addEventListener("submit", function (e) {
     });
 });
 
-
 function validateContactInput(event) {
   let key = event.key;
 
   // Allow only numbers (0-9), and prevent anything else
   if (!/^[0-9]$/.test(key)) {
-      event.preventDefault();
+    event.preventDefault();
   }
 }

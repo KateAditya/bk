@@ -24,6 +24,7 @@
     "imagekit": "^6.0.0",
     "mime": "^4.0.7",
     "multer": "^2.0.0",
+    "googleapis": "^136.0.0",
     "mysql2": "^3.14.1",
     "path": "^0.12.7",
     "razorpay": "^2.9.6"

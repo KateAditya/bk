@@ -341,14 +341,12 @@
                 const data = await response.json();
 
                 if (!response.ok || !data.authenticated) {
-                    console.error('Auth check failed:', data.message);
                     window.location.href = '/login.html';
                     return false;
                 }
 
                 return true;
             } catch (error) {
-                console.error('Auth check failed:', error);
                 window.location.href = '/login.html';
                 return false;
             }
@@ -605,7 +603,6 @@
                     })
                     .catch((error) => {
                         errorMessage.textContent = "An error occurred. Please try again later.";
-                        console.error("Login error:", error);
                     });
             });
 
@@ -624,8 +621,7 @@
                         }
                     })
                     .catch((error) => {
-                        console.error("Logout error:", error);
-                        alert("Logout failed: " + error.message);
+                        alert("Logout failed. Please try again.");
                     });
             }
 
@@ -641,6 +637,6 @@
 
 </body>
 <!-- Update the script imports -->
-
+<script src="adsense.js"></script>
 
 </html>

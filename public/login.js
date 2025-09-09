@@ -12,8 +12,6 @@ document.addEventListener("DOMContentLoaded", function () {
     submitButton.disabled = true;
 
     try {
-      console.log("Attempting login request to:", `${baseUrl}/api/login`);
-
       const response = await fetch(`${baseUrl}/api/login`, {
         method: "POST",
         headers: {
@@ -27,18 +25,11 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       const responseText = await response.text();
-      console.log("Server response:", responseText);
 
       let data;
       try {
         data = JSON.parse(responseText);
       } catch (e) {
-        console.error(
-          "Response parsing error:",
-          e,
-          "Raw response:",
-          responseText
-        );
         throw new Error("Invalid server response");
       }
 
@@ -47,7 +38,6 @@ document.addEventListener("DOMContentLoaded", function () {
         switch (response.status) {
           case 500:
             errorMsg = "Internal server error. Please try again later.";
-            console.error("Server Error Details:", responseText);
             break;
           case 401:
             errorMsg = "Invalid username or password";
@@ -74,11 +64,6 @@ document.addEventListener("DOMContentLoaded", function () {
           error.message || "Login failed. Please try again.";
       }
       errorMessage.style.display = "block";
-      console.error("Login error details:", {
-        error: error,
-        url: `${baseUrl}/api/login`,
-        timestamp: new Date().toISOString(),
-      });
     } finally {
       submitButton.disabled = false;
     }

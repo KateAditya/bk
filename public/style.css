@@ -1412,3 +1412,8 @@ footer p a:hover {
     background-color: #6c757d;
     cursor: not-allowed;
 }
+
+/* Razorpay pay form helpers */
+.pay-form input {
+    box-sizing: border-box;
+}

@@ -217,7 +217,6 @@ function checkAuthPage(req, res, next) {
 // Update auth check middleware
 function checkAuthAPI(req, res, next) {
   if (!req.session || !req.session.isAuthenticated) {
-    console.log("Session state:", req.session); // Debug log
     return res.status(401).json({
       success: false,
       message: "Please login first",
@@ -490,9 +489,6 @@ app.get("/api/products/:id", (req, res) => {
 
 // Add product
 app.post("/api/products", checkAuthAPI, (req, res) => {
-  console.log("🔄 Received request to add product");
-  console.log("Request body:", req.body);
-
   const { title, discount, price, description, view_link, image_url } =
     req.body;
 
@@ -788,17 +784,10 @@ app.get("/api/public/products", (req, res) => {
 });
 
 // Add payment route before error handlers
-app.post("/createOrder", async (req, res) => {
-  try {
-    const response = await paymentController.createOrder(req, res);
-  } catch (error) {
-    console.error("Payment route error:", error);
-    res.status(500).json({
-      success: false,
-      msg: "Internal server error",
-    });
-  }
-});
+app.post("/createOrder", (req, res) => paymentController.createOrder(req, res));
+app.post("/verifyPayment", (req, res) =>
+  paymentController.verifyAndRecord(req, res)
+);
 
 // ==================== ERROR HANDLING ====================
 

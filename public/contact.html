@@ -164,11 +164,9 @@
                 emailjs
                     .send("service_wwk4g84", "template_xvc9jkc", templateParams)
                     .then(response => {
-                        console.log("Email sent successfully:", response);
                         alert("Message sent successfully! We will connect with you shortly!");
                     })
                     .catch(error => {
-                        console.error("Error sending email:", error);
                         alert("Failed to send message. Please try again later.");
                     })
                     .finally(() => {
@@ -185,5 +183,6 @@
     <script type="text/javascript"> emailjs.init('cpZ1TQaAFUFX5sE0Y') </script>
     <script src="emailHandler.js"></script>
     <script src="loader.js"></script>
+    <script src="adsense.js"></script>
 
 </html>

@@ -32,10 +32,10 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/js/jquery.overlayScrollbars.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZBTRFE7EH"></script>
-    
+
     <!-- Google AdSense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8664296437390910"
-         crossorigin="anonymous"></script>
+        crossorigin="anonymous"></script>
 
 
 
@@ -250,31 +250,23 @@
 
         <!-- Left Sidebar Ad -->
         <div class="sidebar-ad left-ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-8664296437390910"
-                 data-ad-slot="1234567890"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8664296437390910"
+                data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
             <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
         </div>
 
         <!-- Right Sidebar Ad -->
         <div class="sidebar-ad right-ad">
-            <ins class="adsbygoogle"
-                 style="display:block"
-                 data-ad-client="ca-pub-8664296437390910"
-                 data-ad-slot="1234567890"
-                 data-ad-format="auto"
-                 data-full-width-responsive="true"></ins>
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8664296437390910"
+                data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
             <script>
-                 (adsbygoogle = window.adsbygoogle || []).push({});
+                (adsbygoogle = window.adsbygoogle || []).push({});
             </script>
         </div>
 
-      
+
 
         <style>
             .copyright-notice-container {
@@ -417,7 +409,7 @@
                 position: fixed;
                 top: 50%;
                 transform: translateY(-50%);
-                z-index: 100;
+                z-index: 10;
                 max-width: 160px;
                 max-height: 600px;
                 background: rgba(255, 255, 255, 0.9);
@@ -449,11 +441,11 @@
                     max-width: 140px;
                     padding: 8px;
                 }
-                
+
                 .left-ad {
                     left: 15px;
                 }
-                
+
                 .right-ad {
                     right: 15px;
                 }
@@ -464,11 +456,11 @@
                     max-width: 120px;
                     padding: 6px;
                 }
-                
+
                 .left-ad {
                     left: 10px;
                 }
-                
+
                 .right-ad {
                     right: 10px;
                 }
@@ -485,13 +477,15 @@
                     left: auto;
                     right: auto;
                     max-height: none;
-                    display: none; /* Hide on mobile to avoid clutter */
+                    display: none;
+                    /* Hide on mobile to avoid clutter */
                 }
             }
 
             @media (max-width: 480px) {
                 .sidebar-ad {
-                    display: none; /* Completely hide on small mobile devices */
+                    display: none;
+                    /* Completely hide on small mobile devices */
                 }
             }
 
@@ -516,6 +510,28 @@
                     margin-right: 160px;
                 }
             }
+
+            /* Ensure product buttons are always clickable above nearby overlays */
+            .product-section {
+                position: relative;
+                z-index: 50;
+            }
+
+            .products {
+                position: relative;
+                z-index: 60;
+            }
+
+            .item {
+                position: relative;
+                z-index: 70;
+            }
+
+            .item .actions button {
+                position: relative;
+                z-index: 80;
+                pointer-events: auto;
+            }
         </style>
 
         <script>
@@ -539,8 +555,117 @@
             </div>
         </section>
 
-             <!-- Add margin-top to account for fixed navbar -->
+        <!-- Add margin-top to account for fixed navbar -->
         <div style="margin-top: 120px;"></div>
+
+        <!-- Payment Modal -->
+        <style>
+            .pay-modal-backdrop {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.5);
+                z-index: 2000;
+            }
+
+            .pay-modal {
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: 95%;
+                max-width: 520px;
+                background: #fff;
+                border-radius: 8px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                z-index: 2001;
+                display: none;
+            }
+
+            .pay-modal-header {
+                padding: 14px 18px;
+                border-bottom: 1px solid #eee;
+                font-weight: 700;
+            }
+
+            .pay-modal-body {
+                padding: 16px 18px;
+            }
+
+            .pay-modal-footer {
+                padding: 12px 18px;
+                border-top: 1px solid #eee;
+                display: flex;
+                gap: 10px;
+                justify-content: flex-end;
+            }
+
+            .pay-form .form-group {
+                margin-bottom: 12px;
+            }
+
+            .pay-form label {
+                display: block;
+                margin-bottom: 6px;
+                font-weight: 600;
+            }
+
+            .pay-form input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #e0e0e0;
+                border-radius: 6px;
+                box-sizing: border-box;
+            }
+
+            .btn {
+                padding: 10px 14px;
+                border: none;
+                border-radius: 6px;
+                cursor: pointer;
+            }
+
+            .btn-primary {
+                background: #2300a3;
+                color: #fff;
+            }
+
+            .btn-secondary {
+                background: #e0e0e0;
+                color: #333;
+            }
+        </style>
+        <div id="pay-modal-backdrop" class="pay-modal-backdrop"></div>
+        <div id="pay-modal" class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title">
+            <div class="pay-modal-header" id="pay-modal-title">Enter your details</div>
+            <div class="pay-modal-body">
+                <form class="pay-form">
+                    <div class="form-group">
+                        <label for="payer_name">Name</label>
+                        <input id="payer_name" name="name" placeholder="Enter your name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payer_mobile">Mobile</label>
+                        <input id="payer_mobile" name="mobile" placeholder="10-digit mobile" pattern="^[6-9][0-9]{9}$"
+                            required>
+                    </div>
+                    <div class="form-group">
+                        <label for="payer_email">Email</label>
+                        <input id="payer_email" name="email" type="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount">Amount (INR)</label>
+                        <input id="amount" name="amount" type="number" min="1" step="1" placeholder="Amount" required
+                            readonly>
+                    </div>
+                    <input id="product_title" name="product" type="hidden">
+                </form>
+            </div>
+            <div class="pay-modal-footer">
+                <button type="button" class="btn btn-secondary" id="pay-cancel">Cancel</button>
+                <button type="button" class="btn btn-primary" id="pay-submit">Pay Now</button>
+            </div>
+        </div>
 
         <div class="copyright-notice-container">
             <!-- Important Notice Banner -->
@@ -680,7 +805,6 @@
                             `).join('');
                         })
                         .catch(error => {
-                            console.error('Error:', error);
                             productContainer.innerHTML = `
                                 <div style="text-align: center; padding: 20px;">
                                     <p>Failed to load products.</p>
@@ -727,74 +851,19 @@
                 }
 
                 const price = button.dataset.price;
-                const title = button.dataset.title;
-                const link = button.dataset.link;
-
-                const options = {
-                    amount: price,
-                    name: title,
-                    description: `Purchase ${title}`,
-                    link: link
-                };
-
-                // Show loading indicator
-                Swal.fire({
-                    title: 'Processing...',
-                    text: 'Initiating payment',
-                    allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
-                });
-
-                // Create payment order
-                fetch('/createOrder', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(options)
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        Swal.close();
-                        if (data.success) {
-                            const razorpayOptions = {
-                                key: data.key_id,
-                                amount: data.amount,
-                                currency: "INR",
-                                name: "Dream Stories",
-                                description: data.description,
-                                order_id: data.order_id,
-                                handler: function (response) {
-                                    Swal.fire({
-                                        title: 'Success!',
-                                        text: 'Payment completed successfully',
-                                        icon: 'success',
-                                        confirmButtonText: 'View Product'
-                                    }).then(() => {
-                                        window.open(data.product_link, '_blank');
-                                    });
-                                },
-                                prefill: {
-                                    name: data.name,
-                                    email: data.email,
-                                    contact: data.contact
-                                },
-                                theme: {
-                                    color: "#2300a3"
-                                }
-                            };
-                            const razorpay = new Razorpay(razorpayOptions);
-                            razorpay.open();
-                        } else {
-                            Swal.fire('Error', data.msg, 'error');
-                        }
-                    })
-                    .catch(error => {
-                        Swal.fire('Error', 'Failed to initiate payment', 'error');
-                        console.error('Payment error:', error);
-                    });
+                // populate modal amount and open modal; pay-form submission handled in payment.js
+                try {
+                    document.getElementById('amount').value = Math.round(parseFloat(price));
+                } catch (e) {
+                    document.getElementById('amount').value = '';
+                }
+                try {
+                    document.getElementById('product_title').value = button.dataset.title || '';
+                } catch (e) { }
+                const backdrop = document.getElementById('pay-modal-backdrop');
+                const modal = document.getElementById('pay-modal');
+                backdrop.style.display = 'block';
+                modal.style.display = 'block';
             }
         </script>
 
@@ -812,6 +881,29 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script src="payment.js"></script>
+    <script src="adsense.js"></script>
+    <script>
+        // Modal controls
+        (function () {
+            const backdrop = document.getElementById('pay-modal-backdrop');
+            const modal = document.getElementById('pay-modal');
+            const cancelBtn = document.getElementById('pay-cancel');
+            const submitBtn = document.getElementById('pay-submit');
+            const form = document.querySelector('.pay-form');
+
+            function closeModal() {
+                modal.style.display = 'none';
+                backdrop.style.display = 'none';
+            }
+            cancelBtn && cancelBtn.addEventListener('click', closeModal);
+            backdrop && backdrop.addEventListener('click', closeModal);
+            submitBtn && submitBtn.addEventListener('click', function () {
+                if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            });
+
+            // Close modal after payment success handled in payment.js via alerts; no hook needed here
+        })();
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <script src="./details.js"></script>

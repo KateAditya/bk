@@ -1,111 +1,128 @@
 const Razorpay = require("razorpay");
-const axios = require("axios");
-const _ = require("lodash");
-const retry = require("async-retry");
+const crypto = require("crypto");
 const db = require("../db");
+const { appendPaymentRow } = require("../utils/googleSheetsHelper");
 
-const { RAZORPAY_ID_KEY, RAZORPAY_SECRET_KEY } = process.env;
+const {
+  RAZORPAY_ID_KEY,
+  RAZORPAY_SECRET_KEY,
+} = process.env;
 
 const razorpayInstance = new Razorpay({
   key_id: RAZORPAY_ID_KEY,
   key_secret: RAZORPAY_SECRET_KEY,
 });
 
-let cachedProductLinks = {};
-
-const refreshProductLinks = () => {
-  return new Promise((resolve, reject) => {
-    db.query(
-      "SELECT title, download_link FROM product_links",
-      (err, results) => {
-        if (err) return reject(err);
-
-        const productLinks = {};
-        results.forEach((item) => {
-          productLinks[item.title] = item.download_link;
-        });
-
-        cachedProductLinks = productLinks;
-        resolve(productLinks);
-      }
-    );
-  });
-};
-
-// Initial Load
-refreshProductLinks().catch(console.error);
-// Refresh Every 15 Minutes
-setInterval(() => {
-  refreshProductLinks().catch(console.error);
-}, 15 * 60 * 1000);
-
 // Render Product Page (if needed)
 const renderProductPage = (req, res) => {
-  res.send("Welcome to Razorpay Payment Page!"); // Replace with res.render if using EJS
+  res.send("Welcome to Razorpay Payment Page!");
 };
 
-// Helper function to get product link
-async function getProductLink(productName) {
-  return new Promise((resolve, reject) => {
-    db.query(
-      "SELECT download_link FROM product_links WHERE title = ?",
-      [productName],
-      (err, results) => {
-        if (err) {
-          console.error("Error fetching product link:", err);
-          return resolve(null);
-        }
-        resolve(results[0]?.download_link || null);
-      }
-    );
-  });
-}
-
-// Create Order Function
+// Create Razorpay order
 const createOrder = async (req, res) => {
   try {
-    const amount = parseInt(req.body.amount, 10);
-    const productName = req.body.name;
+    const { amount, name, mobile, email, method, product } = req.body;
 
-    if (!amount || !productName) {
-      return res.status(400).json({
-        success: false,
-        msg: "Invalid payment details",
-      });
+    const numericAmount = parseInt(amount, 10);
+    if (!numericAmount || numericAmount <= 0) {
+      return res.status(400).json({ success: false, msg: "Invalid amount" });
     }
 
-    const options = {
-      amount: Math.round(amount * 100), // Convert to paise
+    const order = await razorpayInstance.orders.create({
+      amount: Math.round(numericAmount * 100),
       currency: "INR",
       receipt: `order_${Date.now()}`,
-      payment_capture: 1,
-    };
+    });
 
-    const order = await razorpayInstance.orders.create(options);
-    const productLink = await getProductLink(productName);
+    // Lookup product download link from DB using provided product title (fallback to name)
+    const productTitle = (product || name || "").toString();
+    const productLink = await new Promise((resolve) => {
+      if (!productTitle) return resolve("");
+      db.query(
+        "SELECT download_link FROM product_links WHERE title = ? LIMIT 1",
+        [productTitle],
+        (err, rows) => {
+          if (err) return resolve("");
+          resolve(rows && rows[0] && rows[0].download_link ? rows[0].download_link : "");
+        }
+      );
+    });
 
-    res.status(200).json({
+    res.json({
       success: true,
       key_id: RAZORPAY_ID_KEY,
-      amount: options.amount,
       order_id: order.id,
-      product_name: productName,
-      description: req.body.description || `Purchase ${productName}`,
-      product_link: productLink || req.body.link,
-      contact: "1234567890",
-      name: "Dream Stories",
-      email: "dreamstories@example.com",
+      amount: order.amount,
+      name,
+      mobile,
+      email,
+      method: method || "Razorpay",
+      product: product || "",
+      product_link: productLink || "",
     });
+  } catch (_) {
+    res.status(500).json({ success: false, msg: "Failed to create order" });
+  }
+};
+
+// Verify Razorpay signature and append to Google Sheet
+const verifyAndRecord = async (req, res) => {
+  try {
+    const {
+      razorpay_order_id,
+      razorpay_payment_id,
+      razorpay_signature,
+      name,
+      mobile,
+      email,
+      amount,
+      method,
+      product,
+    } = req.body;
+
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ success: false, msg: "Missing payment data" });
+    }
+
+    const body = `${razorpay_order_id}|${razorpay_payment_id}`;
+    const expectedSignature = crypto
+      .createHmac("sha256", RAZORPAY_SECRET_KEY)
+      .update(body.toString())
+      .digest("hex");
+
+    const isAuthentic = expectedSignature === razorpay_signature;
+    if (!isAuthentic) {
+      return res.status(400).json({ success: false, msg: "Signature mismatch" });
+    }
+
+    const amountInRupees = (parseInt(amount, 10) || 0) / 100;
+
+    let recorded = true;
+    try {
+      await appendPaymentRow({
+        name: name || "",
+        mobile: mobile || "",
+        email: email || "",
+        amount: amountInRupees,
+        paymentId: razorpay_payment_id,
+        status: "Success",
+        dateStr: undefined,
+        timeStr: undefined,
+        method: method || "Razorpay",
+        product: product || "",
+      });
+    } catch (_) {
+      recorded = false;
+    }
+
+    res.json({ success: true, msg: recorded ? "Payment verified and recorded" : "Payment verified" });
   } catch (error) {
-    console.error("Payment creation error:", error);
-    res.status(500).json({
-      success: false,
-      msg: "Failed to create payment order",
-    });
+    res.status(500).json({ success: false, msg: "Verification failed" });
   }
 };
 
 module.exports = {
   renderProductPage,
   createOrder,
+  verifyAndRecord,
 };

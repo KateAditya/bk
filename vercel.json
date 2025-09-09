@@ -11,6 +11,8 @@
       "src": "/api/(.*)",
       "dest": "/index.js"
     },
+    { "src": "/createOrder", "methods": ["POST"], "dest": "/index.js" },
+    { "src": "/verifyPayment", "methods": ["POST"], "dest": "/index.js" },
     {
       "src": "/(.*)",
       "dest": "/index.js"

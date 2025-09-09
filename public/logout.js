@@ -29,7 +29,6 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch((error) => {
         errorMessage.textContent = "An error occurred. Please try again later.";
-        console.error("Login error:", error);
       });
   });
 
@@ -48,8 +47,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
       })
       .catch((error) => {
-        console.error("Logout error:", error);
-        alert("Logout failed: " + error.message);
+        alert("Logout failed. Please try again.");
       });
   }
 

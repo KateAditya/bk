@@ -27,6 +27,23 @@ SESSION_SECRET=your-super-secret-session-key-change-this-in-production
 # Environment
 NODE_ENV=development
 PORT=3000
+
+# Razorpay
+RAZORPAY_ID_KEY=
+RAZORPAY_SECRET_KEY=
+
+# Google Sheets (REQUIRED for server write)
+# Option A (recommended): point to a local JSON credentials file
+GOOGLE_SERVICE_ACCOUNT_FILE=C:\\keys\\sa.json
+
+# Option B: provide separate fields instead of a JSON blob
+GOOGLE_CLIENT_EMAIL=sheet-access@paymentdetails-471609.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY=-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n
+# Spreadsheet ID (the long string in the sheet URL)
+GOOGLE_SHEETS_ID=
+
+# Tab name to write into (must exist exactly)
+GOOGLE_SHEETS_TAB_NAME=Sheet1
 ```
 
 ## How to Get Your ImageKit Credentials
@@ -54,6 +71,14 @@ PORT=3000
 2. **No extra spaces** before or after the values
 3. **Copy exactly** as shown in the dashboard
 4. **Don't share** your private key with anyone
+
+### Google Sheets Setup
+- REQUIRED variables to write:
+  - `GOOGLE_SERVICE_ACCOUNT_JSON`
+  - `GOOGLE_SHEETS_ID`
+  - `GOOGLE_SHEETS_TAB_NAME`
+- Share your Google Sheet with: `sheet-access@paymentdetails-471609.iam.gserviceaccount.com`
+- Spreadsheet must have columns in this exact order: `No, Name, Mobile, Email, Amount, PaymentID, Status, Date, Time, Method, Product`
 
 ## Test Your Setup
 
