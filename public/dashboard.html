@@ -450,7 +450,8 @@
             </div>
 
             <label for="imageUpload" class="sr-only">Upload Product Image</label>
-            <input type="file" id="imageUpload" class="file-input" accept="image/*" aria-label="Upload product image file">
+            <input type="file" id="imageUpload" class="file-input" accept="image/*"
+                aria-label="Upload product image file">
 
             <div class="upload-progress" id="uploadProgress">
                 <div class="upload-progress-bar" id="uploadProgressBar"></div>
@@ -699,7 +700,7 @@
                     saveButton.disabled = true;
 
                     const id = productIdInput.value;
-                    
+
                     // Validate image upload only for new products
                     if (!id && !currentImageUrl) {
                         throw new Error('Please upload an image first');

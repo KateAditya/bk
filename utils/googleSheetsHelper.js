@@ -6,15 +6,26 @@ function getAuthClientFromEnv() {
   let privateKey = process.env.GOOGLE_PRIVATE_KEY;
 
   if (!clientEmail || !privateKey) {
-    console.error("Missing GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY in .env");
-    return null;
+    throw new Error(
+      "Missing required environment variables: GOOGLE_CLIENT_EMAIL or GOOGLE_PRIVATE_KEY"
+    );
   }
 
-  // Normalize escaped newlines
-  privateKey = privateKey.replace(/\\n/g, "\n");
+  try {
+    // Remove quotes if they exist at the start and end
+    if (privateKey.startsWith('"') && privateKey.endsWith('"')) {
+      privateKey = privateKey.slice(1, -1);
+    }
 
-  const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
-  return new google.auth.JWT(clientEmail, null, privateKey, scopes);
+    // Normalize escaped newlines for different environments
+    privateKey = privateKey.split("\\n").join("\n");
+
+    const scopes = ["https://www.googleapis.com/auth/spreadsheets"];
+    return new google.auth.JWT(clientEmail, null, privateKey, scopes);
+  } catch (error) {
+    console.error("Error creating Google auth client:", error);
+    return null;
+  }
 }
 
 function formatDateTimeIST(date = new Date()) {
@@ -104,19 +115,25 @@ async function appendPaymentRow({
       ],
     ];
 
-    console.log("Appending row:", values);
+    try {
+      const result = await sheets.spreadsheets.values.append({
+        spreadsheetId,
+        range: `'${tabName}'!A:K`,
+        valueInputOption: "USER_ENTERED",
+        requestBody: { values },
+      });
 
-    const result = await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: `'${tabName}'!A:K`,
-      valueInputOption: "USER_ENTERED",
-      requestBody: { values },
-    });
+      if (!result || !result.data) {
+        throw new Error("No response from Google Sheets API");
+      }
 
-    console.log("Append result:", result.statusText);
-    return true;
+      return true;
+    } catch (error) {
+      // Throw the error to be handled by the parent try-catch
+      throw new Error(`Failed to append to sheet: ${error.message}`);
+    }
   } catch (error) {
-    console.error("Error appending row to Google Sheets:", error.message);
+    console.error("Error in appendPaymentRow:", error.message);
     return false;
   }
 }
