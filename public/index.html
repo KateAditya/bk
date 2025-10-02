@@ -4,916 +4,1672 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dream Stories</title>
-    <!-- Favicon -->
+    <title>Dream Stories Graphics - Creative Graphic Design Company in India</title>
     <link rel="icon" href="images/MY-LOGO-DREAM-STORIES.jpg">
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="style.css">
-
-    <!-- Remove these problematic CSS files -->
-
-    <link rel="stylesheet" href="loader.css">
-
-    <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
-    <link rel="stylesheet"
-        href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/css/OverlayScrollbars.min.css">
-    <link href="https://unpkg.com/tailwindcss@^2.1/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script
-        src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/js/jquery.overlayScrollbars.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZBTRFE7EH"></script>
-
-    <!-- Google AdSense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8664296437390910"
-        crossorigin="anonymous"></script>
-
-
-
-
-
-</head>
-
-<body>
-
-
-
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.cdnfonts.com/css/aspect-range-demo" rel="stylesheet">
     <style>
-        nav {
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 100px;
+            font-family: 'Libre Bodoni', serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #f5f5f5 60%, #e0f7fa 100%);
+            padding: 20px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            border-bottom: 2px solid #333;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-row {
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 32px;
-            border-bottom: 1px solid #e5e5e5;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            position: relative;
+        }
+
+
+        nav {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
             width: 100%;
-            background-color: white;
-            /* Add background color to prevent content showing through */
-            z-index: 1000;
-            /* Ensure navbar stays on top of other elements */
-            box-sizing: border-box;
-            /* Include padding in width calculation */
-        }
-
-        .logo {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            margin-left: 30px;
-        }
-
-        .logo h1 {
-            font-size: 2rem;
-            font-weight: bold;
-            margin: 0;
-        }
-
-        .logo p {
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin: 4px 0 0 0;
-        }
-
-        .menu {
-            display: flex;
-            gap: 16px;
-            margin-right: 20px;
-        }
-
-        .menu a {
-            text-decoration: none;
-            /* Remove underline */
-            color: black;
-            /* Set color to black */
-            font-weight: 600;
-        }
-
-        .menu a:hover {
-            color: #333;
-            /* Darker shade on hover */
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            height: auto;
         }
 
         .hamburger {
-            display: none;
-            flex-direction: column;
-            cursor: pointer;
+            z-index: 2;
         }
 
-        .hamburger div {
-            width: 24px;
-            height: 3px;
-            background-color: #4a4a4a;
-            margin: 4px 0;
-            transition: background-color 0.3s ease;
-            /* Smooth transition for hamburger lines */
+        nav a {
+            text-decoration: none;
+            color: #2c5f5f;
+            font-size: 18px;
+            transition: color 0.3s, background 0.3s, box-shadow 0.3s;
+            font-family: 'Libre Bodoni', serif;
+            padding: 8px 18px;
+            border-radius: 4px;
         }
 
-        .mobile-menu {
-            display: none;
-            /* Completely hidden by default */
-            flex-direction: column;
-            gap: 16px;
-            padding: 16px;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: opacity 0.3s ease, transform 0.3s ease;
-            margin-top: 130px;
+        nav a:hover {
+            color: #fff;
+            background: #59a3a3;
+            box-shadow: 0 2px 8px rgba(89, 163, 163, 0.15);
+        }
+
+
+        /* Social Icons */
+        .social-icons {
             position: fixed;
-            /* or 'absolute' depending on your layout */
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 1000;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
 
-            background: #ebeaea;
-            border: 1px solid #000000;
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: #59a3a3;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-size: 18px;
+        }
 
-            /* For dark mode */
-            @media (prefers-color-scheme: dark) {
-                background: linear-gradient(to right, #b3aeae, #635593);
-                border-bottom: 1px solid #000000;
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hero Section */
+        .hero {
+
+            padding: 80px 100px;
+            text-align: center;
+
+
+
+        }
+
+        .hero-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            margin-top: -200px;
+            margin-bottom: -250px;
+            margin-right: 300px;
+            margin-left: 300px;
+            align-content: center;
+        }
+
+        .hero-logo {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 20px;
+            animation: fadeInScale 1.2s ease-out;
+        }
+
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
             }
 
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
 
-        .mobile-menu.show {
+        .hero .subtitle {
+            font-size: 24px;
+            letter-spacing: 12px;
+            color: #666;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 300;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 60px 100px;
+            background: white;
+        }
+
+        .main-heading {
+            font-size: 48px;
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c5f5f;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 700;
+        }
+
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .welcome-section h2 {
+            font-size: 36px;
+            margin-bottom: 20px;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 700;
+        }
+
+        .welcome-section p {
+            max-width: 800px;
+            margin: 0 auto 20px;
+            line-height: 1.8;
+            color: #555;
+            font-size: 15px;
+            font-family: 'Libre Bodoni', serif;
+        }
+
+        /* Why Choose Section */
+        .why-choose {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+            margin: 80px 0;
+        }
+
+        .why-choose h2 {
+            font-size: 38px;
+            margin-bottom: 30px;
+            color: #2c5f5f;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 700;
+        }
+
+        .why-choose ul {
+            list-style: none;
+            font-family: 'Libre Bodoni', serif;
+        }
+
+        .why-choose li {
+            margin-bottom: 15px;
+            padding-left: 20px;
+            position: relative;
+            font-size: 15px;
+        }
+
+        .why-choose li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #59a3a3;
+            font-size: 20px;
+        }
+
+        .why-choose p {
+            margin-top: 20px;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .why-choose-image {
+            width: 100%;
+            max-width: 500px;
+        }
+
+
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .section-header h2 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2c5f5f;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: rgba(0, 0, 0, 0.9);
+            letter-spacing: 1px;
+        }
+
+        .services-row {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 80px;
+            flex-wrap: wrap;
+            padding: 40px 0;
+        }
+
+        .service-item {
+            position: relative;
+            width: 300px;
+            height: 350px;
+            cursor: pointer;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .service-item:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .service-item:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .service-item:nth-child(3) {
+            animation-delay: 0.5s;
+        }
+
+        .animated-folder {
+            position: relative;
+            width: 300px;
+            height: 250px;
+            transition: 0.5s ease;
+        }
+
+        /* Folder Back */
+        .folder-back {
+            position: absolute;
+            bottom: 0;
+            width: 300px;
+            height: 200px;
+            background: linear-gradient(135deg, #a1a5b8 0%, #764ba2 100%);
+            border-radius: 10px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            z-index: 0;
+        }
+
+        .service-item:nth-child(2) .folder-back {
+            background: linear-gradient(135deg, #4facfe 0%, #048188 100%);
+        }
+
+        .service-item:nth-child(3) .folder-back {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+        }
+
+        /* Folder Tab */
+        .folder-tab {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 120px;
+            height: 40px;
+            background: linear-gradient(135deg, #7c8ee8 0%, #8659a8 100%);
+            border-radius: 10px 10px 0 0;
+            z-index: 1;
+        }
+
+        .service-item:nth-child(2) .folder-tab {
+            background: linear-gradient(135deg, #5fb5fe 0%, #1ff8fe 100%);
+        }
+
+        .service-item:nth-child(3) .folder-tab {
+            background: linear-gradient(135deg, #b8f3f0 0%, #feddea 100%);
+        }
+
+        /* Folder Front/Cover */
+        .folder-cover {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            width: 300px;
+            height: 215px;
+            background: white;
+            border-radius: 10px;
+            transform-origin: top center;
+            transition: transform 0.6s ease, z-index 0.3s ease;
+            z-index: 2;
+            overflow: hidden;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .folder-cover-inner {
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            background: linear-gradient(180deg, #f8f9ff 0%, #ffffff 100%);
+        }
+
+        /* Image inside folder */
+        .folder-image {
+            width: 100%;
+            height: 140px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .folder-title {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #2d3436;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Content inside folder (when opened) */
+        .folder-content {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.4s ease 0.3s;
+            z-index: 1;
+        }
+
+        .folder-content h3 {
+            font-size: 1.5rem;
+            color: #2d3436;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .folder-content p {
+            font-size: 0.95rem;
+            color: #636e72;
+            line-height: 1.5;
+            margin-bottom: 15px;
+        }
+
+        .folder-btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .service-item:nth-child(2) .folder-btn {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .service-item:nth-child(3) .folder-btn {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            box-shadow: 0 4px 15px rgba(168, 237, 234, 0.4);
+        }
+
+        .folder-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        /* Service Label */
+        .service-label {
+            position: absolute;
+            bottom: -60px;
+            left: 50%;
+            transform: translateX(-50%);
+            text-align: center;
+            width: 100%;
+        }
+
+        .service-label h3 {
+            font-size: 1.4rem;
+            color: white;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+            margin-bottom: 8px;
+        }
+
+        .service-label .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        /* Shadow */
+        .shadow {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 280px;
+            height: 30px;
+            border-radius: 100%;
+            background: radial-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
+            transition: 0.5s ease;
+        }
+
+        /* Hover Effects */
+        .service-item:hover .animated-folder {
+            transform: translateY(-30px);
+        }
+
+        .service-item:hover .folder-cover {
+            transform: rotateX(-120deg);
+            z-index: 0;
+        }
+
+        .service-item:hover .folder-content {
             opacity: 1;
             transform: translateY(0);
         }
 
-        .mobile-menu.hide {
-            opacity: 0;
-            transform: translateY(-10px);
-            /* Don't set display:none here - let JavaScript handle it after animation */
+        .service-item:hover .shadow {
+            width: 320px;
+            background: radial-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0), rgba(0, 0, 0, 0));
         }
 
-        .mobile-menu a {
-            text-decoration: none;
-            /* Remove underline */
-            color: black;
-            /* Set color to black */
-            font-weight: 600;
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        .mobile-menu a:hover {
-            color: #333;
-            /* Darker shade on hover */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .services-row {
+                gap: 60px;
+            }
         }
 
         @media (max-width: 768px) {
-            .menu {
+            .services-row {
+                flex-direction: column;
+                align-items: center;
+                gap: 100px;
+            }
+
+            .section-header h2 {
+                font-size: 2.5rem;
+            }
+
+            .service-item {
+                width: 280px;
+            }
+
+            .animated-folder,
+            .folder-back,
+            .folder-cover {
+                width: 280px;
+            }
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #3498db, #9b59b6);
+        }
+
+        .service-image {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #f6f9fc 0%, #e9eff5 100%);
+        }
+
+        .service-image i {
+            font-size: 4rem;
+            color: #3498db;
+            z-index: 2;
+            position: relative;
+        }
+
+        .service-image::after {
+            content: '';
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            background: rgba(52, 152, 219, 0.1);
+            border-radius: 50%;
+            top: -30px;
+            right: -30px;
+        }
+
+        .service-image::before {
+            content: '';
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: rgba(155, 89, 182, 0.1);
+            border-radius: 50%;
+            bottom: -30px;
+            left: -30px;
+        }
+
+        .service-content {
+            padding: 25px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .service-card h3 {
+            font-size: 1.5rem;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .service-card h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: #3498db;
+            border-radius: 2px;
+        }
+
+        .service-card p {
+            color: #7f8c8d;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        .service-features {
+            list-style: none;
+            margin-bottom: 25px;
+        }
+
+        .service-features li {
+            padding: 5px 0;
+            color: #5a6c7d;
+            display: flex;
+            align-items: center;
+        }
+
+        .service-features li i {
+            color: #2ecc71;
+            margin-right: 10px;
+            font-size: 0.9rem;
+        }
+
+        .service-btn {
+            display: inline-block;
+            padding: 12px 25px;
+            background: linear-gradient(to right, #3498db, #9b59b6);
+            color: white;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            align-self: flex-start;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
+        }
+
+        .service-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.4);
+        }
+
+        /* Specific card styling */
+        .album-design .service-image {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .album-design .service-image i {
+            color: #e74c3c;
+        }
+
+        .shop-album .service-image {
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);
+        }
+
+        .shop-album .service-image i {
+            color: #2980b9;
+        }
+
+        .gallery .service-image {
+            background: linear-gradient(135deg, #d4fc79 0%, #96e6a1 100%);
+        }
+
+        .gallery .service-image i {
+            color: #27ae60;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .section-header h1 {
+                font-size: 2.2rem;
+            }
+        }
+
+        .service-card {
+            background: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.12);
+        }
+
+        .icon-wrapper {
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .icon-wrapper img {
+            max-height: 150px;
+            border-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover img {
+            transform: scale(1.08);
+        }
+
+        .service-card h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .service-card p {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 18px;
+            border-radius: 25px;
+            background: linear-gradient(135deg, #6a11cb, #2575fc);
+            color: #fff;
+            font-size: 14px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, #2575fc, #6a11cb);
+        }
+
+        .service-card {
+            opacity: 0;
+            transform: translateY(100px) rotateY(90deg);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.05);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+        .service-card.animate {
+            animation: cubeRotate 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            transform-origin: center center -50px;
+        }
+
+        @keyframes cubeRotate {
+            0% {
+                opacity: 0;
+                transform: translateY(100px) rotateY(90deg) scale(0.8);
+            }
+
+            50% {
+                opacity: 1;
+                transform: translateY(50px) rotateY(-20deg) scale(0.9);
+            }
+
+            100% {
+                opacity: 1;
+                transform: translateY(0) rotateY(0) scale(1);
+            }
+        }
+
+        .service-card:nth-child(1) {
+            animation-delay: 0.3s;
+        }
+
+        .service-card:nth-child(2) {
+            animation-delay: 0.6s;
+        }
+
+        .service-card:nth-child(3) {
+            animation-delay: 0.9s;
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 200%;
+            height: 100%;
+            background: linear-gradient(120deg,
+                    transparent 0%,
+                    rgba(255, 255, 255, 0.1) 50%,
+                    transparent 100%);
+            animation: shine 8s infinite linear;
+        }
+
+        .service-card:hover {
+            transform: translateY(-15px) rotateX(15deg) rotateY(-15deg);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.1),
+                20px 0 60px rgba(0, 0, 0, 0.05),
+                -20px 0 60px rgba(0, 0, 0, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .service-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            transition: transform 0.5s ease;
+        }
+
+        .service-card h3 {
+            font-size: 24px;
+            color: var(--primary);
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-top: 25px;
+            transform: translateZ(30px);
+            transition: all 0.5s ease;
+        }
+
+        .service-card:hover h3 {
+            transform: translateZ(50px);
+            color: var(--accent);
+        }
+
+        .service-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            transition: all 0.5s ease;
+            transform-style: preserve-3d;
+        }
+
+        .service-card:hover .service-placeholder {
+            transform: translateZ(30px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 1024px) {
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+                margin: 60px 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin: 40px auto;
+            }
+
+            .service-card {
+                padding: 30px;
+            }
+        }
+
+        /* Service Details */
+        .service-details {
+            background: #e8e8e8;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0;
+        }
+
+        .service-detail {
+            padding: 60px 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .service-detail:nth-child(1) {
+            background: #2c5f5f;
+        }
+
+        .service-detail:nth-child(2) {
+            background: #59a3a3;
+        }
+
+        .service-detail:nth-child(3) {
+            background: #2c5f5f;
+        }
+
+        .service-detail h3 {
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 700;
+        }
+
+        .service-detail p {
+            font-size: 14px;
+            line-height: 1.8;
+            font-family: 'Libre Bodoni', serif;
+        }
+
+        /* Stats Section */
+        .stats {
+            background: white;
+            padding: 100px 100px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            text-align: center;
+        }
+
+        .stat-item h2 {
+            font-size: 72px;
+            margin-bottom: 15px;
+            color: #2c5f5f;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 400;
+        }
+
+        .stat-item p {
+            font-size: 11px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Libre Bodoni', serif;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: linear-gradient(90deg, #59a3a3 60%, #7cc4c4 100%);
+            padding: 70px 60px;
+            text-align: center;
+            color: white;
+        }
+
+        .cta-section h2 {
+            font-size: 40px;
+            margin-bottom: 15px;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 700;
+        }
+
+        .cta-section p {
+            margin-bottom: 30px;
+            font-size: 16px;
+            font-family: 'Libre Bodoni', serif;
+        }
+
+        .cta-button {
+            background: linear-gradient(90deg, #fff 60%, #e0f7fa 100%);
+            color: #59a3a3;
+            padding: 15px 45px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-family: 'Libre Bodoni', serif;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(44, 95, 95, 0.08);
+        }
+
+        .cta-button:hover {
+            background: #2c5f5f;
+            color: #fff;
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            padding: 50px 100px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .footer-icon {
+            width: 40px;
+            height: 40px;
+            background: #59a3a3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .footer-icon:hover {
+            background: #2c5f5f;
+            transform: scale(1.1);
+        }
+
+        footer p {
+            font-size: 11px;
+            color: #666;
+            font-family: 'Libre Bodoni', serif;
+            letter-spacing: 1px;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            transition: 0.3s;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            header {
+                padding: 20px 30px;
+            }
+
+            .header-row {
+                width: 100%;
+            }
+
+            nav {
+                position: absolute;
+                left: 50%;
+                top: 100%;
+                transform: translateX(-50%);
+                width: 100vw;
+                background: #f5f5f5;
+                border-top: 1px solid #ddd;
+                box-shadow: 0 2px 8px rgba(44, 95, 95, 0.05);
+                display: none;
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 0;
+                z-index: 10;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .content,
+            .stats,
+            footer {
+                padding: 40px 30px;
+            }
+
+            .service-details {
+                padding: 0;
+            }
+
+            .hero {
+                padding: 60px 30px;
+            }
+
+            .hero h1 {
+                font-size: 60px;
+            }
+
+            .hero .subtitle {
+                font-size: 18px;
+                letter-spacing: 8px;
+            }
+
+            .sidebar,
+            .color-palette {
                 display: none;
             }
 
+            .why-choose {
+                grid-template-columns: 1fr;
+            }
+
+            .services-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .service-details {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 60px 30px;
+            }
+
+            .main-heading {
+                font-size: 36px;
+            }
+        }
+
+        @media (max-width: 768px) {
             .hamburger {
                 display: flex;
             }
-        }
-    </style>
-    </head>
 
-    <body>
-        <nav>
-            <div class="logo">
-                <h1>DREAM STORIES</h1>
-                <p>GRAPHICS DESIGN</p>
-            </div>
-
-            <!-- Desktop Menu -->
-            <div class="menu">
-                <a href="/about.html">About</a>
-                <a href="/index.html" style="font-weight: bold;">Shop</a>
-                <a href="/razorpay.html">FAQ</a>
-                <a href="/contact.html">Contact</a>
-                <a href="/login.html">Login</a>
-            </div>
-
-            <!-- Hamburger Button for Mobile -->
-            <div class="hamburger" id="menu-btn" aria-label="Toggle menu">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-        </nav>
-
-
-
-        <!-- Mobile Menu (hidden by default) -->
-        <div class="mobile-menu" id="mobile-menu">
-            <a href="/about.html">About</a>
-            <a href="/index.html" style="font-weight: bold;">Shop</a>
-            <a href="/razorpay.html">FAQ</a>
-            <a href="/contact.html">Contact</a>
-            <a href="/login.html">Login</a>
-        </div>
-
-        <script>
-            const btn = document.getElementById('menu-btn');
-            const menu = document.getElementById('mobile-menu');
-
-            btn.addEventListener('click', () => {
-                if (menu.classList.contains('show')) {
-                    // Closing the menu
-                    menu.classList.remove('show');
-                    menu.classList.add('hide');
-
-                    // Hide after animation completes
-                    setTimeout(() => {
-                        menu.classList.remove('hide');
-                        menu.style.display = 'none';
-                    }, 300); // Match this with CSS transition duration
-                } else {
-                    // Opening the menu
-                    menu.style.display = 'flex';
-
-                    // Force reflow to ensure display change is processed
-                    void menu.offsetHeight;
-
-                    // Start show animation
-                    menu.classList.add('show');
-                    menu.classList.remove('hide');
-                }
-            });
-        </script>
-
-        <!-- Left Sidebar Ad -->
-        <div class="sidebar-ad left-ad">
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8664296437390910"
-                data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-        <!-- Right Sidebar Ad -->
-        <div class="sidebar-ad right-ad">
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8664296437390910"
-                data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>
-                (adsbygoogle = window.adsbygoogle || []).push({});
-            </script>
-        </div>
-
-
-
-        <style>
-            .copyright-notice-container {
-                max-width: 97%;
-                margin: 10px auto;
-                font-family: Arial, sans-serif;
-                border: 2px solid #d9534f;
-                border-radius: 6px;
-                overflow: hidden;
-                margin-bottom: -10px;
-
+            .header-row {
+                flex-direction: row;
             }
 
-            /* Important Banner */
-            .important-banner {
-                background-color: #8c0c07;
-                color: white;
-                padding: 10px;
-                text-align: center;
-                font-weight: bold;
-                font-size: 1rem;
-            }
-
-            /* Scrolling Notice */
-            .scrolling-notice {
-                background-color: #ffebee;
-                padding: 12px 0;
-                overflow: hidden;
-                white-space: nowrap;
-            }
-
-            .scrolling-text {
-                display: inline-block;
-                animation: scroll 40s linear infinite;
-                padding-left: 10%;
-            }
-
-            .red-text {
-                color: #980b06;
-                font-weight: bold;
-                font-size: 0.95rem;
-                margin-right: 40px;
-            }
-
-            /* Toggle Button */
-            .toggle-btn {
-                width: 100%;
-                padding: 12px;
-                background-color: #870d09;
-                color: white;
-                border: none;
-                font-weight: bold;
-                cursor: pointer;
-                font-size: 1rem;
-                transition: background 0.3s;
-            }
-
-            .toggle-btn:hover {
-                background-color: #9a5a05;
-            }
-
-            /* Detailed Content */
-            .detailed-content {
-                padding: 15px;
-                background-color: #fff;
-            }
-
-            .language-section {
-                margin-bottom: 25px;
-                border-bottom: 1px solid #eee;
-                padding-bottom: 15px;
-            }
-
-            .language-section:last-child {
-                border-bottom: none;
-            }
-
-            .language-section h3 {
-                color: #d9534f;
-                font-size: 1.1rem;
-                margin-bottom: 12px;
-            }
-
-            .language-section ul {
-                padding-left: 20px;
-            }
-
-            .language-section li {
-                margin-bottom: 10px;
-                line-height: 1.5;
-                font-size: 0.9rem;
-            }
-
-            .language-section span {
-                color: #d9534f;
-                font-weight: bold;
-            }
-
-            /* Animation */
-            @keyframes scroll {
-                0% {
-                    transform: translateX(0);
-                }
-
-                100% {
-                    transform: translateX(-100%);
-                }
-            }
-
-            /* Responsive */
-            @media (max-width: 768px) {
-                .copyright-notice-container {
-                    margin-bottom: -58px;
-                    margin-top: 141px;
-                }
-
-                .important-banner {
-                    font-size: 0.9rem;
-                    padding: 8px;
-                }
-
-                .red-text {
-                    font-size: 0.85rem;
-                }
-
-                .language-section h3 {
-                    font-size: 1rem;
-                }
-
-                .language-section li {
-                    font-size: 0.85rem;
-                }
-            }
-        </style>
-
-        <!-- Sidebar Ad Styles -->
-        <style>
-            /* Sidebar Ad Container Styles */
-            .sidebar-ad {
+            nav {
                 position: fixed;
-                top: 50%;
-                transform: translateY(-50%);
-                z-index: 10;
-                max-width: 160px;
-                max-height: 600px;
-                background: rgba(255, 255, 255, 0.9);
-                border-radius: 8px;
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-                backdrop-filter: blur(10px);
-                padding: 10px;
-                transition: all 0.3s ease;
+                left: 0;
+                top: 80px;
+                width: 100%;
+                background: #f5f5f5;
+                border-top: 1px solid #ddd;
+                box-shadow: 0 2px 8px rgba(44, 95, 95, 0.05);
+                display: none;
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 0;
+                z-index: 999;
             }
 
-            .sidebar-ad:hover {
-                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-                transform: translateY(-50%) scale(1.02);
+            nav.active {
+                display: flex;
             }
 
-            /* Left Sidebar Ad */
-            .left-ad {
-                left: 20px;
+            .hero h1 {
+                font-size: 48px;
             }
 
-            /* Right Sidebar Ad */
-            .right-ad {
+            .hero .subtitle {
+                font-size: 16px;
+                letter-spacing: 6px;
+            }
+
+            .main-heading {
+                font-size: 28px;
+            }
+
+            .social-icons {
+                right: 10px;
+                gap: 8px;
+            }
+
+            .social-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-item h2 {
+                font-size: 56px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section h2 {
+                font-size: 28px;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
                 right: 20px;
             }
 
-            /* Responsive Design for Sidebar Ads */
-            @media (max-width: 1200px) {
-                .sidebar-ad {
-                    max-width: 140px;
-                    padding: 8px;
-                }
-
-                .left-ad {
-                    left: 15px;
-                }
-
-                .right-ad {
-                    right: 15px;
-                }
-            }
-
-            @media (max-width: 992px) {
-                .sidebar-ad {
-                    max-width: 120px;
-                    padding: 6px;
-                }
-
-                .left-ad {
-                    left: 10px;
-                }
-
-                .right-ad {
-                    right: 10px;
-                }
-            }
-
-            @media (max-width: 768px) {
-                .sidebar-ad {
-                    position: relative;
-                    top: auto;
-                    transform: none;
-                    max-width: 100%;
-                    width: 100%;
-                    margin: 10px auto;
-                    left: auto;
-                    right: auto;
-                    max-height: none;
-                    display: none;
-                    /* Hide on mobile to avoid clutter */
-                }
-            }
-
-            @media (max-width: 480px) {
-                .sidebar-ad {
-                    display: none;
-                    /* Completely hide on small mobile devices */
-                }
-            }
-
-            /* Ensure main content doesn't overlap with ads */
-            @media (min-width: 769px) {
-                .product-section {
-                    margin-left: 200px;
-                    margin-right: 200px;
-                }
-            }
-
-            @media (min-width: 993px) and (max-width: 1200px) {
-                .product-section {
-                    margin-left: 180px;
-                    margin-right: 180px;
-                }
-            }
-
-            @media (min-width: 769px) and (max-width: 992px) {
-                .product-section {
-                    margin-left: 160px;
-                    margin-right: 160px;
-                }
-            }
-
-            /* Ensure product buttons are always clickable above nearby overlays */
-            .product-section {
+            header {
                 position: relative;
-                z-index: 50;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 70px;
             }
 
-            .products {
-                position: relative;
-                z-index: 60;
+            header {
+                padding: 12px 20px;
             }
 
-            .item {
-                position: relative;
-                z-index: 70;
+            .hero h1 {
+                font-size: 36px;
             }
 
-            .item .actions button {
-                position: relative;
-                z-index: 80;
-                pointer-events: auto;
+            .hero .subtitle {
+                font-size: 14px;
             }
-        </style>
 
-        <script>
-            function toggleNotice() {
-                const notice = document.getElementById('detailed-notice');
-                const btn = document.querySelector('.toggle-btn');
-
-                if (notice.style.display === 'block') {
-                    notice.style.display = 'none';
-                    btn.textContent = '⚠️ VIEW FULL LEGAL NOTICE (Click Here)';
-                } else {
-                    notice.style.display = 'block';
-                    btn.textContent = '▲ HIDE LEGAL NOTICE';
-                }
+            .main-heading {
+                font-size: 24px;
             }
-        </script>
 
-        <section class="product-section">
-            <div id="product-container" class="products">
+            .why-choose h2 {
+                font-size: 28px;
+            }
 
+            .welcome-section h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-row">
+
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
             </div>
-        </section>
+        </div>
+        <nav id="mainNav">
+            <a href="#home">Home</a>
+            <a href="/indexx.html">Shop</a>
+            <a href="#gallery">Gallery</a>
+            <a href="/about.html">About</a>
+            <a href="/razorpay.html">FaQ</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/login.html">Login</a>
+        </nav>
+    </header>
 
-        <!-- Add margin-top to account for fixed navbar -->
-        <div style="margin-top: 120px;"></div>
 
-        <!-- Payment Modal -->
-        <style>
-            .pay-modal-backdrop {
-                display: none;
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 2000;
-            }
 
-            .pay-modal {
-                position: fixed;
-                top: 50%;
-                left: 50%;
-                transform: translate(-50%, -50%);
-                width: 95%;
-                max-width: 520px;
-                background: #fff;
-                border-radius: 8px;
-                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-                z-index: 2001;
-                display: none;
-            }
+    <!-- Social Icons -->
+    <div class="social-icons">
+        <div class="social-icon" title="Phone">📞</div>
+        <div class="social-icon" title="Email">📧</div>
+        <div class="social-icon" title="Contact Developer">👨‍💻</div>
+        <div class="social-icon" title="Contact Form">📝</div>
+        <div class="social-icon" title="Instagram">📸</div>
+        <div class="social-icon" title="WhatsApp">💬</div>
+        <div class="social-icon" title="Facebook">👥</div>
+    </div>
 
-            .pay-modal-header {
-                padding: 14px 18px;
-                border-bottom: 1px solid #eee;
-                font-weight: 700;
-            }
 
-            .pay-modal-body {
-                padding: 16px 18px;
-            }
 
-            .pay-modal-footer {
-                padding: 12px 18px;
-                border-top: 1px solid #eee;
-                display: flex;
-                gap: 10px;
-                justify-content: flex-end;
-            }
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <img src="./LOGO PNG.png" alt="Dream Stories Graphics" class="hero-logo">
+        </div>
+    </section>
 
-            .pay-form .form-group {
-                margin-bottom: 12px;
-            }
+    <!-- Main Content -->
+    <main class="content">
+        <h1 class="main-heading">Creative Graphic Design Company in India</h1>
 
-            .pay-form label {
-                display: block;
-                margin-bottom: 6px;
-                font-weight: 600;
-            }
+        <div class="welcome-section">
+            <h2>Welcome to Dream Stories,</h2>
+            <p>a leading creative graphic design company in India dedicated to transforming ideas into visually stunning
+                brand experiences. We specialize in crafting innovative designs, premium wedding album PSDs, branding
+                materials, social media creatives, advertising graphics, and custom visual content that captivate
+                audiences and drive engagement.</p>
+            <p>At Dream Stories, our passion is to bring your vision to life with artistic excellence, attention to
+                detail, and cutting-edge design techniques. Whether you're a brand, photographer, or business, we
+                deliver designs that tell your story beautifully and leave a lasting impression.</p>
+        </div>
 
-            .pay-form input {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #e0e0e0;
-                border-radius: 6px;
-                box-sizing: border-box;
-            }
-
-            .btn {
-                padding: 10px 14px;
-                border: none;
-                border-radius: 6px;
-                cursor: pointer;
-            }
-
-            .btn-primary {
-                background: #2300a3;
-                color: #fff;
-            }
-
-            .btn-secondary {
-                background: #e0e0e0;
-                color: #333;
-            }
-        </style>
-        <div id="pay-modal-backdrop" class="pay-modal-backdrop"></div>
-        <div id="pay-modal" class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title">
-            <div class="pay-modal-header" id="pay-modal-title">Enter your details</div>
-            <div class="pay-modal-body">
-                <form class="pay-form">
-                    <div class="form-group">
-                        <label for="payer_name">Name</label>
-                        <input id="payer_name" name="name" placeholder="Enter your name" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="payer_mobile">Mobile</label>
-                        <input id="payer_mobile" name="mobile" placeholder="10-digit mobile" pattern="^[6-9][0-9]{9}$"
-                            required>
-                    </div>
-                    <div class="form-group">
-                        <label for="payer_email">Email</label>
-                        <input id="payer_email" name="email" type="email" placeholder="you@example.com" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="amount">Amount (INR)</label>
-                        <input id="amount" name="amount" type="number" min="1" step="1" placeholder="Amount" required
-                            readonly>
-                    </div>
-                    <input id="product_title" name="product" type="hidden">
-                </form>
+        <!-- Why Choose Section -->
+        <div class="why-choose">
+            <div>
+                <h2>Why Choose Dream Stories?</h2>
+                <ul>
+                    <li>Creative & original graphic design solutions</li>
+                    <li>Premium quality PSD templates and design assets</li>
+                    <li>Fast delivery and professional support</li>
+                    <li>Trusted by businesses and creatives across India</li>
+                </ul>
+                <p style="margin-top: 30px; font-style: italic;">Let's Create Something Amazing Together!</p>
+                <p>Elevate your brand's visual identity with Dream Stories — where design meets imagination.</p>
             </div>
-            <div class="pay-modal-footer">
-                <button type="button" class="btn btn-secondary" id="pay-cancel">Cancel</button>
-                <button type="button" class="btn btn-primary" id="pay-submit">Pay Now</button>
+            <div style="text-align: center;">
+                <img class="why-choose-image" src="./weblogo.png" alt="Dream Stories Graphics" viewBox="0 0 500 400">
+                <!-- Desk -->
+                <rect x="50" y="280" width="400" height="15" fill="#ff9f66" rx="3" />
+                <rect x="70" y="295" width="20" height="80" fill="#ff9f66" rx="3" />
+                <rect x="360" y="295" width="20" height="80" fill="#ff9f66" rx="3" />
+
+                <!-- Computer Monitor -->
+                <rect x="150" y="150" width="200" height="130" fill="#fff" stroke="#333" stroke-width="3" rx="5" />
+                <rect x="160" y="160" width="180" height="100" fill="#7cc4c4" />
+
+                <!-- Monitor content -->
+
+                <circle cx="180" cy="220" r="15" fill="#ff6b6b" />
+                <rect x="210" y="210" width="30" height="20" fill="#ffd700" />
+                <circle cx="290" cy="240" r="10" fill="#59a3a3" />
+                <path d="M 270 230 L 280 240 L 270 250" stroke="#333" stroke-width="2" fill="none" />
+
+                <!-- Monitor stand -->
+                <rect x="220" y="280" width="60" height="10" fill="#333" />
+                <rect x="235" y="270" width="30" height="10" fill="#333" />
+
+                <!-- Person -->
+                <circle cx="350" cy="200" r="30" fill="#ffb6c1" />
+                <path d="M 340 215 Q 350 220 360 215" stroke="#333" stroke-width="2" fill="none" />
+                <circle cx="345" cy="205" r="3" fill="#333" />
+                <circle cx="355" cy="205" r="3" fill="#333" />
+                <path d="M 320 220 L 350 240 L 380 220" stroke="#333" stroke-width="3" fill="none" />
+                <rect x="320" y="235" width="60" height="50" fill="#59a3a3" rx="5" />
+
+                <!-- Chair -->
+                <rect x="310" y="270" width="80" height="15" fill="#ff9f66" rx="3" />
+
+                <!-- Plant -->
+                <ellipse cx="420" cy="275" rx="20" ry="15" fill="#7cc4c4" />
+                <path d="M 410 260 Q 420 240 430 260" fill="#4a9d9d" />
+                <path d="M 405 270 Q 420 250 435 270" fill="#4a9d9d" />
+                <rect x="415" y="275" width="10" height="20" fill="#8b6f47" />
+
+                <!-- Books/Items -->
+                <rect x="80" y="260" width="30" height="20" fill="#ffd700" />
+                <rect x="85" y="255" width="30" height="20" fill="#ff6b6b" />
+                <rect x="90" y="250" width="30" height="20" fill="#7cc4c4" />
+                </img>
             </div>
         </div>
 
-        <div class="copyright-notice-container">
-            <!-- Important Notice Banner -->
-
-            <!-- Continuous Scrolling Notice -->
-            <div class="scrolling-notice">
-                <div class="scrolling-text">
-                    <span class="red-text">ENGLISH: Copyright © dreamstoriesgraphics.com | All designs protected under
-                        Section 512 DPCA | Strictly prohibited: Resale, Distribution, Modification | Single user license
-                        only | Legal action including fines (₹50,000+) and imprisonment possible for violations •
-                    </span>
-                    <span class="red-text">हिंदी: कॉपीराइट © dreamstoriesgraphics.com | सभी डिज़ाइन धारा 512 DPCA के तहत
-                        सुरक्षित | सख्त वर्जित: पुनर्विक्रय, वितरण, संशोधन | केवल एक उपयोगकर्ता लाइसेंस | उल्लंघन पर
-                        ₹50,000+ जुर्माना और कारावास की कार्रवाई संभव • </span>
-                    <span class="red-text">मराठी: कॉपीराइट © dreamstoriesgraphics.com | सर्व डिझाइन कलम 512 DPCA अंतर्गत
-                        संरक्षित | कठोरपणे प्रतिबंधित: पुनर्विक्री, वितरण, बदल | फक्त एकाच वापरकर्त्यासाठी परवाना |
-                        उल्लंघनासाठी ₹50,000+ दंड आणि तुरुंगवासाची कारवाई शक्य • </span>
-                </div>
+        <div class="container">
+            <div class="section-header">
+                <h2>Our Creative Services</h2>
+                <p>Hover to explore our offerings</p>
             </div>
 
-            <!-- Detailed Notice (Expandable) -->
-            <button class="toggle-btn" onclick="toggleNotice()">⚠️ VIEW FULL LEGAL NOTICE (Click Here)</button>
-
-            <div id="detailed-notice" class="detailed-content" style="display:none">
-                <!-- English Section -->
-                <div class="language-section">
-                    <h3>LEGAL NOTICE (ENGLISH) - SECTION 512 DPCA</h3>
-                    <ul>
-                        <li>All digital content including PSDs, templates, and designs are exclusive property of
-                            <span>dreamstoriesgraphics.com</span>
-                        </li>
-                        <li>STRICTLY PROHIBITED: Resale, redistribution, sharing, or any commercial use without
-                            authorization</li>
-                        <li>Modification of any design does NOT transfer ownership rights</li>
-                        <li>Single user license only - cannot be transferred or sublicensed</li>
-                        <li>Violators will face legal action under Section 512 with minimum ₹50,000 penalty + possible
-                            imprisonment</li>
-                        <li>Using our designs for NFT creation is expressly forbidden</li>
-                        <li>All copyright infringement cases will be filed in Pune District Court, MH</li>
-                    </ul>
+            <div class="services-row">
+                <!-- Album Design -->
+                <div class="service-item">
+                    <div class="animated-folder">
+                        <div class="folder-tab"></div>
+                        <div class="folder-back"></div>
+                        <div class="folder-cover">
+                            <div class="folder-cover-inner">
+                                <img src="./graphic-design-tools.avif" alt="Album Design" class="folder-image">
+                                <div class="folder-title">Album Design</div>
+                            </div>
+                        </div>
+                        <div class="folder-content">
+                            <h3>Album Design</h3>
+                            <p>Create stunning photo albums with custom layouts and designs.</p>
+                            <a href="#" class="folder-btn">Explore →</a>
+                        </div>
+                    </div>
+                    <div class="shadow"></div>
                 </div>
 
-                <!-- Hindi Section -->
-                <div class="language-section">
-                    <h3>कानूनी सूचना (हिंदी) - धारा 512 DPCA</h3>
-                    <ul>
-                        <li>PSDs, टेम्प्लेट्स और डिज़ाइन सहित सभी डिजिटल सामग्री <span>dreamstoriesgraphics.com</span>
-                            की विशेष संपत्ति हैं</li>
-                        <li>सख्त वर्जित: बिना अधिकार के पुनर्विक्रय, पुनर्वितरण, साझाकरण या कोई वाणिज्यिक उपयोग</li>
-                        <li>किसी भी डिज़ाइन में संशोधन करने से स्वामित्व अधिकार हस्तांतरित नहीं होते</li>
-                        <li>केवल एक उपयोगकर्ता लाइसेंस - हस्तांतरणीय या उप-लाइसेंस योग्य नहीं</li>
-                        <li>उल्लंघनकर्ताओं के खिलाफ धारा 512 के तहत कम से कम ₹50,000 जुर्माना + संभावित कारावास की
-                            कार्रवाई</li>
-                        <li>NFT निर्माण के लिए हमारे डिज़ाइन का उपयोग स्पष्ट रूप से वर्जित है</li>
-                        <li>सभी कॉपीराइट उल्लंघन के मामले पुणे जिल्हा न्यायालय, महाराष्ट्र में दर्ज किए जाएंगे</li>
-                    </ul>
+                <!-- Shop Album PSD -->
+                <div class="service-item">
+                    <div class="animated-folder">
+                        <div class="folder-tab"></div>
+                        <div class="folder-back"></div>
+                        <div class="folder-cover">
+                            <div class="folder-cover-inner">
+                                <img src="./shopping.png" alt="Shop PSD" class="folder-image">
+                                <div class="folder-title">Shop PSD</div>
+                            </div>
+                        </div>
+                        <div class="folder-content">
+                            <h3>Shop Album PSD</h3>
+                            <p>Download professional PSD templates ready to customize.</p>
+                            <a href="/indexx.html" class="folder-btn">Browse →</a>
+                        </div>
+                    </div>
+                    <div class="shadow"></div>
+
                 </div>
 
-                <!-- Marathi Section -->
-                <div class="language-section">
-                    <h3>कायदेशीर सूचना (मराठी) - कलम 512 DPCA</h3>
-                    <ul>
-                        <li>PSDs, टेम्प्लेट्स आणि डिझाइन्स सह सर्व डिजिटल सामग्री <span>dreamstoriesgraphics.com</span>
-                            ची विशेष मालमत्ता आहे</li>
-                        <li>कठोरपणे प्रतिबंधित: परवानगीशिवाय पुनर्विक्री, पुनर्वितरण, शेअरिंग किंवा कोणताही वाणिज्यिक
-                            वापर</li>
-                        <li>कोणत्याही डिझाइनमध्ये बदल केल्याने मालकी हक्क हस्तांतरित होत नाहीत</li>
-                        <li>फक्त एकाच वापरकर्त्यासाठी परवाना - हस्तांतरणीय किंवा उप-परवाना योग्य नाही</li>
-                        <li>उल्लंघनकर्त्यांवर कलम 512 अंतर्गत किमान ₹50,000 दंड + संभाव्य तुरुंगवासाची कारवाई</li>
-                        <li>NFT तयार करण्यासाठी आमच्या डिझाइनचा वापर स्पष्टपणे प्रतिबंधित आहे</li>
-                        <li>सर्व कॉपीराइट भंगाचे खटले पुणे जिल्हा न्यायालय, महाराष्ट्र मध्ये दाखल केले जातील</li>
-                    </ul>
+                <!-- Gallery -->
+                <div class="service-item">
+                    <div class="animated-folder">
+                        <div class="folder-tab"></div>
+                        <div class="folder-back"></div>
+                        <div class="folder-cover">
+                            <div class="folder-cover-inner">
+                                <img src="./gallary.jpeg" alt="Gallery" class="folder-image">
+                                <div class="folder-title">Gallery</div>
+                            </div>
+                        </div>
+                        <div class="folder-content">
+                            <h3>Gallery</h3>
+                            <p>Explore our collection of creative works and inspiration.</p>
+                            <a href="#" class="folder-btn">View All →</a>
+                        </div>
+                    </div>
+                    <div class="shadow"></div>
+
                 </div>
             </div>
         </div>
 
+        </div>
+    </main>
 
-        <footer>
-            <h2>Dream Stories</h2>
-            <p>PHONE: <a href="tel:+919404256771">+91 9404256771</a> | EMAIL: <a
-                    href="mailto:dreamstories77@gmail.com">dreamstories77@gmail.com</a></p>
-            <div class="social-media">
-                <a href="https://www.instagram.com/dream_stories_graphics/?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw%3D%3D#"
-                    class="social-icon" id="instagram" aria-label="Instagram">
-                    <i class="fab fa-instagram"></i>
-                </a>
-                <a href="https://www.facebook.com/rahul.gade.1271?mibextid=LQQJ4d" class="social-icon" id="facebook"
-                    aria-label="Facebook">
-                    <i class="fab fa-facebook-f"></i>
-                </a>
-                <a href="https://www.youtube.com/@dreamstoriesgraphics" class="social-icon" id="youtube"
-                    aria-label="YouTube">
-                    <i class="fab fa-youtube"></i>
-                </a>
-                <a href="https://wa.me/+919404256771" class="social-icon" id="whatsapp" aria-label="WhatsApp">
-                    <i class="fab fa-whatsapp"></i>
-                </a>
-            </div>
-            <p style="position: relative ; top: 30px;"> © Copyright 2025 Designed By-DreamStrories</p>
-        </footer>
+    <!-- Service Details -->
+    <section class="service-details">
+        <div class="service-detail">
+            <h3>Advertisement Design Service</h3>
+            <p>Eye-catching advertisements that grab attention and drive results. We create compelling visuals for
+                print, digital, and social media that make your brand stand out in the crowded marketplace. Our designs
+                blend creativity with strategy to maximize impact and engagement.</p>
+        </div>
+        <div class="service-detail">
+            <h3>Creative Logo Design Agency</h3>
+            <p>Your logo is your brand's identity. We craft unique, memorable logos that perfectly represent your
+                business values and resonate with your target audience across all platforms. From concept to completion,
+                we ensure your brand makes an unforgettable first impression.</p>
+        </div>
+        <div class="service-detail">
+            <h3>Album+Portrait Design+Company</h3>
+            <p>We offer professional album and portrait design services that tell your story beautifully. From wedding
+                albums to corporate portfolios, we create stunning layouts that preserve precious memories with artistic
+                flair and attention to detail that exceeds expectations.</p>
+        </div>
+    </section>
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const productContainer = document.getElementById('product-container');
+    <!-- Stats Section -->
+    <section class="stats">
+        <div class="stat-item">
+            <h2>10</h2>
+            <p>Years of Experience</p>
+        </div>
+        <div class="stat-item">
+            <h2>10+</h2>
+            <p>Small but Creative Team</p>
+        </div>
+        <div class="stat-item">
+            <h2>10k+</h2>
+            <p>Domestic Project Completed</p>
+        </div>
+        <div class="stat-item">
+            <h2>3k+</h2>
+            <p>Abroad Project Completed</p>
+        </div>
+    </section>
 
-                function loadProducts() {
-                    productContainer.innerHTML = '<div>Loading products...</div>';
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>You Have Questions. We Have Answers</h2>
+        <p>Schedule a 30-Minute Meeting with Our Expert</p>
+        <button class="cta-button">Schedule Meeting</button>
+    </section>
 
-                    fetch('/api/public/products')
-                        .then(response => {
-                            if (!response.ok) {
-                                throw new Error('Network response was not ok');
-                            }
-                            return response.json();
-                        })
-                        .then(products => {
-                            if (products.length === 0) {
-                                productContainer.innerHTML = '<p>No products available.</p>';
-                                return;
-                            }
+    <!-- Footer -->
+    <footer>
+        <div class="footer-icons">
+            <a class="footer-icon" href="tel:+919404256771" title="Phone"><i class="bi bi-telephone"></i></a>
+            <a class="footer-icon" href="mailto:dreamstories77@gmail.com" title="Email"><i
+                    class="bi bi-envelope"></i></a>
+            <a class="footer-icon" href="http://kateaditya.netlify.app" title="Contact Developer"><i
+                    class="bi bi-file-earmark-person"></i></a>
+            <a class="footer-icon" href="/contact" title="Contact Form"><i class="bi bi-ui-checks"></i></a>
+            <a class="footer-icon"
+                href="https://www.instagram.com/dream_stories_graphics?igsh=MWM0eXp4dzJvMzQ2dw%3D%3D&utm_source=qr"
+                target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a class="footer-icon" href="+919404256771" onclick="openWhatsApp();return false;" title="WhatsApp"><i
+                    class="bi bi-whatsapp"></i></a>
+            <a class="footer-icon" href="https://www.facebook.com/share/16UszjC68U/?mibextid=wwXIfr" title="Facebook"><i
+                    class="bi bi-facebook"></i></a>
+        </div>
+        <p>© ALL RIGHTS RESERVED BY DREAM STORIES GRAPHICS 2025 PRIVACY POLICY • TERMS OF USE • COOKIE PREFERENCES</p>
+    </footer>
 
-                            productContainer.innerHTML = products.map(product => `
-                                <div class="item">
-                                    <img src="${product.image_url}" class="img-fluid" alt="${product.title}">
-                                    <h3>${product.title}</h3>
-                                    <span class="discount">${product.discount}</span>
-                                    <p class="prices">₹${product.price}</p>
-                                    <div class="actions">
-                                        <button class="buy-btn" 
-                                            data-price="${product.price}"
-                                            data-title="${product.title}"
-                                            data-link="${product.view_link}"
-                                            onclick="handlePayment(this)">Pay Now</button>
-                                        <button class="add-to-cart-btn" onclick="window.open('${product.view_link}')">View</button>
-                                    </div>
-                                </div>
-                            `).join('');
-                        })
-                        .catch(error => {
-                            productContainer.innerHTML = `
-                                <div style="text-align: center; padding: 20px;">
-                                    <p>Failed to load products.</p>
-                                    <button onclick="loadProducts()" style="margin-top: 10px;">Try Again</button>
-                                </div>`;
-                        });
-                }
+    <!-- WhatsApp Float -->
+    <div class="whatsapp-float" onclick="openWhatsApp()">
+        <svg width="35" height="35" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 5.507z" />
+        </svg>
+    </div>
 
-                loadProducts();
-            });
-        </script>
-
-        <!-- Product listing and payment handling moved to payment.js -->
-
-
-        <script>
-
-            function handlePayment(button) {
-                // Function to detect mobile devices
-                function isMobileDevice() {
-                    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-                        window.innerWidth <= 768;
-                }
-
-                // Block payment on mobile devices
-                if (isMobileDevice()) {
-                    Swal.fire({
-                        title: 'Mobile Device Detected / मोबाईल डिव्हाइस आढळले- PC/Laptop वापरा',
-                        html: `
-                 <div style="text-align: left; font-size: 14px; color: red;">
-                    <p><strong>सूचना:</strong><br>
-                    (1).PRODUCT डाउनलोड करण्यासाठी PC/Laptop वापरा </br>
-                    (2).पेमेंट (QR) स्कॅन करण्यासाठी मोबाईल वापरा</p>
-                    <p><strong>NOTICE:</strong><br>
-                    (1).Use PC/Laptop to download the product  </br>
-                    (2).Use mobile to scan payment QR code</p>
-                </div>
-            `,
-                        icon: 'info',
-                        confirmButtonText: 'OK',
-                        confirmButtonColor: '#2300a3'
-                    });
-                    return; // Exit the function
-                }
-
-                const price = button.dataset.price;
-                // populate modal amount and open modal; pay-form submission handled in payment.js
-                try {
-                    document.getElementById('amount').value = Math.round(parseFloat(price));
-                } catch (e) {
-                    document.getElementById('amount').value = '';
-                }
-                try {
-                    document.getElementById('product_title').value = button.dataset.title || '';
-                } catch (e) { }
-                const backdrop = document.getElementById('pay-modal-backdrop');
-                const modal = document.getElementById('pay-modal');
-                backdrop.style.display = 'block';
-                modal.style.display = 'block';
-            }
-        </script>
-
-
-        <script>
-            window.dataLayer = window.dataLayer || [];
-            function gtag() { dataLayer.push(arguments); }
-            gtag('js', new Date());
-
-            gtag('config', 'G-KZBTRFE7EH');
-        </script>
-
-    </body>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
-    <script src="payment.js"></script>
-    <script src="adsense.js"></script>
     <script>
-        // Modal controls
-        (function () {
-            const backdrop = document.getElementById('pay-modal-backdrop');
-            const modal = document.getElementById('pay-modal');
-            const cancelBtn = document.getElementById('pay-cancel');
-            const submitBtn = document.getElementById('pay-submit');
-            const form = document.querySelector('.pay-form');
+        function toggleMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+        }
 
-            function closeModal() {
-                modal.style.display = 'none';
-                backdrop.style.display = 'none';
+        function openWhatsApp() {
+            const phoneNumber = '+919404256771'; // Replace with your WhatsApp number
+            const message = 'Hi! I would like to know more about your graphic design services.';
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const nav = document.getElementById('mainNav');
+            const hamburger = document.querySelector('.hamburger');
+
+            if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+                nav.classList.remove('active');
             }
-            cancelBtn && cancelBtn.addEventListener('click', closeModal);
-            backdrop && backdrop.addEventListener('click', closeModal);
-            submitBtn && submitBtn.addEventListener('click', function () {
-                if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                // Close mobile menu after clicking
+                document.getElementById('mainNav').classList.remove('active');
+            });
+        });
+
+        // Add click handlers for social icons
+        document.addEventListener('DOMContentLoaded', function () {
+            const socialIcons = document.querySelectorAll('.social-icon');
+
+            socialIcons.forEach((icon, index) => {
+                icon.addEventListener('click', function () {
+                    switch (index) {
+                        case 0: // Phone
+                            window.open('tel:+919876543210');
+                            break;
+                        case 1: // Email
+                            window.open('mailto:dreamstories77@gmail.com');
+                            break;
+                        case 2: // Document
+                            window.open('http://kateaditya.netlify.app', '_blank');
+                            break;
+                        case 3: // Form
+                            window.open('/contact.html', '_blank');
+                            break;
+                        case 4: // Instagram
+                            window.open('https://www.instagram.com/dream_stories_graphics?igsh=MWM0eXp4dzJvMzQ2dw%3D%3D&utm_source=qr', '_blank');
+                            break;
+                        case 5: // Message
+                            openWhatsApp('+919404256771');
+                            break;
+                        case 6: // Link
+                            window.open('https://www.facebook.com/share/16UszjC68U/?mibextid=wwXIfr', '_blank');
+                            break;
+                    }
+                });
             });
 
-            // Close modal after payment success handled in payment.js via alerts; no hook needed here
-        })();
-    </script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <script src="./details.js"></script>
-    <script src="loading.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-    <script type="text/javascript"> emailjs.init('cpZ1TQaAFUFX5sE0Y') </script>
-    <script src="emailHandler.js"></script>
-    <script src="loader.js"></script>
-    <script src="submitbtn.js"></script>
-    <script src="script.js"></script>
+            // Add click handler for CTA button
+            document.querySelector('.cta-button').addEventListener('click', function () {
+                alert('To Schedule a meeting, please contact us at +919404256771 or email us at dreamstories77@gmail.com or visit our contact page.');
+            });
 
+            // Intersection Observer for service cards
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                        observer.unobserve(entry.target); // Stop observing once animated
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px'
+            });
+
+            // Observe all service cards
+            document.querySelectorAll('.service-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+</body>
 
 </html>

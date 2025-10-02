@@ -1,0 +1,90 @@
+
+
+<style>
+
+  header {
+            background: linear-gradient(90deg, #f5f5f5 60%, #e0f7fa 100%);
+            padding: 20px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            border-bottom: 2px solid #333;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-row {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+
+        nav {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            height: auto;
+        }
+
+        .hamburger {
+            z-index: 2;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #2c5f5f;
+            font-size: 18px;
+            transition: color 0.3s, background 0.3s, box-shadow 0.3s;
+            font-family: 'Libre Bodoni', serif;
+            padding: 8px 18px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: #fff;
+            background: #59a3a3;
+            box-shadow: 0 2px 8px rgba(89, 163, 163, 0.15);
+        }
+
+
+</style>
+
+
+
+
+
+
+
+ <header>
+        <div class="header-row">
+
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <nav id="mainNav">
+            <a href="#home">Home</a>
+            <a href=" /indexx.html">Shop</a>
+            <a href="#gallery">Gallery</a>
+            <a href="/about.html">About</a>
+            <a href="/t&c.html">FaQ</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/login.html">Login</a>
+        </nav>
+    </header>

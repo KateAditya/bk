@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dream Stories</title>
+    <!-- Favicon -->
+    <link rel="icon" href="images/MY-LOGO-DREAM-STORIES.jpg">
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="loader.css">
+    <link href="https://fonts.googleapis.com/css?family=Playfair+Display" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/css/OverlayScrollbars.min.css">
+    <link href="https://unpkg.com/tailwindcss@^2.1/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/overlayscrollbars/1.13.3/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-KZBTRFE7EH"></script>
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8664296437390910"
+        crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 100px;
+            font-family: 'Libre Bodoni', serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        header {
+            background: linear-gradient(90deg, #f5f5f5 60%, #e0f7fa 100%);
+            padding: 20px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            border-bottom: 2px solid #333;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-row {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            height: auto;
+        }
+
+        .hamburger {
+            z-index: 2;
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 2px;
+            position: absolute;
+            left: 10px;
+            transform: translateY(-20%);
+        }
+
+        .hamburger span {
+            width: 30px;
+            height: 5px;
+            background: #000000;
+            transition: 0.3s;
+            display: block;
+            margin: 3px 0;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #2c5f5f;
+            font-size: 18px;
+            transition: color 0.3s, background 0.3s, box-shadow 0.3s;
+            font-family: 'Libre Bodoni', serif;
+            padding: 8px 18px;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: #fff;
+            background: #59a3a3;
+            box-shadow: 0 2px 8px rgba(89, 163, 163, 0.15);
+        }
+
+        footer {
+            background: white;
+            padding: 50px 100px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+            margin-top: 40px;
+        }
+
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .footer-icon {
+            width: 40px;
+            height: 40px;
+            background: #59a3a3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .footer-icon:hover {
+            background: #2c5f5f;
+            transform: scale(1.1);
+        }
+
+        footer p {
+            font-size: 11px;
+            color: #666;
+            font-family: 'Libre Bodoni', serif;
+            letter-spacing: 1px;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #25d366;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+
+        @media (max-width: 1024px) {
+            header {
+                padding: 20px 30px;
+            }
+
+            .header-row {
+                width: 100%;
+            }
+
+            nav {
+                position: absolute;
+                left: 50%;
+                top: 100%;
+                transform: translateX(-50%);
+                width: 100vw;
+                background: #f5f5f5;
+                border-top: 1px solid #ddd;
+                box-shadow: 0 2px 8px rgba(44, 95, 95, 0.05);
+                display: none;
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 0;
+                z-index: 10;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            footer {
+                padding: 40px 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            .header-row {
+                flex-direction: row;
+            }
+
+            nav {
+                position: fixed;
+                left: 0;
+                top: 80px;
+                width: 100%;
+                background: #ffffff;
+                border-top: 1px solid #333;
+                border-bottom: 1px solid #333;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                display: none;
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px 0;
+                z-index: 999;
+            }
+
+            nav.active {
+                display: flex;
+                animation: slideDown 0.3s forwards;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            header {
+                position: fixed;
+                z-index: 1000;
+            }
+
+            footer {
+                padding: 30px 10px;
+            }
+
+            .footer-icons {
+                gap: 18px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding-top: 70px;
+            }
+
+            header {
+                padding: 12px 20px;
+            }
+
+            .footer-icons {
+                gap: 12px;
+            }
+
+            .footer-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 18px;
+            }
+
+            footer p {
+                font-size: 10px;
+            }
+        }
+
+        /* Sidebar Ad Container Styles */
+        .sidebar-ad {
+            position: fixed;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            max-width: 160px;
+            max-height: 600px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-ad:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+            transform: translateY(-50%) scale(1.02);
+        }
+
+        /* Left Sidebar Ad */
+        .left-ad {
+            left: 20px;
+        }
+
+        /* Right Sidebar Ad */
+        .right-ad {
+            right: 20px;
+        }
+
+        /* Responsive Design for Sidebar Ads */
+        @media (max-width: 1200px) {
+            .sidebar-ad {
+                max-width: 140px;
+                padding: 8px;
+            }
+
+            .left-ad {
+                left: 15px;
+            }
+
+            .right-ad {
+                right: 15px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .sidebar-ad {
+                max-width: 120px;
+                padding: 6px;
+            }
+
+            .left-ad {
+                left: 10px;
+            }
+
+            .right-ad {
+                right: 10px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar-ad {
+                position: relative;
+                top: auto;
+                transform: none;
+                max-width: 100%;
+                width: 100%;
+                margin: 10px auto;
+                left: auto;
+                right: auto;
+                max-height: none;
+                display: none;
+                /* Hide on mobile to avoid clutter */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .sidebar-ad {
+                display: none;
+                /* Completely hide on small mobile devices */
+            }
+        }
+
+        /* Ensure main content doesn't overlap with ads */
+        @media (min-width: 769px) {
+            .product-section {
+                margin-left: 200px;
+                margin-right: 200px;
+            }
+        }
+
+        @media (min-width: 993px) and (max-width: 1200px) {
+            .product-section {
+                margin-left: 180px;
+                margin-right: 180px;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 992px) {
+            .product-section {
+                margin-left: 160px;
+                margin-right: 160px;
+            }
+        }
+
+        /* Ensure product buttons are always clickable above nearby overlays */
+        .product-section {
+            position: relative;
+            z-index: 50;
+        }
+
+        .products {
+            position: relative;
+            z-index: 60;
+        }
+
+        .item {
+            position: relative;
+            z-index: 70;
+        }
+
+        .item .actions button {
+            position: relative;
+            z-index: 80;
+            pointer-events: auto;
+        }
+
+        /* Copyright Notice Container Styles */
+        .copyright-notice-container {
+            max-width: 97%;
+            margin: 10px auto;
+            font-family: Arial, sans-serif;
+            border: 2px solid #d9534f;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: -10px;
+        }
+
+        /* Important Banner */
+        .important-banner {
+            background-color: #8c0c07;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        /* Scrolling Notice */
+        .scrolling-notice {
+            background-color: #ffebee;
+            padding: 12px 0;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .scrolling-text {
+            display: inline-block;
+            animation: scroll 40s linear infinite;
+            padding-left: 10%;
+        }
+
+        .red-text {
+            color: #980b06;
+            font-weight: bold;
+            font-size: 0.95rem;
+            margin-right: 40px;
+        }
+
+        /* Toggle Button */
+        .toggle-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #870d09;
+            color: white;
+            border: none;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .toggle-btn:hover {
+            background-color: #9a5a05;
+        }
+
+        /* Detailed Content */
+        .detailed-content {
+            padding: 15px;
+            background-color: #fff;
+        }
+
+        .language-section {
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 15px;
+        }
+
+        .language-section:last-child {
+            border-bottom: none;
+        }
+
+        .language-section h3 {
+            color: #d9534f;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+
+        .language-section ul {
+            padding-left: 20px;
+        }
+
+        .language-section li {
+            margin-bottom: 10px;
+            line-height: 1.5;
+            font-size: 0.9rem;
+        }
+
+        .language-section span {
+            color: #d9534f;
+            font-weight: bold;
+        }
+
+        /* Animation */
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .copyright-notice-container {
+                margin-bottom: -58px;
+                margin-top: 141px;
+            }
+
+            .important-banner {
+                font-size: 0.9rem;
+                padding: 8px;
+            }
+
+            .red-text {
+                font-size: 0.85rem;
+            }
+
+            .language-section h3 {
+                font-size: 1rem;
+            }
+
+            .language-section li {
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Payment Modal Styles */
+        .pay-modal-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+
+        .pay-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 95%;
+            max-width: 520px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            z-index: 2001;
+            display: none;
+        }
+
+        .pay-modal-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid #eee;
+            font-weight: 700;
+        }
+
+        .pay-modal-body {
+            padding: 16px 18px;
+        }
+
+        .pay-modal-footer {
+            padding: 12px 18px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .pay-form .form-group {
+            margin-bottom: 12px;
+        }
+
+        .pay-form label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+
+        .pay-form input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: #2300a3;
+            color: #fff;
+        }
+
+        .btn-secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="page-loader">
+        <img src="DREAM STORIES PNG LOGO_2.png" alt="Loading..." class="loader-image">
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-row">
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <nav id="mainNav">
+            <a href="/index.html">Home</a>
+            <a href="/indexx.html">Shop</a>
+            <a href="#gallery">Gallery</a>
+            <a href="/about.html">About</a>
+            <a href="/T&C.html">FAQ</a>
+            <a href="/contact.html">Contact</a>
+            <a href="/login.html">Login</a>
+        </nav>
+    </header>
+
+    
+ 
+
+
+    <!-- Left Sidebar Ad -->
+    <div class="sidebar-ad left-ad">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8664296437390910"
+            data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <!-- Right Sidebar Ad -->
+    <div class="sidebar-ad right-ad">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-8664296437390910"
+            data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <script>
+            (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+    </div>
+
+    <section class="product-section">
+        <div id="product-container" class="products">
+            <!-- Products will be loaded dynamically -->
+        </div>
+    </section>
+
+
+
+    <!-- Payment Modal -->
+    <div id="pay-modal-backdrop" class="pay-modal-backdrop"></div>
+    <div id="pay-modal" class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title">
+        <div class="pay-modal-header" id="pay-modal-title">Enter your details</div>
+        <div class="pay-modal-body">
+            <form class="pay-form">
+                <div class="form-group">
+                    <label for="payer_name">Name</label>
+                    <input id="payer_name" name="name" placeholder="Enter your name" required>
+                </div>
+                <div class="form-group">
+                    <label for="payer_mobile">Mobile</label>
+                    <input id="payer_mobile" name="mobile" placeholder="10-digit mobile" pattern="^[6-9][0-9]{9}$"
+                        required>
+                </div>
+                <div class="form-group">
+                    <label for="payer_email">Email</label>
+                    <input id="payer_email" name="email" type="email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount (INR)</label>
+                    <input id="amount" name="amount" type="number" min="1" step="1" placeholder="Amount" required
+                        readonly>
+                </div>
+                <input id="product_title" name="product" type="hidden">
+            </form>
+        </div>
+        <div class="pay-modal-footer">
+            <button type="button" class="btn btn-secondary" id="pay-cancel">Cancel</button>
+            <button type="button" class="btn btn-primary" id="pay-submit">Pay Now</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-icons">
+            <a class="footer-icon" href="tel:+919404256771" title="Phone"><i class="bi bi-telephone"></i></a>
+            <a class="footer-icon" href="mailto:dreamstories77@gmail.com" title="Email"><i
+                    class="bi bi-envelope"></i></a>
+            <a class="footer-icon" href="http://kateaditya.netlify.app" title="Developers Portfolio"><i
+                    class="bi bi-file-earmark-person"></i></a>
+            <a class="footer-icon" href="/contact" title="Contact Form"><i class="bi bi-ui-checks"></i></a>
+            <a class="footer-icon"
+                href="https://www.instagram.com/dream_stories_graphics?igsh=MWM0eXp4dzJvMzQ2dw%3D%3D&utm_source=qr"
+                target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a class="footer-icon" href="+919404256771" onclick="openWhatsApp();return false;" title="WhatsApp"><i
+                    class="bi bi-whatsapp"></i></a>
+            <a class="footer-icon" href="https://www.facebook.com/share/16UszjC68U/?mibextid=wwXIfr" title="Facebook"><i
+                    class="bi bi-facebook"></i></a>
+        </div>
+        <p>© ALL RIGHTS RESERVED BY DREAM STORIES GRAPHICS 2025 PRIVACY POLICY • TERMS OF USE • COOKIE PREFERENCES</p>
+    </footer>
+
+    <!-- WhatsApp Float -->
+    <div class="whatsapp-float" onclick="openWhatsApp()">
+        <svg width="35" height="35" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 5.507z" />
+        </svg>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+
+            // Change hamburger to X when menu is open
+            const hamburger = document.querySelector('.hamburger');
+            if (nav.classList.contains('active')) {
+                hamburger.classList.add('active');
+            } else {
+                hamburger.classList.remove('active');
+            }
+        }
+
+        function openWhatsApp() {
+            const phoneNumber = '+919404256771'; // Replace with your WhatsApp number
+            const message = 'Hi! I would like to know more about your graphic design services.';
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        function toggleNotice() {
+            const notice = document.getElementById('detailed-notice');
+            const btn = document.querySelector('.toggle-btn');
+
+            if (notice.style.display === 'block') {
+                notice.style.display = 'none';
+                btn.textContent = '⚠️ VIEW FULL LEGAL NOTICE (Click Here)';
+            } else {
+                notice.style.display = 'block';
+                btn.textContent = '▲ HIDE LEGAL NOTICE';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const productContainer = document.getElementById('product-container');
+
+            function loadProducts() {
+                productContainer.innerHTML = '<div>Loading products...</div>';
+
+                fetch('/api/public/products')
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                        return response.json();
+                    })
+                    .then(products => {
+                        if (products.length === 0) {
+                            productContainer.innerHTML = '<p>No products available.</p>';
+                            return;
+                        }
+
+                        productContainer.innerHTML = products.map(product => `
+                            <div class="item">
+                                <img src="${product.image_url}" class="img-fluid" alt="${product.title}">
+                                <h3>${product.title}</h3>
+                                <span class="discount">${product.discount}</span>
+                                <p class="prices">₹${product.price}</p>
+                                <div class="actions">
+                                    <button class="buy-btn" 
+                                        data-price="${product.price}"
+                                        data-title="${product.title}"
+                                        data-link="${product.view_link}"
+                                        onclick="handlePayment(this)">Pay Now</button>
+                                    <button class="add-to-cart-btn" onclick="window.open('${product.view_link}')">View</button>
+                                </div>
+                            </div>
+                        `).join('');
+                    })
+                    .catch(error => {
+                        productContainer.innerHTML = `
+                            <div style="text-align: center; padding: 20px;">
+                                <p>Failed to load products.</p>
+                                <button onclick="loadProducts()" style="margin-top: 10px;">Try Again</button>
+                            </div>`;
+                    });
+            }
+
+            loadProducts();
+        });
+
+        function handlePayment(button) {
+            // Function to detect mobile devices
+            function isMobileDevice() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                    window.innerWidth <= 768;
+            }
+
+            // Block payment on mobile devices
+            if (isMobileDevice()) {
+                Swal.fire({
+                    title: 'Mobile Device Detected / मोबाईल डिव्हाइस आढळले- PC/Laptop वापरा',
+                    html: `
+                 <div style="text-align: left; font-size: 14px; color: red;">
+                    <p><strong>सूचना:</strong><br>
+                    (1).PRODUCT डाउनलोड करण्यासाठी PC/Laptop वापरा </br>
+                    (2).पेमेंट (QR) स्कॅन करण्यासाठी मोबाईल वापरा</p>
+                    <p><strong>NOTICE:</strong><br>
+                    (1).Use PC/Laptop to download the product  </br>
+                    (2).Use mobile to scan payment QR code</p>
+                </div>
+                `,
+                    icon: 'info',
+                    confirmButtonText: 'OK',
+                    confirmButtonColor: '#2300a3'
+                });
+                return; // Exit the function
+            }
+
+            const price = button.dataset.price;
+            // populate modal amount and open modal; pay-form submission handled in payment.js
+            try {
+                document.getElementById('amount').value = Math.round(parseFloat(price));
+            } catch (e) {
+                document.getElementById('amount').value = '';
+            }
+            try {
+                document.getElementById('product_title').value = button.dataset.title || '';
+            } catch (e) { }
+            const backdrop = document.getElementById('pay-modal-backdrop');
+            const modal = document.getElementById('pay-modal');
+            backdrop.style.display = 'block';
+            modal.style.display = 'block';
+        }
+
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-KZBTRFE7EH');
+
+        // Modal controls
+        (function () {
+            const backdrop = document.getElementById('pay-modal-backdrop');
+            const modal = document.getElementById('pay-modal');
+            const cancelBtn = document.getElementById('pay-cancel');
+            const submitBtn = document.getElementById('pay-submit');
+            const form = document.querySelector('.pay-form');
+
+            function closeModal() {
+                modal.style.display = 'none';
+                backdrop.style.display = 'none';
+            }
+
+            cancelBtn && cancelBtn.addEventListener('click', closeModal);
+            backdrop && backdrop.addEventListener('click', closeModal);
+            submitBtn && submitBtn.addEventListener('click', function () {
+                if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            });
+        })();
+    </script>
+
+    <script src="payment.js"></script>
+    <script src="adsense.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="./details.js"></script>
+    <script src="loading.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script type="text/javascript"> emailjs.init('cpZ1TQaAFUFX5sE0Y') </script>
+    <script src="emailHandler.js"></script>
+    <script src="loader.js"></script>
+    <script src="submitbtn.js"></script>
+    <script src="script.js"></script>
+
+
+</body>
+
+</html>

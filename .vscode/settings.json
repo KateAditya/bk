@@ -39,5 +39,6 @@
             "database": "defaultdb",
             "username": "avnadmin"
         }
-    ]
+    ],
+    "liveServer.settings.port": 5501
 }
