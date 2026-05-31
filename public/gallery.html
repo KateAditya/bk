@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Album Gallery - Dream Stories Graphics</title>
+    <link rel="icon" href="images/MY-LOGO-DREAM-STORIES.jpg">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+
+
+
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8664296437390910"
+        crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Bodoni:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding-top: 100px;
+            font-family: 'Libre Bodoni', serif;
+            color: #333;
+            overflow-x: hidden;
+            background: white;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(90deg, #f5f5f5 60%, #e0f7fa 100%);
+            padding: 20px 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+            border-bottom: 2px solid #333;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-row {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1;
+            height: auto;
+        }
+
+        .hamburger {
+            z-index: 2;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #2c5f5f;
+            font-size: 18px;
+            transition: color 0.3s, background 0.3s, box-shadow 0.3s;
+            font-family: 'Libre Bodoni', serif;
+            padding: 8px 18px;
+            border-radius: 4px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            color: #fff;
+            background: #59a3a3;
+            box-shadow: 0 2px 8px rgba(89, 163, 163, 0.15);
+        }
+
+        /* Social Icons */
+        .social-icons {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+        }
+
+        .social-icon {
+            width: 40px;
+            height: 40px;
+            background: #59a3a3;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            transition: transform 0.3s;
+            font-size: 18px;
+        }
+
+        .social-icon:hover {
+            transform: scale(1.1);
+        }
+
+        /* Main Content */
+        .content {
+            padding: 60px 100px;
+            background: white;
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 60px;
+            animation: fadeInDown 0.8s ease;
+        }
+
+        .page-header h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: #2c5f5f;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .page-header p {
+            font-size: 1.2rem;
+            color: rgba(0, 0, 0, 0.9);
+            letter-spacing: 1px;
+        }
+
+        /* Album Demo Section */
+        .album-demo-section {
+            margin-bottom: 80px;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 50px;
+            color: #2c5f5f;
+            font-weight: 700;
+            font-family: 'Libre Bodoni', serif;
+        }
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .album-card {
+            position: relative;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .album-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .album-image-wrapper {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+        }
+
+        .album-image-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .album-card:hover .album-image-wrapper img {
+            transform: scale(1.1);
+        }
+
+        .album-label {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2c5f5f;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .album-info {
+            padding: 20px;
+            text-align: center;
+        }
+
+        .album-info h3 {
+            font-size: 1.5rem;
+            color: #2c5f5f;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .album-info p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        /* Video Section */
+        .video-section {
+            margin-top: 80px;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+        }
+
+        .video-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .video-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #2c5f5f;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover .play-button {
+            background: #59a3a3;
+            color: white;
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-info h4 {
+            font-size: 1.1rem;
+            color: #2c5f5f;
+            margin-bottom: 10px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .video-meta {
+            display: none;
+        }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: #333;
+            transition: 0.3s;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* Footer */
+        footer {
+            background: white;
+            padding: 50px 100px;
+            text-align: center;
+            border-top: 1px solid #ddd;
+        }
+
+        .footer-icons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .footer-icon {
+            width: 40px;
+            height: 40px;
+            background: #59a3a3;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 22px;
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s;
+        }
+
+        .footer-icon:hover {
+            background: #2c5f5f;
+            transform: scale(1.1);
+        }
+
+        footer p {
+            font-size: 11px;
+            color: #666;
+            font-family: 'Libre Bodoni', serif;
+            letter-spacing: 1px;
+        }
+
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: #25D366;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            transition: transform 0.3s;
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+        }
+
+        /* Animations */
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .album-card,
+        .video-card {
+            animation: fadeInUp 0.8s ease;
+        }
+
+        .album-card:nth-child(1),
+        .video-card:nth-child(1) {
+            animation-delay: 0.1s;
+        }
+
+        .album-card:nth-child(2),
+        .video-card:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .album-card:nth-child(3),
+        .video-card:nth-child(3) {
+            animation-delay: 0.3s;
+        }
+
+        .album-card:nth-child(4),
+        .video-card:nth-child(4) {
+            animation-delay: 0.4s;
+        }
+
+        .album-card:nth-child(5),
+        .video-card:nth-child(5) {
+            animation-delay: 0.5s;
+        }
+
+        .album-card:nth-child(6),
+        .video-card:nth-child(6) {
+            animation-delay: 0.6s;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            header {
+                padding: 20px 30px;
+            }
+
+            .content {
+                padding: 40px 30px;
+            }
+
+            .album-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 30px;
+            }
+
+            .video-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            nav {
+                position: absolute;
+                left: 50%;
+                top: 100%;
+                transform: translateX(-50%);
+                width: 100vw;
+                background: #f5f5f5;
+                border-top: 1px solid #ddd;
+                box-shadow: 0 2px 8px rgba(44, 95, 95, 0.05);
+                display: none;
+                flex-direction: column;
+                gap: 20px;
+                padding: 20px 0;
+                z-index: 10;
+            }
+
+            nav.active {
+                display: flex;
+            }
+
+            .page-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hamburger {
+                display: flex;
+            }
+
+            nav {
+                position: fixed;
+                left: 0;
+                top: 80px;
+                width: 100%;
+                background: #ffffff;
+                border-top: 1px solid #333;
+                border-bottom: 1px solid #333;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+                display: none;
+                flex-direction: column;
+                gap: 15px;
+                padding: 20px 0;
+                z-index: 999;
+            }
+
+            nav.active {
+                display: flex;
+                animation: slideDown 0.3s forwards;
+            }
+
+            @keyframes slideDown {
+                from {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .album-grid,
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .social-icons {
+                right: 10px;
+                gap: 8px;
+            }
+
+            .social-icon {
+                width: 30px;
+                height: 30px;
+                font-size: 14px;
+            }
+
+            .whatsapp-float {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+            }
+
+            header {
+                position: relative;
+            }
+
+            body {
+                padding-top: 70px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .content {
+                padding: 30px 20px;
+            }
+
+            .page-header h1 {
+                font-size: 1.8rem;
+            }
+
+            .section-title {
+                font-size: 1.6rem;
+            }
+
+            .album-image-wrapper {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-row">
+            <div class="hamburger" onclick="toggleMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <nav id="mainNav">
+            <a href="/index.html">Home</a>
+            <a href="/indexx.html">Shop</a>
+            <a href="/gallery.html">Gallery</a>
+            <a href="/about.html">About</a>
+            <a href="/T&C.html">FaQ</a>
+            <a href="/contact.html">Contact</a>
+        </nav>
+    </header>
+
+    <!-- Social Icons -->
+    <div class="social-icons">
+        <div class="social-icon" title="Phone">📞</div>
+        <div class="social-icon" title="Email">📧</div>
+        <div class="social-icon" title="Contact Developer">👨‍💻</div>
+        <div class="social-icon" title="Contact Form">📝</div>
+        <div class="social-icon" title="Instagram">📸</div>
+        <div class="social-icon" title="WhatsApp">💬</div>
+        <div class="social-icon" title="Facebook">👥</div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="content">
+        <div class="page-header">
+            <h1>ALBUM DEMO</h1>
+            <p>Explore our stunning collection of album designs</p>
+        </div>
+
+        <!-- Album Demo Section -->
+        <section class="album-demo-section">
+            <div class="album-grid" id="albumsContainer">
+                <!-- Albums will be loaded dynamically -->
+                <div class="loading-message"
+                    style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                    Loading albums...
+                </div>
+            </div>
+        </section>
+
+        <!-- Video Section -->
+        <section class="video-section">
+            <h2 class="section-title">VIDEO</h2>
+            <div class="video-grid" id="videosContainer">
+                <!-- Videos will be loaded dynamically -->
+                <div class="loading-message"
+                    style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">
+                    Loading videos...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-icons">
+            <a class="footer-icon" href="tel:+919404256771" title="Phone"><i class="bi bi-telephone"></i></a>
+            <a class="footer-icon" href="mailto:dreamstories77@gmail.com" title="Email"><i
+                    class="bi bi-envelope"></i></a>
+            <a class="footer-icon" href="http://kateaditya.netlify.app" title="Contact Developer"><i
+                    class="bi bi-file-earmark-person"></i></a>
+            <a class="footer-icon" href="/contact.html" title="Contact Form"><i class="bi bi-ui-checks"></i></a>
+            <a class="footer-icon"
+                href="https://www.instagram.com/dream_stories_graphics?igsh=MWM0eXp4dzJvMzQ2dw%3D%3D&utm_source=qr"
+                target="_blank" title="Instagram"><i class="bi bi-instagram"></i></a>
+            <a class="footer-icon" href="+919404256771" onclick="openWhatsApp();return false;" title="WhatsApp"><i
+                    class="bi bi-whatsapp"></i></a>
+            <a class="footer-icon" href="https://www.facebook.com/share/16UszjC68U/?mibextid=wwXIfr" title="Facebook"><i
+                    class="bi bi-facebook"></i></a>
+        </div>
+        <p>© ALL RIGHTS RESERVED BY DREAM STORIES GRAPHICS 2025 PRIVACY POLICY • TERMS OF USE • COOKIE PREFERENCES</p>
+    </footer>
+
+    <!-- WhatsApp Float -->
+    <div class="whatsapp-float" onclick="openWhatsApp()">
+        <svg width="35" height="35" viewBox="0 0 24 24" fill="white">
+            <path
+                d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.465 5.507z" />
+        </svg>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const nav = document.getElementById('mainNav');
+            nav.classList.toggle('active');
+
+            const hamburger = document.querySelector('.hamburger');
+            if (nav.classList.contains('active')) {
+                hamburger.classList.add('active');
+            } else {
+                hamburger.classList.remove('active');
+            }
+        }
+
+        function openWhatsApp() {
+            const phoneNumber = '+919404256771';
+            const message = 'Hi! I would like to know more about your album design services.';
+            const whatsappURL = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappURL, '_blank');
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function (event) {
+            const nav = document.getElementById('mainNav');
+            const hamburger = document.querySelector('.hamburger');
+
+            if (!nav.contains(event.target) && !hamburger.contains(event.target)) {
+                nav.classList.remove('active');
+                hamburger.classList.remove('active');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('nav a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                document.getElementById('mainNav').classList.remove('active');
+            });
+        });
+
+        // Add click handlers for social icons
+        document.addEventListener('DOMContentLoaded', function () {
+            const socialIcons = document.querySelectorAll('.social-icon');
+
+            socialIcons.forEach((icon, index) => {
+                icon.addEventListener('click', function () {
+                    switch (index) {
+                        case 0: // Phone
+                            window.open('tel:+919404256771');
+                            break;
+                        case 1: // Email
+                            window.open('mailto:dreamstories77@gmail.com');
+                            break;
+                        case 2: // Document
+                            window.open('http://kateaditya.netlify.app', '_blank');
+                            break;
+                        case 3: // Form
+                            window.open('/contact.html', '_blank');
+                            break;
+                        case 4: // Instagram
+                            window.open('https://www.instagram.com/dream_stories_graphics?igsh=MWM0eXp4dzJvMzQ2dw%3D%3D&utm_source=qr', '_blank');
+                            break;
+                        case 5: // Message
+                            openWhatsApp();
+                            break;
+                        case 6: // Link
+                            window.open('https://www.facebook.com/share/16UszjC68U/?mibextid=wwXIfr', '_blank');
+                            break;
+                    }
+                });
+            });
+
+            // Load albums and videos from API
+            loadAlbums();
+            loadVideos();
+        });
+
+        // Function to load albums from API
+        async function loadAlbums() {
+            try {
+                const response = await fetch('/api/public/albums');
+                const data = await response.json();
+
+                const container = document.getElementById('albumsContainer');
+                container.innerHTML = '';
+
+                if (data.success && data.albums && data.albums.length > 0) {
+                    data.albums.forEach((album, index) => {
+                        const albumCard = document.createElement('div');
+                        albumCard.className = 'album-card';
+                        albumCard.style.animationDelay = `${(index % 6) * 0.1}s`;
+
+                        albumCard.innerHTML = `
+                            <div class="album-image-wrapper">
+                                <img src="${album.album_image_url}" alt="${album.album_title}" onerror="this.src='./graphic-design-tools.avif'">
+                            </div>
+                            <div class="album-info">
+                                <h3>${album.album_title}</h3>
+                                <p>${album.album_description || ''}</p>
+                            </div>
+                        `;
+
+                        albumCard.addEventListener('click', function () {
+                            if (album.album_redirect_link) {
+                                window.open(album.album_redirect_link, '_blank');
+                            } else {
+                                openWhatsApp();
+                            }
+                        });
+
+                        container.appendChild(albumCard);
+                    });
+                } else {
+                    container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">No albums available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading albums:', error);
+                document.getElementById('albumsContainer').innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #d32f2f;">Error loading albums. Please try again later.</div>';
+            }
+        }
+
+        // Function to load videos from API
+        async function loadVideos() {
+            try {
+                const response = await fetch('/api/public/videos');
+                const data = await response.json();
+
+                const container = document.getElementById('videosContainer');
+                container.innerHTML = '';
+
+                if (data.success && data.videos && data.videos.length > 0) {
+                    data.videos.forEach((video, index) => {
+                        const videoCard = document.createElement('div');
+                        videoCard.className = 'video-card';
+                        videoCard.style.animationDelay = `${(index % 6) * 0.1}s`;
+
+                        const thumbnailUrl = video.video_image_url || './graphic-design-tools.avif';
+                        const videoUrl = video.video_redirect_link || '#';
+
+                        videoCard.innerHTML = `
+                            <div class="video-thumbnail">
+                                <img src="${thumbnailUrl}" alt="${video.video_title}" onerror="this.src='./graphic-design-tools.avif'">
+                                <div class="play-button">▶</div>
+                            </div>
+                            <div class="video-info">
+                                <h4>${video.video_title}</h4>
+                            </div>
+                        `;
+
+                        videoCard.addEventListener('click', function () {
+                            if (videoUrl && videoUrl !== '#') {
+                                window.open(videoUrl, '_blank');
+                            }
+                        });
+
+                        container.appendChild(videoCard);
+                    });
+                } else {
+                    container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #666;">No videos available</div>';
+                }
+            } catch (error) {
+                console.error('Error loading videos:', error);
+                document.getElementById('videosContainer').innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: #d32f2f;">Error loading videos. Please try again later.</div>';
+            }
+        }
+    </script>
+</body>
+
+</html>

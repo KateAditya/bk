@@ -11,6 +11,7 @@ const db = require("./db");
 const { checkAuth } = require("./middleware/auth");
 const adminRoutes = require("./adminRoutes");
 const paymentController = require("./controllers/paymentController");
+const galleryController = require("./controllers/galleryController");
 
 const app = express();
 
@@ -72,10 +73,15 @@ const sessionOptions = {
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  ssl: {
-    rejectUnauthorized: true,
-  },
 };
+
+// Only add SSL configuration if explicitly enabled in environment
+// If DB_SSL is not set or false, SSL will not be used (default behavior)
+if (process.env.DB_SSL === "true" || process.env.DB_SSL === "1") {
+  sessionOptions.ssl = {
+    rejectUnauthorized: true,
+  };
+}
 
 // Update session configuration
 const sessionConfig = {
@@ -106,6 +112,21 @@ const upload = multer({
   },
   fileFilter: (req, file, cb) => {
     // Check if file is an image
+    if (file.mimetype.startsWith("image/")) {
+      cb(null, true);
+    } else {
+      cb(new Error("Only image files are allowed!"), false);
+    }
+  },
+});
+
+// Gallery upload configuration (same as above)
+const galleryUpload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 10 * 1024 * 1024, // 10MB limit
+  },
+  fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith("image/")) {
       cb(null, true);
     } else {
@@ -782,6 +803,34 @@ app.get("/api/public/products", (req, res) => {
     res.json(results);
   });
 });
+
+// ==================== GALLERY ROUTES ====================
+
+// Public routes - Get albums and videos
+app.get("/api/public/albums", (req, res) => galleryController.getAllAlbums(req, res));
+app.get("/api/public/videos", (req, res) => galleryController.getAllVideos(req, res));
+
+// Admin routes - Albums
+app.post("/api/albums", checkAuthAPI, galleryUpload.single("image"), (req, res) =>
+  galleryController.addAlbum(req, res)
+);
+app.put("/api/albums/:id", checkAuthAPI, galleryUpload.single("image"), (req, res) =>
+  galleryController.updateAlbum(req, res)
+);
+app.delete("/api/albums/:id", checkAuthAPI, (req, res) =>
+  galleryController.deleteAlbum(req, res)
+);
+
+// Admin routes - Videos
+app.post("/api/videos", checkAuthAPI, galleryUpload.single("thumbnail"), (req, res) =>
+  galleryController.addVideo(req, res)
+);
+app.put("/api/videos/:id", checkAuthAPI, galleryUpload.single("thumbnail"), (req, res) =>
+  galleryController.updateVideo(req, res)
+);
+app.delete("/api/videos/:id", checkAuthAPI, (req, res) =>
+  galleryController.deleteVideo(req, res)
+);
 
 // Add payment route before error handlers
 app.post("/createOrder", (req, res) => paymentController.createOrder(req, res));

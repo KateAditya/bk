@@ -21,7 +21,7 @@ const renderProductPage = (req, res) => {
 // Create Razorpay order
 const createOrder = async (req, res) => {
   try {
-    const { amount, name, mobile, email, method, product } = req.body;
+    const { amount, name, email, method, product } = req.body;
 
     const numericAmount = parseInt(amount, 10);
     if (!numericAmount || numericAmount <= 0) {

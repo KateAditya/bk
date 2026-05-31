@@ -9,10 +9,15 @@ const config = {
   waitForConnections: true,
   connectionLimit: 50,
   queueLimit: 0,
-  ssl: {
-    rejectUnauthorized: false,
-  },
 };
+
+// Only add SSL configuration if explicitly enabled in environment
+// If DB_SSL is not set or false, SSL will not be used (default behavior)
+if (process.env.DB_SSL === "true" || process.env.DB_SSL === "1") {
+  config.ssl = {
+    rejectUnauthorized: false,
+  };
+}
 
 // Create the connection pool
 const pool = mysql.createPool(config);

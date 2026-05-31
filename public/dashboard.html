@@ -476,11 +476,130 @@
 
     <a href="admin.html"><button>Add Data Link</button></a>
 
+    <!-- Gallery Management Section -->
+    <div style="max-width: 1200px; margin: 40px auto;">
+        <h2 style="text-align: center; color: #4e4e8a; margin-bottom: 30px;">Gallery Management</h2>
+        
+        <div style="display: flex; gap: 20px; justify-content: center; margin-bottom: 40px; flex-wrap: wrap;">
+            <button onclick="showAlbumForm()" style="background: linear-gradient(135deg, #5c8a5c, #2c582c);">
+                📷 Manage Albums
+            </button>
+            <button onclick="showVideoForm()" style="background: linear-gradient(135deg, #5c5c8a, #2c2c58);">
+                🎥 Manage Videos
+            </button>
+        </div>
+
+        <!-- Album Form Section -->
+        <div id="albumSection" style="display: none;">
+            <h3 style="text-align: center; color: #4e4e8a;">Album Management</h3>
+            <form id="addAlbumForm" enctype="multipart/form-data" style="max-width: 600px; margin: 1rem auto; background: rgba(202, 189, 221, 0.3); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(44, 49, 88, 0.3); display: flex; flex-direction: column; gap: 12px;">
+                <input type="hidden" name="id" id="albumId">
+                <input type="hidden" name="album_image_url" id="albumImageUrl">
+
+                <div class="form-section">
+                    <h3>Album Details</h3>
+                    <input type="text" name="album_title" id="albumTitle" placeholder="Album Title" required>
+                    <textarea name="album_description" id="albumDescription" placeholder="Album Description" rows="3" style="padding: 10px; font-size: 1rem; border-radius: 6px; border: 1px solid #b197bc; font-family: 'Poppins', sans-serif; resize: vertical;"></textarea>
+                    <input type="url" name="album_redirect_link" id="albumRedirectLink" placeholder="Redirect Link (optional)">
+                </div>
+
+                <div class="form-section">
+                    <h3>📁 Upload Album Image</h3>
+                    <div class="file-drop-zone" id="albumFileDropZone">
+                        <div>
+                            <strong>📸 Click to upload or drag & drop image here</strong>
+                            <br>
+                            <small>Supported formats: JPG, PNG, GIF (Max 10MB)</small>
+                        </div>
+                    </div>
+                    <input type="file" id="albumImageUpload" class="file-input" accept="image/*">
+                    <div class="upload-progress" id="albumUploadProgress">
+                        <div class="upload-progress-bar" id="albumUploadProgressBar"></div>
+                    </div>
+                    <div class="image-preview-container">
+                        <div class="preview-placeholder" id="albumPreviewPlaceholder">Upload an image to see preview</div>
+                        <div class="preview-loading" id="albumPreviewLoading">Uploading image to GitHub...</div>
+                        <img class="image-preview" id="albumImagePreview" alt="Album Image Preview">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" id="saveAlbumButton">Save Album</button>
+                    <button type="button" id="cancelAlbumEdit" style="display:none;">Cancel Edit</button>
+                    <button type="button" onclick="hideAlbumForm()">Close</button>
+                </div>
+            </form>
+
+            <h3 style="text-align: center; color: #4e4e8a; margin-top: 40px;">Album List</h3>
+            <div id="albumList" style="max-width: 1200px; margin: 20px auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;"></div>
+        </div>
+
+        <!-- Video Form Section -->
+        <div id="videoSection" style="display: none;">
+            <h3 style="text-align: center; color: #4e4e8a;">Video Management</h3>
+            <form id="addVideoForm" enctype="multipart/form-data" style="max-width: 600px; margin: 1rem auto; background: rgba(202, 189, 221, 0.3); padding: 20px; border-radius: 12px; backdrop-filter: blur(10px); box-shadow: 0 8px 20px rgba(44, 49, 88, 0.3); display: flex; flex-direction: column; gap: 12px;">
+                <input type="hidden" name="id" id="videoId">
+                <input type="hidden" name="video_image_url" id="videoImageUrl">
+
+                <div class="form-section">
+                    <h3>Video Details</h3>
+                    <input type="text" name="video_title" id="videoTitle" placeholder="Video Title" required>
+                    <input type="url" name="video_redirect_link" id="videoRedirectLink" placeholder="Video/YouTube Link (optional)">
+                </div>
+
+                <div class="form-section">
+                    <h3>📁 Upload Video Thumbnail</h3>
+                    <div class="file-drop-zone" id="videoFileDropZone">
+                        <div>
+                            <strong>📸 Click to upload or drag & drop thumbnail here</strong>
+                            <br>
+                            <small>Supported formats: JPG, PNG, GIF (Max 10MB)</small>
+                        </div>
+                    </div>
+                    <input type="file" id="videoImageUpload" class="file-input" accept="image/*">
+                    <div class="upload-progress" id="videoUploadProgress">
+                        <div class="upload-progress-bar" id="videoUploadProgressBar"></div>
+                    </div>
+                    <div class="image-preview-container">
+                        <div class="preview-placeholder" id="videoPreviewPlaceholder">Upload a thumbnail to see preview</div>
+                        <div class="preview-loading" id="videoPreviewLoading">Uploading thumbnail to GitHub...</div>
+                        <img class="image-preview" id="videoImagePreview" alt="Video Thumbnail Preview">
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="submit" id="saveVideoButton">Save Video</button>
+                    <button type="button" id="cancelVideoEdit" style="display:none;">Cancel Edit</button>
+                    <button type="button" onclick="hideVideoForm()">Close</button>
+                </div>
+            </form>
+
+            <h3 style="text-align: center; color: #4e4e8a; margin-top: 40px;">Video List</h3>
+            <div id="videoList" style="max-width: 1200px; margin: 20px auto; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 25px;"></div>
+        </div>
+    </div>
+
     <h2>Product List</h2>
     <div id="productList"></div>
 
     <div id="toast"></div>
     <script>
+        // Global showToast function - available to all sections
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            if (!toast) {
+                console.error('Toast element not found');
+                return;
+            }
+            toast.textContent = message;
+            toast.className = isError ? 'toast error' : 'toast';
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4000);
+        }
+
         function logout() {
             fetch('/api/logout', {
                 method: 'POST',
@@ -679,16 +798,7 @@
                 uploadProgressBar.style.width = '0%';
             }
 
-            function showToast(message, isError = false) {
-                const toast = document.getElementById('toast');
-                toast.textContent = message;
-                toast.className = isError ? 'toast error' : 'toast';
-                toast.classList.add('show');
-
-                setTimeout(() => {
-                    toast.classList.remove('show');
-                }, 4000);
-            }
+            // showToast is now defined globally at the top level
 
             form.addEventListener("submit", async function (e) {
                 e.preventDefault();
@@ -953,6 +1063,683 @@
             loadProducts();
             window.editProduct = editProduct;
             window.deleteProduct = deleteProduct;
+        });
+
+        // ==================== GALLERY MANAGEMENT ====================
+        
+        // Album Management Functions
+        function showAlbumForm() {
+            document.getElementById('albumSection').style.display = 'block';
+            document.getElementById('videoSection').style.display = 'none';
+            loadAlbums();
+        }
+
+        function hideAlbumForm() {
+            document.getElementById('albumSection').style.display = 'none';
+        }
+
+        // Video Management Functions
+        function showVideoForm() {
+            document.getElementById('videoSection').style.display = 'block';
+            document.getElementById('albumSection').style.display = 'none';
+            loadVideos();
+        }
+
+        function hideVideoForm() {
+            document.getElementById('videoSection').style.display = 'none';
+        }
+
+        // Album Form Handler
+        document.addEventListener("DOMContentLoaded", () => {
+            const albumForm = document.getElementById("addAlbumForm");
+            const albumList = document.getElementById("albumList");
+            const albumIdInput = document.getElementById("albumId");
+            const cancelAlbumEditBtn = document.getElementById("cancelAlbumEdit");
+            const albumImageUpload = document.getElementById("albumImageUpload");
+            const albumImageUrl = document.getElementById("albumImageUrl");
+            const albumImagePreview = document.getElementById("albumImagePreview");
+            const albumPreviewPlaceholder = document.getElementById("albumPreviewPlaceholder");
+            const albumPreviewLoading = document.getElementById("albumPreviewLoading");
+            const albumFileDropZone = document.getElementById("albumFileDropZone");
+            const albumUploadProgress = document.getElementById("albumUploadProgress");
+            const albumUploadProgressBar = document.getElementById("albumUploadProgressBar");
+
+            let currentAlbumImageUrl = '';
+
+            // Album file drop zone
+            albumFileDropZone.addEventListener('click', () => albumImageUpload.click());
+            albumFileDropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                albumFileDropZone.classList.add('dragover');
+            });
+            albumFileDropZone.addEventListener('dragleave', () => albumFileDropZone.classList.remove('dragover'));
+            albumFileDropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                albumFileDropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    handleAlbumFileUpload(e.dataTransfer.files[0]);
+                }
+            });
+
+            albumImageUpload.addEventListener('change', function() {
+                if (this.files[0]) handleAlbumFileUpload(this.files[0]);
+            });
+
+            async function handleAlbumFileUpload(file) {
+                if (!file.type.match('image.*')) {
+                    showToast('Please select an image file', true);
+                    return;
+                }
+                if (file.size > 10 * 1024 * 1024) {
+                    showToast('Image size must be less than 10MB', true);
+                    return;
+                }
+
+                const previewUrl = URL.createObjectURL(file);
+                showAlbumPreview(previewUrl);
+
+                try {
+                    albumPreviewLoading.style.display = 'block';
+                    albumPreviewPlaceholder.style.display = 'none';
+                    showAlbumProgress(0);
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await fetch('/api/upload-image', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Upload failed');
+                    }
+
+                    const result = await response.json();
+                    currentAlbumImageUrl = result.imageUrl;
+                    albumImageUrl.value = currentAlbumImageUrl;
+
+                    showAlbumProgress(100);
+                    setTimeout(() => {
+                        showAlbumPreview(currentAlbumImageUrl);
+                        showToast('Image uploaded successfully! ✅');
+                        hideAlbumProgress();
+                    }, 500);
+                } catch (err) {
+                    showToast(`Upload failed: ${err.message}`, true);
+                    hideAlbumProgress();
+                }
+            }
+
+            function showAlbumPreview(url) {
+                albumPreviewLoading.style.display = 'none';
+                albumPreviewPlaceholder.style.display = 'none';
+                albumImagePreview.src = url;
+                albumImagePreview.style.display = 'block';
+            }
+
+            function showAlbumProgress(percent) {
+                albumUploadProgress.style.display = 'block';
+                albumUploadProgressBar.style.width = percent + '%';
+            }
+
+            function hideAlbumProgress() {
+                albumUploadProgress.style.display = 'none';
+                albumUploadProgressBar.style.width = '0%';
+            }
+
+            function resetAlbumPreview() {
+                albumImagePreview.style.display = 'none';
+                albumPreviewLoading.style.display = 'none';
+                albumPreviewPlaceholder.style.display = 'block';
+                albumImageUpload.value = '';
+                currentAlbumImageUrl = '';
+                albumImageUrl.value = '';
+                hideAlbumProgress();
+            }
+
+            albumForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+                const saveButton = document.getElementById('saveAlbumButton');
+                const originalText = saveButton.textContent;
+
+                try {
+                    saveButton.textContent = 'Saving...';
+                    saveButton.disabled = true;
+
+                    const id = albumIdInput.value;
+                    if (!id && !currentAlbumImageUrl) {
+                        throw new Error('Please upload an image first');
+                    }
+
+                    const formData = {
+                        album_title: document.getElementById('albumTitle').value,
+                        album_description: document.getElementById('albumDescription').value,
+                        album_redirect_link: document.getElementById('albumRedirectLink').value || null,
+                        album_image_url: currentAlbumImageUrl
+                    };
+
+                    // For file upload, we need to use FormData
+                    const uploadFormData = new FormData();
+                    uploadFormData.append('album_title', formData.album_title);
+                    uploadFormData.append('album_description', formData.album_description || '');
+                    uploadFormData.append('album_redirect_link', formData.album_redirect_link || '');
+                    
+                    if (albumImageUpload.files[0]) {
+                        uploadFormData.append('image', albumImageUpload.files[0]);
+                    }
+
+                    const url = id ? `/api/albums/${id}` : `/api/albums`;
+                    const method = id ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        credentials: 'include',
+                        body: uploadFormData
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Failed to save album');
+                    }
+
+                    const data = await response.json();
+                    showToast(id ? "✅ Album updated successfully!" : "✅ Album added successfully!");
+
+                    albumForm.reset();
+                    resetAlbumPreview();
+                    if (id) {
+                        albumIdInput.value = '';
+                        cancelAlbumEditBtn.style.display = 'none';
+                    }
+                    loadAlbums();
+                } catch (err) {
+                    showToast(`❌ Failed to save album: ${err.message}`, true);
+                } finally {
+                    saveButton.textContent = originalText;
+                    saveButton.disabled = false;
+                }
+            });
+
+            cancelAlbumEditBtn.addEventListener("click", () => {
+                albumForm.reset();
+                albumIdInput.value = '';
+                cancelAlbumEditBtn.style.display = 'none';
+                resetAlbumPreview();
+            });
+
+            function loadAlbums() {
+                albumList.innerHTML = '<div>Loading albums...</div>';
+                fetch("/api/public/albums", { credentials: 'include' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success || !data.albums || data.albums.length === 0) {
+                            albumList.innerHTML = '<div>No albums found</div>';
+                            return;
+                        }
+                        albumList.innerHTML = '';
+                        data.albums.forEach(album => {
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'item';
+                            itemDiv.innerHTML = `
+                                <img src="${album.album_image_url}" alt="${album.album_title}" onerror="this.src='./graphic-design-tools.avif'">
+                                <div class="item-content">
+                                    <h3>${album.album_title}</h3>
+                                    <p style="font-size: 0.9rem; color: #666; margin: 10px 0;">${album.album_description || ''}</p>
+                                    ${album.album_redirect_link ? `<a href="${album.album_redirect_link}" target="_blank" style="font-size: 0.85rem; color: #4e4e8a;">View Link</a>` : ''}
+                                    <div class="actions">
+                                        <button class="edit" onclick="editAlbum(${album.id})">Edit</button>
+                                        <button class="delete" onclick="deleteAlbum(${album.id})">Delete</button>
+                                    </div>
+                                </div>
+                            `;
+                            albumList.appendChild(itemDiv);
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Error loading albums:', err);
+                        albumList.innerHTML = `<div>Failed to load albums: ${err.message}</div>`;
+                    });
+            }
+
+            window.editAlbum = function(id) {
+                fetch(`/api/public/albums`, { credentials: 'include' })
+                    .then(res => res.json())
+                    .then(data => {
+                        const album = data.albums.find(a => a.id === id);
+                        if (!album) {
+                            alert("Album not found");
+                            return;
+                        }
+                        albumIdInput.value = album.id;
+                        document.getElementById('albumTitle').value = album.album_title;
+                        document.getElementById('albumDescription').value = album.album_description || '';
+                        document.getElementById('albumRedirectLink').value = album.album_redirect_link || '';
+                        albumImageUrl.value = album.album_image_url;
+                        currentAlbumImageUrl = album.album_image_url;
+                        if (album.album_image_url) {
+                            showAlbumPreview(album.album_image_url);
+                        }
+                        cancelAlbumEditBtn.style.display = 'inline';
+                        showAlbumForm();
+                        window.scrollTo(0, 0);
+                    })
+                    .catch(err => {
+                        console.error('Error editing album:', err);
+                        showToast('Failed to edit album: ' + err.message, true);
+                    });
+            };
+
+            window.deleteAlbum = function(id) {
+                if (!confirm("Are you sure you want to delete this album?")) return;
+                fetch(`/api/albums/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        showToast(data.message || "✅ Album deleted successfully!");
+                        loadAlbums();
+                    })
+                    .catch(err => {
+                        showToast('Failed to delete album: ' + err.message, true);
+                    });
+            };
+
+            window.loadAlbums = loadAlbums;
+        });
+
+        // Video Form Handler
+        document.addEventListener("DOMContentLoaded", () => {
+            const videoForm = document.getElementById("addVideoForm");
+            const videoList = document.getElementById("videoList");
+            const videoIdInput = document.getElementById("videoId");
+            const cancelVideoEditBtn = document.getElementById("cancelVideoEdit");
+            const videoImageUpload = document.getElementById("videoImageUpload");
+            const videoImageUrl = document.getElementById("videoImageUrl");
+            const videoImagePreview = document.getElementById("videoImagePreview");
+            const videoPreviewPlaceholder = document.getElementById("videoPreviewPlaceholder");
+            const videoPreviewLoading = document.getElementById("videoPreviewLoading");
+            const videoFileDropZone = document.getElementById("videoFileDropZone");
+            const videoUploadProgress = document.getElementById("videoUploadProgress");
+            const videoUploadProgressBar = document.getElementById("videoUploadProgressBar");
+
+            let currentVideoImageUrl = '';
+            const videoRedirectLinkInput = document.getElementById('videoRedirectLink');
+            const videoTitleInput = document.getElementById('videoTitle');
+
+            // Function to extract YouTube video ID from URL
+            function extractYouTubeVideoId(url) {
+                if (!url) return null;
+                
+                const patterns = [
+                    /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([^&\n?#]+)/,
+                    /youtube\.com\/.*[?&]v=([^&\n?#]+)/
+                ];
+                
+                for (const pattern of patterns) {
+                    const match = url.match(pattern);
+                    if (match && match[1]) {
+                        return match[1];
+                    }
+                }
+                return null;
+            }
+
+            // Function to check if URL is a YouTube URL
+            function isYouTubeUrl(url) {
+                if (!url) return false;
+                return /(youtube\.com|youtu\.be)/.test(url);
+            }
+
+            // Function to fetch YouTube video info using oEmbed API
+            async function fetchYouTubeInfo(youtubeUrl) {
+                try {
+                    const videoId = extractYouTubeVideoId(youtubeUrl);
+                    if (!videoId) {
+                        throw new Error('Invalid YouTube URL');
+                    }
+
+                    // Use oEmbed API (no API key required)
+                    const oEmbedUrl = `https://www.youtube.com/oembed?url=${encodeURIComponent(youtubeUrl)}&format=json`;
+                    
+                    const response = await fetch(oEmbedUrl);
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch video info');
+                    }
+
+                    const data = await response.json();
+                    
+                    return {
+                        title: data.title,
+                        thumbnail: data.thumbnail_url || `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`,
+                        author: data.author_name,
+                        videoId: videoId
+                    };
+                } catch (error) {
+                    console.error('Error fetching YouTube info:', error);
+                    throw error;
+                }
+            }
+
+            // Auto-fetch YouTube thumbnail and title when URL is entered
+            let youtubeFetchTimeout;
+            videoRedirectLinkInput.addEventListener('input', function() {
+                const url = this.value.trim();
+                
+                // Clear previous timeout
+                clearTimeout(youtubeFetchTimeout);
+                
+                // Only fetch if it's a YouTube URL and not empty
+                if (!url || !isYouTubeUrl(url)) {
+                    return;
+                }
+
+                // Debounce: wait 1 second after user stops typing
+                youtubeFetchTimeout = setTimeout(async () => {
+                    try {
+                        // Show loading state
+                        videoPreviewLoading.style.display = 'block';
+                        videoPreviewPlaceholder.style.display = 'none';
+                        videoPreviewPlaceholder.textContent = 'Fetching YouTube video info...';
+                        showToast('Fetching YouTube video information...', false);
+
+                        const videoInfo = await fetchYouTubeInfo(url);
+                        
+                        // Auto-fill title if empty
+                        if (!videoTitleInput.value.trim()) {
+                            videoTitleInput.value = videoInfo.title;
+                        }
+
+                        // Set thumbnail from YouTube
+                        const thumbnailUrl = videoInfo.thumbnail;
+                        currentVideoImageUrl = thumbnailUrl;
+                        videoImageUrl.value = thumbnailUrl;
+                        
+                        // Show thumbnail preview
+                        showVideoPreview(thumbnailUrl);
+                        showToast(`✅ YouTube video info fetched: "${videoInfo.title}"`, false);
+                        
+                        // Hide loading
+                        videoPreviewLoading.style.display = 'none';
+                        
+                    } catch (error) {
+                        console.error('Error fetching YouTube info:', error);
+                        videoPreviewLoading.style.display = 'none';
+                        videoPreviewPlaceholder.style.display = 'block';
+                        videoPreviewPlaceholder.textContent = 'Failed to fetch YouTube info. You can upload thumbnail manually.';
+                        videoPreviewPlaceholder.className = 'preview-placeholder preview-error';
+                        
+                        // Reset after 3 seconds
+                        setTimeout(() => {
+                            videoPreviewPlaceholder.textContent = 'Upload a thumbnail to see preview';
+                            videoPreviewPlaceholder.className = 'preview-placeholder';
+                        }, 3000);
+                    }
+                }, 1000); // Wait 1 second after user stops typing
+            });
+
+            // Video file drop zone
+            videoFileDropZone.addEventListener('click', () => videoImageUpload.click());
+            videoFileDropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                videoFileDropZone.classList.add('dragover');
+            });
+            videoFileDropZone.addEventListener('dragleave', () => videoFileDropZone.classList.remove('dragover'));
+            videoFileDropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                videoFileDropZone.classList.remove('dragover');
+                if (e.dataTransfer.files.length > 0) {
+                    handleVideoFileUpload(e.dataTransfer.files[0]);
+                }
+            });
+
+            videoImageUpload.addEventListener('change', function() {
+                if (this.files[0]) handleVideoFileUpload(this.files[0]);
+            });
+
+            async function handleVideoFileUpload(file) {
+                if (!file.type.match('image.*')) {
+                    showToast('Please select an image file', true);
+                    return;
+                }
+                if (file.size > 10 * 1024 * 1024) {
+                    showToast('Image size must be less than 10MB', true);
+                    return;
+                }
+
+                const previewUrl = URL.createObjectURL(file);
+                showVideoPreview(previewUrl);
+
+                try {
+                    videoPreviewLoading.style.display = 'block';
+                    videoPreviewPlaceholder.style.display = 'none';
+                    showVideoProgress(0);
+
+                    const formData = new FormData();
+                    formData.append('image', file);
+
+                    const response = await fetch('/api/upload-image', {
+                        method: 'POST',
+                        credentials: 'include',
+                        body: formData
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Upload failed');
+                    }
+
+                    const result = await response.json();
+                    currentVideoImageUrl = result.imageUrl;
+                    videoImageUrl.value = currentVideoImageUrl;
+
+                    showVideoProgress(100);
+                    setTimeout(() => {
+                        showVideoPreview(currentVideoImageUrl);
+                        showToast('Thumbnail uploaded successfully! ✅');
+                        hideVideoProgress();
+                    }, 500);
+                } catch (err) {
+                    showToast(`Upload failed: ${err.message}`, true);
+                    hideVideoProgress();
+                }
+            }
+
+            function showVideoPreview(url) {
+                videoPreviewLoading.style.display = 'none';
+                videoPreviewPlaceholder.style.display = 'none';
+                videoImagePreview.src = url;
+                videoImagePreview.style.display = 'block';
+            }
+
+            function showVideoProgress(percent) {
+                videoUploadProgress.style.display = 'block';
+                videoUploadProgressBar.style.width = percent + '%';
+            }
+
+            function hideVideoProgress() {
+                videoUploadProgress.style.display = 'none';
+                videoUploadProgressBar.style.width = '0%';
+            }
+
+            function resetVideoPreview() {
+                videoImagePreview.style.display = 'none';
+                videoPreviewLoading.style.display = 'none';
+                videoPreviewPlaceholder.style.display = 'block';
+                videoImageUpload.value = '';
+                currentVideoImageUrl = '';
+                videoImageUrl.value = '';
+                hideVideoProgress();
+            }
+
+            videoForm.addEventListener("submit", async function(e) {
+                e.preventDefault();
+                const saveButton = document.getElementById('saveVideoButton');
+                const originalText = saveButton.textContent;
+
+                try {
+                    saveButton.textContent = 'Saving...';
+                    saveButton.disabled = true;
+
+                    const id = videoIdInput.value;
+                    const youtubeUrl = document.getElementById('videoRedirectLink').value.trim();
+                    
+                    // If YouTube URL is provided but no thumbnail, try to fetch it
+                    if (!id && !currentVideoImageUrl && isYouTubeUrl(youtubeUrl)) {
+                        try {
+                            showToast('Fetching YouTube thumbnail...', false);
+                            const videoInfo = await fetchYouTubeInfo(youtubeUrl);
+                            currentVideoImageUrl = videoInfo.thumbnail;
+                            videoImageUrl.value = currentVideoImageUrl;
+                            
+                            // Auto-fill title if empty
+                            if (!videoTitleInput.value.trim()) {
+                                videoTitleInput.value = videoInfo.title;
+                            }
+                        } catch (error) {
+                            // If fetch fails, require manual thumbnail upload
+                            if (!currentVideoImageUrl) {
+                                throw new Error('Please upload a thumbnail or provide a valid YouTube URL');
+                            }
+                        }
+                    }
+                    
+                    if (!id && !currentVideoImageUrl) {
+                        throw new Error('Please upload a thumbnail or provide a YouTube URL');
+                    }
+
+                    const uploadFormData = new FormData();
+                    uploadFormData.append('video_title', document.getElementById('videoTitle').value);
+                    uploadFormData.append('video_redirect_link', document.getElementById('videoRedirectLink').value || '');
+                    
+                    // If we have a YouTube thumbnail URL, send it directly
+                    if (currentVideoImageUrl && currentVideoImageUrl.startsWith('http') && !currentVideoImageUrl.includes('githubusercontent.com')) {
+                        uploadFormData.append('video_image_url', currentVideoImageUrl);
+                    }
+                    // Otherwise, upload the file
+                    else if (videoImageUpload.files[0]) {
+                        uploadFormData.append('thumbnail', videoImageUpload.files[0]);
+                    }
+
+                    const url = id ? `/api/videos/${id}` : `/api/videos`;
+                    const method = id ? 'PUT' : 'POST';
+
+                    const response = await fetch(url, {
+                        method: method,
+                        credentials: 'include',
+                        body: uploadFormData
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.message || 'Failed to save video');
+                    }
+
+                    const data = await response.json();
+                    showToast(id ? "✅ Video updated successfully!" : "✅ Video added successfully!");
+
+                    videoForm.reset();
+                    resetVideoPreview();
+                    if (id) {
+                        videoIdInput.value = '';
+                        cancelVideoEditBtn.style.display = 'none';
+                    }
+                    loadVideos();
+                } catch (err) {
+                    showToast(`❌ Failed to save video: ${err.message}`, true);
+                } finally {
+                    saveButton.textContent = originalText;
+                    saveButton.disabled = false;
+                }
+            });
+
+            cancelVideoEditBtn.addEventListener("click", () => {
+                videoForm.reset();
+                videoIdInput.value = '';
+                cancelVideoEditBtn.style.display = 'none';
+                resetVideoPreview();
+            });
+
+            function loadVideos() {
+                videoList.innerHTML = '<div>Loading videos...</div>';
+                fetch("/api/public/videos", { credentials: 'include' })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (!data.success || !data.videos || data.videos.length === 0) {
+                            videoList.innerHTML = '<div>No videos found</div>';
+                            return;
+                        }
+                        videoList.innerHTML = '';
+                        data.videos.forEach(video => {
+                            const itemDiv = document.createElement('div');
+                            itemDiv.className = 'item';
+                            itemDiv.innerHTML = `
+                                <img src="${video.video_image_url}" alt="${video.video_title}" onerror="this.src='./graphic-design-tools.avif'">
+                                <div class="item-content">
+                                    <h3>${video.video_title}</h3>
+                                    ${video.video_redirect_link ? `<a href="${video.video_redirect_link}" target="_blank" style="font-size: 0.85rem; color: #4e4e8a;">Watch Video</a>` : ''}
+                                    <div class="actions">
+                                        <button class="edit" onclick="editVideo(${video.id})">Edit</button>
+                                        <button class="delete" onclick="deleteVideo(${video.id})">Delete</button>
+                                    </div>
+                                </div>
+                            `;
+                            videoList.appendChild(itemDiv);
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Error loading videos:', err);
+                        videoList.innerHTML = `<div>Failed to load videos: ${err.message}</div>`;
+                    });
+            }
+
+            window.editVideo = function(id) {
+                fetch(`/api/public/videos`, { credentials: 'include' })
+                    .then(res => res.json())
+                    .then(data => {
+                        const video = data.videos.find(v => v.id === id);
+                        if (!video) {
+                            alert("Video not found");
+                            return;
+                        }
+                        videoIdInput.value = video.id;
+                        document.getElementById('videoTitle').value = video.video_title;
+                        document.getElementById('videoRedirectLink').value = video.video_redirect_link || '';
+                        videoImageUrl.value = video.video_image_url;
+                        currentVideoImageUrl = video.video_image_url;
+                        if (video.video_image_url) {
+                            showVideoPreview(video.video_image_url);
+                        }
+                        cancelVideoEditBtn.style.display = 'inline';
+                        showVideoForm();
+                        window.scrollTo(0, 0);
+                    })
+                    .catch(err => {
+                        console.error('Error editing video:', err);
+                        showToast('Failed to edit video: ' + err.message, true);
+                    });
+            };
+
+            window.deleteVideo = function(id) {
+                if (!confirm("Are you sure you want to delete this video?")) return;
+                fetch(`/api/videos/${id}`, {
+                    method: 'DELETE',
+                    credentials: 'include'
+                })
+                    .then(res => res.json())
+                    .then(data => {
+                        showToast(data.message || "✅ Video deleted successfully!");
+                        loadVideos();
+                    })
+                    .catch(err => {
+                        showToast('Failed to delete video: ' + err.message, true);
+                    });
+            };
+
+            window.loadVideos = loadVideos;
         });
     </script>
 
