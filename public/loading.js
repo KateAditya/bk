@@ -1,71 +1,76 @@
-document.getElementById("contactForm").addEventListener("submit", function (e) {
-  e.preventDefault(); // Prevent default form submission
+const contactForm = document.getElementById("contactForm");
 
-  let form = this;
-  let formData = new FormData(form);
-  let submitButton = document.getElementById("submit-button");
-  let loader = document.getElementById("loader");
-  let buttonText = submitButton.querySelector(".button-text");
+if (contactForm) {
+  contactForm.addEventListener("submit", function (e) {
+    e.preventDefault();
 
-  // Show loader & disable button
-  buttonText.style.display = "none";
-  loader.style.display = "inline-block";
-  submitButton.disabled = true;
+    const form = this;
+    const formData = new FormData(form);
+    const submitButton = document.getElementById("submit-button");
+    const loader = document.getElementById("loader");
+    const buttonText = submitButton
+      ? submitButton.querySelector(".button-text")
+      : null;
 
-  // Use AbortController to set a timeout
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5-second timeout
+    if (!submitButton || !loader || !buttonText) return;
 
-  fetch("https://formsubmit.co/ajax/1e0414ae65d9aeea6119ddb52495a7a3", {
-    method: "POST",
-    body: formData,
-    signal: controller.signal, // Link fetch to AbortController
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.success) {
-        Swal.fire({
-          title: "We Will Connect You Shortly!!",
-          text: "Message Sent Successfully",
-          icon: "success",
-          confirmButtonText: "Done",
-        });
+    buttonText.style.display = "none";
+    loader.style.display = "inline-block";
+    submitButton.disabled = true;
 
-        form.reset(); // Reset form
-      } else {
-        Swal.fire({
-          title: "Error",
-          text: "Failed to Send Message. Please Try Again Later.",
-          icon: "error",
-          confirmButtonText: "Done",
-        });
-      }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    fetch("https://formsubmit.co/ajax/1e0414ae65d9aeea6119ddb52495a7a3", {
+      method: "POST",
+      body: formData,
+      signal: controller.signal,
     })
-    .catch((error) => {
-      if (error.name === "AbortError") {
-        Swal.fire({
-          title: "Timeout",
-          text: "Request took too long. Please try again.",
-          icon: "warning",
-          confirmButtonText: "OK",
-        });
-      } else {
-        Swal.fire({
-          title: "Error",
-          text: "Failed to Send Message. Please Try Again Later.",
-          icon: "error",
-          confirmButtonText: "Done",
-        });
-      }
-    })
-    .finally(() => {
-      clearTimeout(timeoutId); // Clear the timeout
-      // Hide loader & enable button
-      buttonText.style.display = "inline";
-      loader.style.display = "none";
-      submitButton.disabled = false;
-    });
-});
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          Swal.fire({
+            title: "We Will Connect You Shortly!!",
+            text: "Message Sent Successfully",
+            icon: "success",
+            confirmButtonText: "Done",
+          });
+
+          form.reset();
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "Failed to Send Message. Please Try Again Later.",
+            icon: "error",
+            confirmButtonText: "Done",
+          });
+        }
+      })
+      .catch((error) => {
+        if (error.name === "AbortError") {
+          Swal.fire({
+            title: "Timeout",
+            text: "Request took too long. Please try again.",
+            icon: "warning",
+            confirmButtonText: "OK",
+          });
+        } else {
+          Swal.fire({
+            title: "Error",
+            text: "Failed to Send Message. Please Try Again Later.",
+            icon: "error",
+            confirmButtonText: "Done",
+          });
+        }
+      })
+      .finally(() => {
+        clearTimeout(timeoutId);
+        buttonText.style.display = "inline";
+        loader.style.display = "none";
+        submitButton.disabled = false;
+      });
+  });
+}
 
 function validateContactInput(event) {
   let key = event.key;

@@ -1,21 +1,24 @@
-document.getElementById("contact-form")
-  .addEventListener("submit", function (event) {
-    event.preventDefault(); // Prevent actual form submission
+const contactForm = document.getElementById("contact-form");
 
-    let button = document.getElementById("submit-button");
-    let buttonText = button.querySelector(".button-text");
-    let loaders = button.querySelector(".loaders");
+if (contactForm) {
+  contactForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-    // Show loader and hide text
+    const button = document.getElementById("submit-button");
+    if (!button) return;
+
+    const buttonText = button.querySelector(".button-text");
+    const loaders =
+      button.querySelector(".loaders") || button.querySelector(".loader");
+    if (!buttonText || !loaders) return;
+
     buttonText.style.display = "none";
-    loader.style.display = "inline-block";
+    loaders.style.display = "inline-block";
 
-    // Simulate message sending (Replace with actual API call)
     setTimeout(() => {
       alert("Message sent successfully!");
-
-      // Hide loader and show text again
       loaders.style.display = "none";
       buttonText.style.display = "inline";
     }, 2000);
   });
+}
