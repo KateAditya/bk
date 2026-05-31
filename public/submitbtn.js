@@ -1,7 +1,7 @@
-const contactForm = document.getElementById("contact-form");
+const contactFormSubmit = document.getElementById("contact-form");
 
-if (contactForm) {
-  contactForm.addEventListener("submit", function (event) {
+if (contactFormSubmit) {
+  contactFormSubmit.addEventListener("submit", function (event) {
     event.preventDefault();
 
     const button = document.getElementById("submit-button");
