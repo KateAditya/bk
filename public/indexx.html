@@ -704,34 +704,6 @@
     </section>
 
 
-    <!-- Payment Modal -->
-    <div id="pay-modal-backdrop" class="pay-modal-backdrop"></div>
-    <div id="pay-modal" class="pay-modal" role="dialog" aria-modal="true" aria-labelledby="pay-modal-title">
-        <div class="pay-modal-header" id="pay-modal-title">Enter your details</div>
-        <div class="pay-modal-body">
-            <form class="pay-form">
-                <div class="form-group">
-                    <label for="payer_name">Name</label>
-                    <input id="payer_name" name="name" placeholder="Enter your name" required>
-                </div>
-                <div class="form-group">
-                    <label for="payer_email">Email</label>
-                    <input id="payer_email" name="email" type="email" placeholder="you@example.com" required>
-                </div>
-                <div class="form-group">
-                    <label for="amount">Amount (INR)</label>
-                    <input id="amount" name="amount" type="number" min="1" step="1" placeholder="Amount" required
-                        readonly>
-                </div>
-                <input id="product_title" name="product" type="hidden">
-            </form>
-        </div>
-        <div class="pay-modal-footer">
-            <button type="button" class="btn btn-secondary" id="pay-cancel">Cancel</button>
-            <button type="button" class="btn btn-primary" id="pay-submit">Pay Now</button>
-        </div>
-    </div>
-
     <!-- Footer -->
     <footer>
         <div class="footer-icons">
@@ -870,20 +842,69 @@
                 return; // Exit the function
             }
 
-            const price = button.dataset.price;
-            // populate modal amount and open modal; pay-form submission handled in payment.js
-            try {
-                document.getElementById('amount').value = Math.round(parseFloat(price));
-            } catch (e) {
-                document.getElementById('amount').value = '';
+            const price = Math.round(parseFloat(button.dataset.price || '0'));
+            const product = button.dataset.title || '';
+            if (!price || price <= 0) {
+                alert('Invalid amount');
+                return;
             }
-            try {
-                document.getElementById('product_title').value = button.dataset.title || '';
-            } catch (e) { }
-            const backdrop = document.getElementById('pay-modal-backdrop');
-            const modal = document.getElementById('pay-modal');
-            backdrop.style.display = 'block';
-            modal.style.display = 'block';
+
+            fetch('/createOrder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: price, product })
+            })
+                .then(function (response) { return response.json(); })
+                .then(function (res) {
+                    if (!res || !res.success) {
+                        alert('Order request failed');
+                        return;
+                    }
+
+                    const options = {
+                        key: res.key_id,
+                        amount: res.amount,
+                        currency: 'INR',
+                        name: product || 'Payment',
+                        description: 'Payment',
+                        order_id: res.order_id,
+                        handler: function (response) {
+                            fetch('/verifyPayment', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    razorpay_order_id: response.razorpay_order_id,
+                                    razorpay_payment_id: response.razorpay_payment_id,
+                                    razorpay_signature: response.razorpay_signature,
+                                    amount: res.amount,
+                                    method: 'Razorpay',
+                                    product: product
+                                })
+                            }).finally(function () {
+                                try {
+                                    if (res.product_link) {
+                                        const newTab = window.open(res.product_link, '_blank');
+                                        if (!newTab || newTab.closed || typeof newTab.closed === 'undefined') {
+                                            window.location.href = res.product_link;
+                                        }
+                                    }
+                                } catch (e) {
+                                    if (res.product_link) window.location.href = res.product_link;
+                                }
+                            });
+                        },
+                        theme: { color: '#2300a3' }
+                    };
+
+                    const rzp = new Razorpay(options);
+                    rzp.on('payment.failed', function () {
+                        alert('Payment Failed');
+                    });
+                    rzp.open();
+                })
+                .catch(function () {
+                    alert('Order request failed');
+                });
         }
 
         window.dataLayer = window.dataLayer || [];
@@ -891,28 +912,8 @@
         gtag('js', new Date());
         gtag('config', 'G-KZBTRFE7EH');
 
-        // Modal controls
-        (function () {
-            const backdrop = document.getElementById('pay-modal-backdrop');
-            const modal = document.getElementById('pay-modal');
-            const cancelBtn = document.getElementById('pay-cancel');
-            const submitBtn = document.getElementById('pay-submit');
-            const form = document.querySelector('.pay-form');
-
-            function closeModal() {
-                modal.style.display = 'none';
-                backdrop.style.display = 'none';
-            }
-
-            cancelBtn && cancelBtn.addEventListener('click', closeModal);
-            backdrop && backdrop.addEventListener('click', closeModal);
-            submitBtn && submitBtn.addEventListener('click', function () {
-                if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-            });
-        })();
     </script>
 
-    <script src="payment.js"></script>
     <script src="adsense.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
